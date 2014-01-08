@@ -118,6 +118,9 @@
 
     > ul.sidebar-menu > li > .sidebar-item {
         white-space: nowrap;
+        overflow-x: hidden;
+        -webkit-text-overflow: ellipsis;
+        text-overflow: ellipsis;
     }
 }
 
@@ -150,6 +153,12 @@
         padding: 10px 15px;
         text-decoration: none;
         cursor: pointer;
+    }
+}
+
+.sidebar-open-mini:not(.sidebar-open) .sidebar-scroller {
+    > ul.sidebar-menu > li > .sidebar-item {
+        padding-right: 10px;
     }
 }
 
