@@ -107,6 +107,52 @@
     }
 }
 
+.sidebar-scroller {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    left: 0;
+    right: -18px;
+    height: 100%;
+    padding-top: @navbar-height + 1;
+
+    > ul.sidebar-menu > li > .sidebar-item {
+        white-space: nowrap;
+    }
+}
+
+.sidebar-menu {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    list-style: none;
+    text-align: left;
+
+    li {
+        display: block;
+
+        -webkit-transition: height 0.2s, padding 0.2s;
+        transition: height 0.2s, padding 0.2s;
+    }
+
+    li li {
+        overflow: hidden;
+        height: 0;
+    }
+
+    > li > .sidebar-item {
+        font-size: @font-size-large;
+    }
+
+    .sidebar-item {
+        display: block;
+        height: 100%;
+        padding: 10px 15px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+
 .sidebar-trigger {
     .sidebar-toggle {
         z-index: @zindex-sidebar-toggle;
@@ -122,6 +168,10 @@
     .sidebar-toggle {
         position: fixed;
         z-index: @zindex-sidebar-toggle-fixed;
+    }
+
+    .sidebar-scroller {
+        padding-top: inherit;
     }
 
     .sidebar-wrapper {
@@ -163,51 +213,6 @@
         > i {
             color: @sidebar-toggle-inverse-hover-color;
         }
-    }
-}
-
-.sidebar-scroller {
-    position: absolute;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    left: 0;
-    right: -18px;
-    height: 100%;
-
-    > ul.sidebar-menu > li > .sidebar-item {
-        white-space: nowrap;
-    }
-}
-
-.sidebar-menu {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    list-style: none;
-    text-align: left;
-
-    li {
-        display: block;
-
-        -webkit-transition: height 0.2s, padding 0.2s;
-        transition: height 0.2s, padding 0.2s;
-    }
-    
-    li li {
-        overflow: hidden;
-        height: 0;
-    }
-    
-    > li > .sidebar-item {
-        font-size: @font-size-large;
-    }
-
-    .sidebar-item {
-        display: block;
-        height: 100%;
-        padding: 10px 15px;
-        text-decoration: none;
-        cursor: pointer;
     }
 }
 
