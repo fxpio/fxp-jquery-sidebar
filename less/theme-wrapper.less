@@ -1,0 +1,21 @@
+
+// Wrapper
+// --------------------------------------------------
+
+.navbar-fixed-top {
+    + .container,
+    + .container-fluid,
+    + .sidebar-trigger + .container,
+    + .sidebar-trigger + .container-fluid {
+        margin-top: @navbar-height + @navbar-margin-bottom;
+    }
+}
+
+.navbar-fixed-bottom {
+    + .container,
+    + .container-fluid,
+    + .sidebar-trigger + .container,
+    + .sidebar-trigger + .container-fluid {
+        margin-bottom: @navbar-height + @navbar-margin-bottom;
+    }
+}

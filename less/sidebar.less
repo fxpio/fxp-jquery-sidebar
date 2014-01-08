@@ -1,0 +1,218 @@
+
+//
+// Load core variables and mixins
+// --------------------------------------------------
+
+@import "@{SonatraGluonBundle}/Resources/assetic/less/variables.less";
+@import "@{symfony-vendor-dir}/twitter/bootstrap/less/mixins.less";
+@import "@{SonatraGluonBundle}/Resources/assetic/less/mixins.less";
+
+// Menu
+// --------------------------------------------------
+
+.sidebar-toggle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: @navbar-height;
+    cursor: pointer;
+
+    margin: 0;
+    padding: 17px 20px 17px 0;
+
+    > i {
+        font-size: @navbar-default-toggle-font-size;
+        margin: 0 0 0 -5px;
+        -webkit-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+    }
+
+    &:hover {
+        > i {
+            margin-left: -9px;
+        }
+    }
+
+    + .navbar-brand > img {
+        margin-left: 10px;
+    }
+}
+
+.sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    overflow: hidden;
+    bottom: 0;
+    width: @sidebar-wrapper-width-mini;
+    cursor: default;
+
+    -webkit-transform: translateX(-@sidebar-wrapper-width-mini);
+    transform: translateX(-@sidebar-wrapper-width-mini);
+
+    -webkit-transition: -webkit-transform 0.2s, width 0.2s;
+    transition: transform 0.2s, width 0.2s;
+
+    &.sidebar-open {
+        width: @sidebar-wrapper-width;
+    }
+
+    &.sidebar-open-mini,
+        &.sidebar-open {
+            -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+        }
+
+    &.sidebar-default {
+        color: @sidebar-default-color;
+        background-color: @sidebar-default-bg;
+
+        &.sidebar-open-mini,
+        &.sidebar-open {
+            .box-shadow(3px 0 4px rgba(0, 0, 0, 0.18));
+        }
+
+        li,
+        .sidebar-item {
+            color: @sidebar-default-link-color;
+            background-color: @sidebar-default-link-bg;
+
+            &:hover,
+            &:focus {
+                color: @sidebar-default-link-hover-color;
+                background-color: @sidebar-default-link-hover-bg;
+            }
+        }
+    }
+
+    &.sidebar-inverse {
+        color: @sidebar-inverse-color;
+        background-color: @sidebar-inverse-bg;
+
+        &.sidebar-open-mini,
+        &.sidebar-open {
+            .box-shadow(3px 0 4px rgba(0, 0, 0, 0.32));
+        }
+
+        li,
+        .sidebar-item {
+            color: @sidebar-inverse-link-color;
+            background-color: @sidebar-inverse-link-bg;
+
+            &:hover,
+            &:focus {
+                color: @sidebar-inverse-link-hover-color;
+                background-color: @sidebar-inverse-link-hover-bg;
+            }
+        }
+    }
+}
+
+.sidebar-trigger {
+    .sidebar-toggle {
+        z-index: @zindex-sidebar-toggle;
+    }
+
+    .sidebar-wrapper {
+        z-index: @zindex-sidebar-wrapper;
+    }
+}
+
+.navbar-fixed-top + .sidebar-trigger,
+.navbar-fixed-bottom + .sidebar-trigger {
+    .sidebar-toggle {
+        position: fixed;
+        z-index: @zindex-sidebar-toggle-fixed;
+    }
+
+    .sidebar-wrapper {
+        top: @navbar-height + 1;
+        z-index: @zindex-sidebar-wrapper-fixed;
+    }
+}
+
+.navbar-fixed-bottom + .sidebar-trigger {
+    .sidebar-toggle {
+        top: inherit;
+        bottom: 0;
+    }
+
+    .sidebar-wrapper {
+        top: 0;
+        bottom: @navbar-height + 1;
+    }
+}
+
+.navbar-default + .sidebar-trigger .sidebar-toggle {
+    > i {
+        color: @sidebar-toggle-default-color;
+    }
+
+    &:hover {
+        > i {
+            color: @sidebar-toggle-default-hover-color;
+        }
+    }
+}
+
+.navbar-inverse + .sidebar-trigger .sidebar-toggle {
+    > i {
+        color: @sidebar-toggle-inverse-color;
+    }
+
+    &:hover {
+        > i {
+            color: @sidebar-toggle-inverse-hover-color;
+        }
+    }
+}
+
+.sidebar-scroller {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    left: 0;
+    right: -18px;
+    height: 100%;
+
+    > ul.sidebar-menu > li > .sidebar-item {
+        white-space: nowrap;
+    }
+}
+
+.sidebar-menu {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    list-style: none;
+    text-align: left;
+
+    li {
+        display: block;
+
+        -webkit-transition: height 0.2s, padding 0.2s;
+        transition: height 0.2s, padding 0.2s;
+    }
+    
+    li li {
+        overflow: hidden;
+        height: 0;
+    }
+    
+    > li > .sidebar-item {
+        font-size: @font-size-large;
+    }
+
+    .sidebar-item {
+        display: block;
+        height: 100%;
+        padding: 10px 15px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: @screen-xs-max) { 
+    .sidebar-wrapper.sidebar-open {
+        width: 80%;
+    }
+}
