@@ -7,7 +7,8 @@
  * file that was distributed with this source code.
  */
 
-+function ($) { 'use strict';
++function ($) {
+    'use strict';
 
     // SIDEBAR CLASS DEFINITION
     // ========================
