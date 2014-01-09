@@ -45,6 +45,7 @@
         classOpen:      'sidebar-open',
         classForceOpen: 'sidebar-force-open',
         openOnHover:    true,
+        miniWidth:      50,
         keyboardEvent:  {
             ctrlKey:        true,
             shiftKey:       false,
@@ -113,7 +114,7 @@
             }
         }
 
-        if (this.isOpen) {
+        if (this.isOpen || (this.$wrapper.innerWidth() > this.options.miniWidth && this.$element.hasClass(this.options.classForceOpen))) {
             this.forceClose();
 
         } else {
