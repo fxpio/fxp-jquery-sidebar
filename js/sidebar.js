@@ -39,7 +39,7 @@
     };
 
     Sidebar.DEFAULTS = {
-        classToggle:   'sidebar-toggle',    
+        classToggle:   'sidebar-toggle',
         classWrapper:  'sidebar-wrapper',
         classMenu:     'sidebar-menu',
         classOpenMini: 'sidebar-open-mini',
@@ -82,11 +82,11 @@
     };
 
     Sidebar.prototype.openMini = function () {
-        $('.' + this.options.classWrapper, this.$element).addClass(this.options.classOpenMini);
+        this.$wrapper.addClass(this.options.classOpenMini);
     };
 
     Sidebar.prototype.closeMini = function () {
-        $('.' + this.options.classWrapper, this.$element).removeClass(this.options.classOpenMini);
+        this.$wrapper.removeClass(this.options.classOpenMini);
     };
 
     Sidebar.prototype.toggle = function (event) {
@@ -124,7 +124,7 @@
         }
 
         this.isOpen = true;
-        $('.' + this.options.classWrapper, this.$element).addClass(this.options.classOpen);
+        this.$wrapper.addClass(this.options.classOpen);
         $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
 
         this.closeMini();
@@ -137,7 +137,7 @@
 
         this.isOpen = false;
 
-        $('.' + this.options.classWrapper, this.$element).removeClass(this.options.classOpen);
+        this.$wrapper.removeClass(this.options.classOpen);
         $(document).off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
 
         this.closeMini();
