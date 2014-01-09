@@ -19,3 +19,22 @@
         margin-bottom: @navbar-height + @navbar-margin-bottom;
     }
 }
+
+
+@media (min-width: @screen-sm-min) {
+    .sidebar-force-open {
+        + .container,
+        + .container-fluid {
+            margin-left: @sidebar-wrapper-width-mini;
+        }
+    }
+}
+
+@media (min-width: @screen-md-min) {
+    .sidebar-force-open {
+        + .container,
+        + .container-fluid {
+            margin-left: @sidebar-wrapper-width;
+        }
+    }
+}

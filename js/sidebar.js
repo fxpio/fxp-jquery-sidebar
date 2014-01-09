@@ -39,17 +39,18 @@
     };
 
     Sidebar.DEFAULTS = {
-        classToggle:   'sidebar-toggle',
-        classWrapper:  'sidebar-wrapper',
-        classMenu:     'sidebar-menu',
-        classOpenMini: 'sidebar-open-mini',
-        classOpen:     'sidebar-open',
-        openOnHover:   true,
-        keyboardEvent: {
-            ctrlKey:       true,
-            shiftKey:      false,
-            altKey:        true,
-            keyCode:       'S'.charCodeAt(0)
+        classToggle:    'sidebar-toggle',
+        classWrapper:   'sidebar-wrapper',
+        classMenu:      'sidebar-menu',
+        classOpenMini:  'sidebar-open-mini',
+        classOpen:      'sidebar-open',
+        classForceOpen: 'sidebar-force-open',
+        openOnHover:    true,
+        keyboardEvent:  {
+            ctrlKey:        true,
+            shiftKey:       false,
+            altKey:         true,
+            keyCode:        'S'.charCodeAt(0)
         }
     };
 
@@ -89,6 +90,16 @@
         this.$wrapper.removeClass(this.options.classOpenMini);
     };
 
+    Sidebar.prototype.forceOpen = function () {
+        this.$element.addClass(this.options.classForceOpen);
+        this.open();
+    };
+
+    Sidebar.prototype.forceClose = function () {
+        this.$element.removeClass(this.options.classForceOpen);
+        this.close();
+    };
+
     Sidebar.prototype.toggle = function (event) {
         if (event) {
             var $parents = $(event.target).parents('.' + this.options.classWrapper);
@@ -104,10 +115,10 @@
         }
 
         if (this.isOpen) {
-            this.close();
+            this.forceClose();
 
         } else {
-            this.open();
+            this.forceOpen();
         }
     }
 
