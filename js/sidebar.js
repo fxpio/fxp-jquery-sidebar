@@ -33,8 +33,7 @@
         $(window).on( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
 
         if (this.$wrapper.hasClass('sidebar-open')) {
-            this.isOpen = true;
-            $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
+            this.open();
         }
     };
 
