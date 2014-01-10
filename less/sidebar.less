@@ -107,6 +107,28 @@
     }
 }
 
+.sidebar-swipe {
+    position : fixed;
+    z-index: @zindex-sidebar-wrapper - 1;
+    width: 20px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    -moz-user-select: -moz-none;
+    user-select: none;
+    -ms-touch-action: none;
+}
+
+.sidebar-open-mini + .sidebar-swipe {
+    left: @sidebar-wrapper-width-mini;
+}
+
+.sidebar-open + .sidebar-swipe,
+.sidebar-force-open .sidebar-swipe {
+    left: @sidebar-wrapper-width;
+}
+
 .sidebar-scroller {
     position: absolute;
     overflow-x: hidden;
@@ -234,33 +256,62 @@
             width: 80%;
         }
     }
+    .sidebar-force-open {
+        .sidebar-swipe {
+            left: 0;
+        }
+
+        .sidebar-open-mini:not(.sidebar-open) + .sidebar-swipe {
+            left: @sidebar-wrapper-width-mini;
+        }
+    }
+
+    .sidebar-open + .sidebar-swipe {
+        left: 80%;
+    }
 }
 
 @media (min-width: @screen-sm-min) {
-    .sidebar-force-open .sidebar-wrapper {
-        width: @sidebar-wrapper-width-mini;
-        -webkit-transform: translateX(0px);
-        transform: translateX(0px);
+    .sidebar-force-open {
+        .sidebar-wrapper {
+            width: @sidebar-wrapper-width-mini;
+            -webkit-transform: translateX(0px);
+            transform: translateX(0px);
 
-        &:not(.sidebar-open) .sidebar-scroller {
-            > ul.sidebar-menu > li > .sidebar-item {
-                padding-right: 10px;
+            &:not(.sidebar-open) .sidebar-scroller {
+                > ul.sidebar-menu > li > .sidebar-item {
+                    padding-right: 10px;
+                }
+            }
+
+            &.sidebar-open-mini,
+            &.sidebar-open {
+                .box-shadow(none);
+            }
+
+            &.sidebar-open {
+                width: @sidebar-wrapper-width;
             }
         }
 
-        &.sidebar-open-mini,
-        &.sidebar-open {
-            .box-shadow(none);
+        .sidebar-swipe {
+            left: @sidebar-wrapper-width-mini;
         }
 
-        &.sidebar-open {
-            width: @sidebar-wrapper-width;
+        .sidebar-open + .sidebar-swipe {
+            left: @sidebar-wrapper-width;
         }
     }
 }
 
 @media (min-width: @screen-md-min) {
-    .sidebar-force-open .sidebar-wrapper {
-        width: @sidebar-wrapper-width;
+    .sidebar-force-open {
+        .sidebar-wrapper {
+            width: @sidebar-wrapper-width;
+        }
+
+        .sidebar-swipe {
+            left: @sidebar-wrapper-width;
+        }
     }
 }
