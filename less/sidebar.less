@@ -141,8 +141,6 @@
     > ul.sidebar-menu > li > .sidebar-item {
         white-space: nowrap;
         overflow-x: hidden;
-        -webkit-text-overflow: ellipsis;
-        text-overflow: ellipsis;
     }
 }
 
@@ -152,6 +150,7 @@
     overflow-x: hidden;
     list-style: none;
     text-align: left;
+    font-size: @font-size-medium;
 
     li {
         display: block;
@@ -165,22 +164,13 @@
         height: 0;
     }
 
-    > li > .sidebar-item {
-        font-size: @font-size-large;
-    }
-
     .sidebar-item {
         display: block;
         height: 100%;
-        padding: 10px 15px;
+        padding: 15px;
+        padding-left: @sidebar-wrapper-width-mini;
         text-decoration: none;
         cursor: pointer;
-    }
-}
-
-.sidebar-open-mini:not(.sidebar-open) .sidebar-scroller {
-    > ul.sidebar-menu > li > .sidebar-item {
-        padding-right: 10px;
     }
 }
 
