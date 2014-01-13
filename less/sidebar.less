@@ -69,7 +69,8 @@
         color: @sidebar-default-color;
         background-color: @sidebar-default-bg;
 
-        &.sidebar-open {
+        &.sidebar-open,
+        &.sidebar-dragging {
             .box-shadow(3px 0 4px rgba(0, 0, 0, 0.18));
         }
 
@@ -90,7 +91,8 @@
         color: @sidebar-inverse-color;
         background-color: @sidebar-inverse-bg;
 
-        &.sidebar-open {
+        &.sidebar-open,
+        &.sidebar-dragging {
             .box-shadow(3px 0 4px rgba(0, 0, 0, 0.32));
         }
 
@@ -230,10 +232,9 @@
 
 @media (max-width: @screen-xs-max) {
     .sidebar-wrapper {
-
-        &.sidebar-open {
-            width: 80%;
-        }
+        width: 300px;
+        -webkit-transform: translateX(-300px);
+        transform: translateX(-300px);
     }
     .sidebar-force-open {
         .sidebar-swipe {
@@ -249,7 +250,8 @@
 @media (min-width: @screen-md-min) {
     .sidebar-force-open {
         .sidebar-wrapper {
-            &.sidebar-open {
+            &.sidebar-open,
+            &.sidebar-dragging {
                 .box-shadow(none);
             }
         }

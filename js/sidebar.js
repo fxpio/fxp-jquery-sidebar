@@ -41,6 +41,7 @@
         classWrapper:    'sidebar-wrapper',
         classOpen:       'sidebar-open',
         classForceOpen:  'sidebar-force-open',
+        classOnDragging: 'sidebar-dragging',
         openOnHover:     false,
         forceToggle:     false,//false, true, 'always'
         minLockWidth:    992,
@@ -199,13 +200,21 @@
             event.preventDefault();
         });
 
-        var swipeVelocity = this.mobileCheck() ? 0.04 : 0.4;
-
         this.hammer = new Hammer(this.$element[0], {
             tap: false,
-            swipe_velocity: swipeVelocity
+            transform: false,
+            release: false,
+            drag_block_horizontal: true,
+            drag_min_distance: 5,
+            swipe_velocity: 0.4
         })
+
         .on('swipe', $.proxy(function (event) {
+            event.gesture.stopDetect();
+            event.stopPropagation();
+            event.preventDefault();
+            this.cleanSwipe();
+
             if ('left' == event.gesture.direction) {
                 this.forceClose();
 
@@ -220,7 +229,59 @@
                     this.open();
                 }
             }
+        }, this))
+
+        .on('drag', $.proxy(function (event) {
+            this.$wrapper.addClass(this.options.classOnDragging);
+            this.$wrapper.css('-webkit-transition', 'none');
+            this.$wrapper.css('transition', 'none');
+
+            event.stopPropagation();
+            event.preventDefault();
+
+            if ($.inArray(event.gesture.direction, ['up', 'down']) >= 0) {
+                return;
+            }
+
+            if (undefined == this.$wrapper.data('drap-start-position')) {
+                this.$wrapper.data('drap-start-position', this.$wrapper.position()['left']);
+            }
+
+            var left = Math.round(this.$wrapper.data('drap-start-position') + event.gesture.deltaX);
+            left = left > 0 ? 0: left;
+
+            this.$wrapper.css('-webkit-transform', 'translateX(' + left + 'px)');
+            this.$wrapper.css('transform', 'translateX(' + left + 'px)');
+        }, this))
+
+        .on('dragend', $.proxy(function (event) {
+            this.cleanSwipe();
+
+            if (Math.abs(event.gesture.deltaX) <= (this.$wrapper.innerWidth() / 4)) {
+                return;
+            }
+
+            if (this.isOpen()) {
+                this.forceClose();
+
+            } else {
+                if ($(window).innerWidth() >= this.options.minLockWidth && 'always' == this.options.forceToggle) {
+                    this.forceOpen();
+
+                } else {
+                    this.open();
+                }
+            }
         }, this));
+    };
+
+    Sidebar.prototype.cleanSwipe = function () {
+        this.$wrapper.removeData('drap-start-position');
+        this.$wrapper.css('-webkit-transition', '');
+        this.$wrapper.css('transition', '');
+        this.$wrapper.css('-webkit-transform', '');
+        this.$wrapper.css('transform', '');
+        this.$wrapper.removeClass(this.options.classOnDragging);
     };
 
     Sidebar.prototype.destroySwipe = function () {
