@@ -17,18 +17,16 @@
         this.guid       = jQuery.guid;
         this.options    = $.extend({}, Sidebar.DEFAULTS, options);
         this.$element   = $(element);
+        this.$toggle    = $('.' + this.options.classToggle, this.$element);
         this.$wrapper   = $('.' + this.options.classWrapper, this.$element);
-        this._isOpen    = false;
         this.eventType  = this.mobileCheck() ? 'touchstart' : 'click';
         
         if(!this.mobileCheck() && this.options.openOnHover) {
-            this.$element.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.openMini, this));
-            this.$element.on('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeMini, this));
-
-            this.$wrapper.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
+            this.$element.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
+            this.$element.on('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.close, this));
         }
 
-        this.$element.on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
+        this.$toggle.on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
         $(window).on( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
 
         if (this.$wrapper.hasClass('sidebar-open')) {
@@ -39,19 +37,18 @@
     };
 
     Sidebar.DEFAULTS = {
-        classToggle:    'sidebar-toggle',
-        classWrapper:   'sidebar-wrapper',
-        classMenu:      'sidebar-menu',
-        classOpenMini:  'sidebar-open-mini',
-        classOpen:      'sidebar-open',
-        classForceOpen: 'sidebar-force-open',
-        openOnHover:    true,
-        miniWidth:      50,
-        keyboardEvent:  {
-            ctrlKey:        true,
-            shiftKey:       false,
-            altKey:         true,
-            keyCode:        'S'.charCodeAt(0)
+        classToggle:     'sidebar-toggle',
+        classWrapper:    'sidebar-wrapper',
+        classOpen:       'sidebar-open',
+        classForceOpen:  'sidebar-force-open',
+        openOnHover:     false,
+        forceToggle:     false,//false, true, 'always'
+        minLockWidth:    992,
+        keyboardEvent:   {
+            ctrlKey:         true,
+            shiftKey:        false,
+            altKey:          true,
+            keyCode:         'S'.charCodeAt(0)
         }
     };
 
@@ -83,16 +80,16 @@
         }
     };
 
-    Sidebar.prototype.openMini = function () {
-        this.$wrapper.addClass(this.options.classOpenMini);
-    };
+    Sidebar.prototype.isOpen = function () {
+        return this.$wrapper.hasClass(this.options.classOpen);
+    }
 
-    Sidebar.prototype.closeMini = function () {
-        this.$wrapper.removeClass(this.options.classOpenMini);
-    };
+    Sidebar.prototype.isLocked = function () {
+        return this.$element.hasClass(this.options.classForceOpen);
+    }
 
     Sidebar.prototype.forceOpen = function () {
-        if (this.isOpen()) {
+        if (this.isOpen() && this.isLocked()) {
             return;
         }
 
@@ -107,7 +104,42 @@
 
         this.$element.removeClass(this.options.classForceOpen);
         this.close();
-        this.closeMini();
+    };
+
+    Sidebar.prototype.closeExternal = function (event) {
+        if ($(event.target).parents('.' + this.options.classWrapper).size() > 0) {
+            return;
+        }
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        if ($(window).innerWidth() >= this.options.minLockWidth) {
+            this.close();
+
+        } else {
+            this.forceClose();
+        }
+    };
+
+    Sidebar.prototype.open = function () {
+        if (this.isOpen()) {
+            return;
+        }
+
+        this.$wrapper.addClass(this.options.classOpen);
+        $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
+        $(window).on('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
+    };
+
+    Sidebar.prototype.close = function () {
+        if (!this.isOpen() || (this.isLocked() && $(window).innerWidth() >= this.options.minLockWidth)) {
+            return;
+        }
+
+        this.$wrapper.removeClass(this.options.classOpen);
+        $(document).off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
+        $(window).off('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
     };
 
     Sidebar.prototype.toggle = function (event) {
@@ -125,64 +157,33 @@
         }
 
         if (this.isOpen()) {
-            this.forceClose();
+            if (this.isLocked()) {
+                this.forceClose();
+
+            } else if ($(window).innerWidth() >= this.options.minLockWidth && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
+                this.forceOpen();
+
+            } else {
+                this.close();
+            }
+
+        } else if ($(window).innerWidth() >= this.options.minLockWidth && 'always' == this.options.forceToggle) {
+            this.forceOpen();
 
         } else {
-            this.forceOpen();
+            this.open();
         }
     }
-
-    Sidebar.prototype.isOpen = function (event) {
-        if (this._isOpen || (this.$wrapper.innerWidth() > this.options.miniWidth && this.$element.hasClass(this.options.classForceOpen))) {
-            return true;
-
-        }
-
-        return false;
-    }
-
-    Sidebar.prototype.closeExternal = function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-
-        this.close();
-    };
-
-    Sidebar.prototype.open = function () {
-        if (this.isOpen()) {
-            return;
-        }
-
-        this._isOpen = true;
-        this.$wrapper.addClass(this.options.classOpen);
-        $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
-
-        this.closeMini();
-    };
-
-    Sidebar.prototype.close = function () {
-        if (!this.isOpen()) {
-            return;
-        }
-
-        this._isOpen = false;
-
-        this.$wrapper.removeClass(this.options.classOpen);
-        $(document).off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
-
-        this.closeMini();
-    };
 
     Sidebar.prototype.destroy = function () {
         if(!this.mobileCheck()) {
-            this.$element.off('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.openMini, this));
-            this.$element.off('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeMini, this));
-
-            this.$wrapper.off('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
+            this.$element.off('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
+            this.$element.off('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.close, this));
         }
 
         $(document).off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
-        this.$element.off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
+        $(window).off('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
+        this.$toggle.off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
         $(window).off( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
         this.destroySwipe();
     };
@@ -193,7 +194,7 @@
         }
 
         this.$swipe = $('<div id="sidebar-swipe' + this.guid + '" class="sidebar-swipe"></div>').appendTo(this.$element);
-        this.$swipe.on('mouseover click', function (event) {
+        this.$swipe.on('mouseover', function (event) {
             event.stopPropagation();
             event.preventDefault();
         });
@@ -209,7 +210,15 @@
                 this.forceClose();
 
             } else if ('right' == event.gesture.direction) {
-                this.forceOpen();
+                if (this.isOpen() && $(window).innerWidth() >= this.options.minLockWidth && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
+                    this.forceOpen();
+
+                } else if ($(window).innerWidth() >= this.options.minLockWidth && 'always' == this.options.forceToggle) {
+                    this.forceOpen();
+
+                } else {
+                    this.open();
+                }
             }
         }, this));
     };
@@ -219,7 +228,7 @@
             return;
         }
 
-        this.$swipe.off('mouseover click');
+        this.$swipe.off('mouseover');
         this.$element.remove(this.$swipe);
     };
 

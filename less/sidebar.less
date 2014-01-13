@@ -7,14 +7,22 @@
 @import "@{symfony-vendor-dir}/twitter/bootstrap/less/mixins.less";
 @import "@{SonatraGluonBundle}/Resources/assetic/less/mixins.less";
 
-// Menu
+// Sidebar
 // --------------------------------------------------
+
+.sidebar-trigger {
+    + .container,
+    + .container-fluid {
+        -webkit-transition: margin-left 0.2s;
+        transition: margin-left 0.2s;
+    }
+}
 
 .sidebar-toggle {
     position: absolute;
     top: 0;
     left: 0;
-    height: @navbar-height;
+    height: @navbar-height + 1;
     cursor: pointer;
 
     margin: 0;
@@ -43,20 +51,15 @@
     top: 0;
     overflow: hidden;
     bottom: 0;
-    width: @sidebar-wrapper-width-mini;
+    width: @sidebar-wrapper-width;
     cursor: default;
 
-    -webkit-transform: translateX(-@sidebar-wrapper-width-mini);
-    transform: translateX(-@sidebar-wrapper-width-mini);
+    -webkit-transform: translateX(-@sidebar-wrapper-width);
+    transform: translateX(-@sidebar-wrapper-width);
 
-    -webkit-transition: -webkit-transform 0.2s, width 0.2s;
-    transition: transform 0.2s, width 0.2s;
+    -webkit-transition: -webkit-transform 0.2s;
+    transition: transform 0.2s;
 
-    &.sidebar-open {
-        width: @sidebar-wrapper-width;
-    }
-
-    &.sidebar-open-mini,
     &.sidebar-open {
         -webkit-transform: translateX(0px);
         transform: translateX(0px);
@@ -66,7 +69,6 @@
         color: @sidebar-default-color;
         background-color: @sidebar-default-bg;
 
-        &.sidebar-open-mini,
         &.sidebar-open {
             .box-shadow(3px 0 4px rgba(0, 0, 0, 0.18));
         }
@@ -88,7 +90,6 @@
         color: @sidebar-inverse-color;
         background-color: @sidebar-inverse-bg;
 
-        &.sidebar-open-mini,
         &.sidebar-open {
             .box-shadow(3px 0 4px rgba(0, 0, 0, 0.32));
         }
@@ -120,10 +121,6 @@
     -ms-touch-action: none;
 }
 
-.sidebar-open-mini + .sidebar-swipe {
-    left: @sidebar-wrapper-width-mini;
-}
-
 .sidebar-open + .sidebar-swipe,
 .sidebar-force-open .sidebar-swipe {
     left: @sidebar-wrapper-width;
@@ -137,11 +134,6 @@
     right: -18px;
     height: 100%;
     padding-top: @navbar-height + 1;
-
-    > ul.sidebar-menu > li > .sidebar-item {
-        white-space: nowrap;
-        overflow-x: hidden;
-    }
 }
 
 .sidebar-menu {
@@ -168,7 +160,6 @@
         display: block;
         height: 100%;
         padding: 15px;
-        padding-left: @sidebar-wrapper-width-mini;
         text-decoration: none;
         cursor: pointer;
     }
@@ -239,8 +230,6 @@
 
 @media (max-width: @screen-xs-max) {
     .sidebar-wrapper {
-        -webkit-transition: -webkit-transform 0.2s;
-        transition: transform 0.2s;
 
         &.sidebar-open {
             width: 80%;
@@ -250,10 +239,6 @@
         .sidebar-swipe {
             left: 0;
         }
-
-        .sidebar-open-mini:not(.sidebar-open) + .sidebar-swipe {
-            left: @sidebar-wrapper-width-mini;
-        }
     }
 
     .sidebar-open + .sidebar-swipe {
@@ -261,47 +246,12 @@
     }
 }
 
-@media (min-width: @screen-sm-min) {
-    .sidebar-force-open {
-        .sidebar-wrapper {
-            width: @sidebar-wrapper-width-mini;
-            -webkit-transform: translateX(0px);
-            transform: translateX(0px);
-
-            &:not(.sidebar-open) .sidebar-scroller {
-                > ul.sidebar-menu > li > .sidebar-item {
-                    padding-right: 10px;
-                }
-            }
-
-            &.sidebar-open-mini,
-            &.sidebar-open {
-                .box-shadow(none);
-            }
-
-            &.sidebar-open {
-                width: @sidebar-wrapper-width;
-            }
-        }
-
-        .sidebar-swipe {
-            left: @sidebar-wrapper-width-mini;
-        }
-
-        .sidebar-open + .sidebar-swipe {
-            left: @sidebar-wrapper-width;
-        }
-    }
-}
-
 @media (min-width: @screen-md-min) {
     .sidebar-force-open {
         .sidebar-wrapper {
-            width: @sidebar-wrapper-width;
-        }
-
-        .sidebar-swipe {
-            left: @sidebar-wrapper-width;
+            &.sidebar-open {
+                .box-shadow(none);
+            }
         }
     }
 }
