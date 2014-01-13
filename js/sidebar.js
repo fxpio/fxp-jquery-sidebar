@@ -108,7 +108,9 @@
     };
 
     Sidebar.prototype.closeExternal = function (event) {
-        if ($(event.target).parents('.' + this.options.classWrapper).size() > 0) {
+        var $target = $(event.currentTarget.activeElement);
+
+        if ($(event.target).parents('.' + this.options.classWrapper).size() > 0 || $target.parents('.' + this.options.classWrapper).size() > 0 || $target.hasClass('sidebar-swipe')) {
             return;
         }
 
@@ -204,9 +206,10 @@
             tap: false,
             transform: false,
             release: false,
+            hold: false,
             drag_block_horizontal: true,
             drag_min_distance: 5,
-            swipe_velocity: 0.4
+            swipe_velocity: this.mobileCheck() ? 0.04 :  0.4
         })
 
         .on('swipe', $.proxy(function (event) {
