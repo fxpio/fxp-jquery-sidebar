@@ -29,14 +29,14 @@
     padding: 17px 20px 17px 0;
 
     > i {
-        font-size: @navbar-default-toggle-font-size;
+        font-size: @sidebar-default-toggle-font-size;
         margin: 0 0 0 -5px;
         -webkit-transition: all 0.1s ease-in-out;
         transition: all 0.1s ease-in-out;
     }
 
     > .fa-sidebar-toggle:before {
-        content: @sidebar-toggle-fa-icon;
+        content: @sidebar-default-toggle-fa-icon;
     }
 
     &:hover {
@@ -237,12 +237,12 @@
 
 .navbar-default + .sidebar-trigger .sidebar-toggle {
     > i {
-        color: @sidebar-toggle-default-color;
+        color: @sidebar-default-toggle-color;
     }
 
     &:hover {
         > i {
-            color: @sidebar-toggle-default-hover-color;
+            color: @sidebar-default-toggle-hover-color;
         }
     }
 }
