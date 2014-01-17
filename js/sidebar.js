@@ -30,7 +30,8 @@
         $(window).on( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
 
         if (this.$wrapper.hasClass('sidebar-open')) {
-            this.open();
+            $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
+            $(window).on('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
         }
 
         this.initSwipe();
