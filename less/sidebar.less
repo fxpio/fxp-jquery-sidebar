@@ -1,4 +1,4 @@
-
+    
 //
 // Load core variables and mixins
 // --------------------------------------------------
@@ -189,6 +189,10 @@
 
     .sidebar-group {
         padding-top: 20px;
+
+        &:first-child {
+            padding-top: 0;
+        }
 
         > span {
             font-size: @sidebar-default-group-size;
