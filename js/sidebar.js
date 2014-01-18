@@ -84,11 +84,11 @@
 
     Sidebar.prototype.isOpen = function () {
         return this.$wrapper.hasClass(this.options.classOpen);
-    }
+    };
 
     Sidebar.prototype.isLocked = function () {
         return this.$element.hasClass(this.options.classForceOpen);
-    }
+    };
 
     Sidebar.prototype.forceOpen = function () {
         if (this.isOpen() && this.isLocked()) {
@@ -177,7 +177,7 @@
         } else {
             this.open();
         }
-    }
+    };
 
     Sidebar.prototype.destroy = function () {
         if(!this.mobileCheck()) {
