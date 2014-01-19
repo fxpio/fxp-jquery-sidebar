@@ -69,114 +69,32 @@
         transform: translateX(0px);
     }
 
-    &.sidebar-default {
-        color: @sidebar-default-color;
-        background-color: @sidebar-default-bg;
-
-        &.sidebar-open,
-        &.sidebar-dragging {
-            .box-shadow(3px 0 4px rgba(0, 0, 0, 0.18));
-        }
-
-        .sidebar-group {
-            > span {
-                color: @sidebar-default-group-color;
-                border-bottom-color: @sidebar-default-border-color;
-            }
-
-            + .sidebar-item > a {
-                border-top-color: @sidebar-default-border-color;
-            }
-        }
-
-        .sidebar-item > a {
-            color: @sidebar-default-link-color;
-            background-color: @sidebar-default-link-bg;
-
-            &:hover,
-            &:focus {
-                color: @sidebar-default-link-hover-color;
-                background-color: @sidebar-default-link-hover-bg;
-            }
-        }
+    .sidebar-scroller {
+        position: absolute;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        left: 0;
+        right: -18px;
+        height: 100%;
+        padding-top: @navbar-height + 1;
     }
 
-    &.sidebar-inverse {
-        color: @sidebar-inverse-color;
-        background-color: @sidebar-inverse-bg;
-
-        &.sidebar-open,
-        &.sidebar-dragging {
-            .box-shadow(3px 0 4px rgba(0, 0, 0, 0.32));
-        }
-
-        .sidebar-group {
-            > span {
-                color: @sidebar-inverse-group-color;
-                border-bottom-color: @sidebar-inverse-border-color;
-            }
-
-            + .sidebar-item > a {
-                border-top-color: @sidebar-inverse-border-color;
-            }
-        }
-
-        .sidebar-item > a {
-            color: @sidebar-inverse-link-color;
-            background-color: @sidebar-inverse-link-bg;
-
-            &:hover,
-            &:focus {
-                color: @sidebar-inverse-link-hover-color;
-                background-color: @sidebar-inverse-link-hover-bg;
-            }
-        }
-    }
-}
-
-.sidebar-swipe {
-    position : fixed;
-    z-index: @zindex-sidebar-wrapper - 1;
-    width: 20px;
-    left: 0;
-    top: 0;
-    bottom: 0;
-
-    -moz-user-select: -moz-none;
-    user-select: none;
-    -ms-touch-action: none;
-}
-
-.sidebar-open + .sidebar-swipe,
-.sidebar-force-open .sidebar-swipe {
-    left: @sidebar-wrapper-width;
-}
-
-.sidebar-scroller {
-    position: absolute;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    left: 0;
-    right: -18px;
-    height: 100%;
-    padding-top: @navbar-height + 1;
-}
-
-.sidebar-menu {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    list-style: none;
-    text-align: left;
-    font-size: @font-size-medium;
-
-    ul {
-        padding: 0;
+    .sidebar-menu {
         margin: 0;
-    }
+        padding: 0;
+        overflow-x: hidden;
+        list-style: none;
+        text-align: left;
+        font-size: @font-size-medium;
 
-    li {
-        display: block;
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: block;
+        }
     }
 
     .sidebar-group > span,
@@ -199,6 +117,16 @@
             border-bottom: 1px solid transparent;
         }
 
+        &.sticky-header {
+            position: fixed;
+            height: auto;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            padding-top: 0;
+        }
+
         + .sidebar-item {
             padding-top: 32px;
 
@@ -211,6 +139,24 @@
     .sidebar-item > a {
         cursor: pointer;
     }
+}
+
+.sidebar-swipe {
+    position : fixed;
+    z-index: @zindex-sidebar-wrapper - 1;
+    width: 20px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    -moz-user-select: -moz-none;
+    user-select: none;
+    -ms-touch-action: none;
+}
+
+.sidebar-open + .sidebar-swipe,
+.sidebar-force-open .sidebar-swipe {
+    left: @sidebar-wrapper-width;
 }
 
 .sidebar-trigger {
@@ -249,6 +195,80 @@
     .sidebar-wrapper {
         top: 0;
         bottom: @navbar-height + 1;
+    }
+}
+
+.sidebar-wrapper {
+    &.sidebar-default {
+        color: @sidebar-default-color;
+        background-color: @sidebar-default-bg;
+
+        &.sidebar-open,
+        &.sidebar-dragging {
+            .box-shadow(3px 0 4px rgba(0, 0, 0, 0.18));
+        }
+
+        .sidebar-group {
+            > span {
+                color: @sidebar-default-group-color;
+                border-bottom-color: @sidebar-default-border-color;
+            }
+
+            &.sticky-header > span {
+                background-color: @sidebar-default-bg;
+            }
+
+            + .sidebar-item > a {
+                border-top-color: @sidebar-default-border-color;
+            }
+        }
+
+        .sidebar-item > a {
+            color: @sidebar-default-link-color;
+            background-color: @sidebar-default-link-bg;
+
+            &:hover,
+            &:focus {
+                color: @sidebar-default-link-hover-color;
+                background-color: @sidebar-default-link-hover-bg;
+            }
+        }
+    }
+
+    &.sidebar-inverse {
+        color: @sidebar-inverse-color;
+        background-color: @sidebar-inverse-bg;
+
+        &.sidebar-open,
+        &.sidebar-dragging {
+            .box-shadow(3px 0 4px rgba(0, 0, 0, 0.32));
+        }
+
+        .sidebar-group {
+            > span {
+                color: @sidebar-inverse-group-color;
+                border-bottom-color: @sidebar-inverse-border-color;
+            }
+
+            &.sticky-header > span {
+                background-color: @sidebar-inverse-bg;
+            }
+
+            + .sidebar-item > a {
+                border-top-color: @sidebar-inverse-border-color;
+            }
+        }
+
+        .sidebar-item > a {
+            color: @sidebar-inverse-link-color;
+            background-color: @sidebar-inverse-link-bg;
+
+            &:hover,
+            &:focus {
+                color: @sidebar-inverse-link-hover-color;
+                background-color: @sidebar-inverse-link-hover-bg;
+            }
+        }
     }
 }
 
