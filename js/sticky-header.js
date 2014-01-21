@@ -47,7 +47,7 @@
                 $group.attr('data-sticky-ref', index);
                 this.$element.parent().prepend($sticky);
 
-            } else if ($nextItemFind.eq(0).position()['top'] <= 0) {
+            } else if ($nextItemFind.eq(0).size() > 0 && $nextItemFind.eq(0).position()['top'] <= 0) {
                 $headerFind.eq(0).css('display', 'none');
 
             } else {
