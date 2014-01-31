@@ -68,7 +68,6 @@
         left: 0;
         right: -18px;
         height: 100%;
-        padding-top: @navbar-height + 1;
     }
 
     .sidebar-menu {
@@ -159,6 +158,12 @@
 
     .sidebar-wrapper {
         z-index: @zindex-sidebar-wrapper;
+    }
+}
+
+.navbar + .sidebar-wrapper {
+    .sidebar-scroller {
+        padding-top: @navbar-height + 1;
     }
 }
 
