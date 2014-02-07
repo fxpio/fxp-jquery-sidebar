@@ -29,7 +29,15 @@
         this.$toggle.on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
         $(window).on( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
 
-        if (this.$wrapper.hasClass('sidebar-open')) {
+        if (this.$wrapper.hasClass(this.options.classOpen + '-init')) {
+            if ($(window).innerWidth() >= this.options.minLockWidth) {
+                this.$wrapper.addClass(this.options.classOpen);
+            }
+
+            this.$wrapper.removeClass(this.options.classOpen + '-init');
+        }
+
+        if (this.$wrapper.hasClass(this.options.classOpen)) {
             $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
             $(window).on('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
         }
@@ -208,18 +216,51 @@
             transform: false,
             release: false,
             hold: false,
+            swipe: false,
             drag_block_horizontal: true,
-            drag_min_distance: 5,
-            swipe_velocity: this.mobileCheck() ? 0.04 :  0.4
+            drag_lock_to_axis: true,
+            drag_min_distance: 3
         })
 
-        .on('swipe', $.proxy(function (event) {
-            event.gesture.stopDetect();
+        .on('dragstart', $.proxy(function (event) {
+            this.dragStartPosition = getPosition(this.$wrapper);
+        }, this))
+
+        .on('drag', $.proxy(function (event) {
             event.stopPropagation();
             event.preventDefault();
+
+            var width = this.$wrapper.outerWidth();
+            var horizontal = 0;
+
+            switch (event.gesture.direction) {
+                case 'left':
+                case 'right':
+                    horizontal = Math.round(this.dragStartPosition + event.gesture.deltaX);
+                    break;
+                default:
+                    return;
+            }
+
+            if (horizontal > 0) {
+                horizontal = 0;
+            }
+
+            this.$wrapper.addClass(this.options.classOnDragging);
+            this.$wrapper.css('-webkit-transition', 'none');
+            this.$wrapper.css('transition', 'none');
+            this.$wrapper.css('-webkit-transform', 'translate3d(' + horizontal +'px, 0px, 0px)');
+            this.$wrapper.css('transform', 'translate3d(' + horizontal +'px, 0px, 0px)');
+        }, this))
+
+        .on('dragend', $.proxy(function (event) {
             this.cleanSwipe();
 
-            if ('left' == event.gesture.direction) {
+            if (Math.abs(event.gesture.deltaX) <= (this.$wrapper.innerWidth() / 4)) {
+                return;
+            }
+
+            if (this.isOpen() && 'left' == event.gesture.direction) {
                 this.forceClose();
 
             } else if ('right' == event.gesture.direction) {
@@ -233,40 +274,16 @@
                     this.open();
                 }
             }
-        }, this))
 
-        .on('drag', $.proxy(function (event) {
-            this.$wrapper.addClass(this.options.classOnDragging);
-            this.$wrapper.css('-webkit-transition', 'none');
-            this.$wrapper.css('transition', 'none');
-
-            event.stopPropagation();
-            event.preventDefault();
-
-            if ($.inArray(event.gesture.direction, ['up', 'down']) >= 0) {
-                return;
-            }
-
-            if (undefined == this.$wrapper.data('drap-start-position')) {
-                this.$wrapper.data('drap-start-position', this.$wrapper.position()['left']);
-            }
-
-            var left = Math.round(this.$wrapper.data('drap-start-position') + event.gesture.deltaX);
-            left = left > 0 ? 0: left;
-
-            this.$wrapper.css('-webkit-transform', 'translateX(' + left + 'px)');
-            this.$wrapper.css('transform', 'translateX(' + left + 'px)');
-        }, this))
-
-        .on('dragend', $.proxy(function (event) {
-            this.cleanSwipe();
-
-            if (Math.abs(event.gesture.deltaX) <= (this.$wrapper.innerWidth() / 4)) {
-                return;
-            }
+            return;
 
             if (this.isOpen()) {
-                this.forceClose();
+                if ($(window).innerWidth() >= this.options.minLockWidth && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
+                    this.forceOpen();
+
+                } else {
+                    this.forceClose();
+                }
 
             } else {
                 if ($(window).innerWidth() >= this.options.minLockWidth && 'always' == this.options.forceToggle) {
@@ -279,6 +296,33 @@
         }, this));
     };
 
+    function getPosition ($wrapper) {
+        var transform = {e: 0, f: 0};
+
+        if ($wrapper.css('transform')) {
+            if ('function' === typeof CSSMatrix) {
+                transform = new CSSMatrix($wrapper.css('transform'));
+
+            } else if ('function' === typeof WebKitCSSMatrix) {
+                transform = new WebKitCSSMatrix($wrapper.css('transform'));
+
+            } else if ('function' === typeof MSCSSMatrix) {
+                transform = new MSCSSMatrix($wrapper.css('transform'));
+
+            } else {
+                var reMatrix = /matrix\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)/;
+                var match = $wrapper.css('transform').match(reMatrix);
+
+                if (match) {
+                    transform.e = parseInt(match[1]);
+                    transform.f = parseInt(match[2]);
+                }
+            }
+        }
+
+        return transform.e;
+    }
+
     Sidebar.prototype.cleanSwipe = function () {
         this.$wrapper.removeData('drap-start-position');
         this.$wrapper.css('-webkit-transition', '');
@@ -286,6 +330,7 @@
         this.$wrapper.css('-webkit-transform', '');
         this.$wrapper.css('transform', '');
         this.$wrapper.removeClass(this.options.classOnDragging);
+        delete this.dragStartPosition;
     };
 
     Sidebar.prototype.destroySwipe = function () {

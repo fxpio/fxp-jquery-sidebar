@@ -50,15 +50,15 @@
     width: @sidebar-wrapper-width;
     cursor: default;
 
-    -webkit-transform: translateX(-@sidebar-wrapper-width);
-    transform: translateX(-@sidebar-wrapper-width);
+    -webkit-transform: translate3d(-@sidebar-wrapper-width, 0px, 0px);
+    transform: translate3d(-@sidebar-wrapper-width, 0px, 0px);
 
     -webkit-transition: -webkit-transform 0.2s;
     transition: transform 0.2s;
 
     &.sidebar-open {
-        -webkit-transform: translateX(0px);
-        transform: translateX(0px);
+        -webkit-transform: translate3d(0px, 0px, 0px);
+        transform: translate3d(0px, 0px, 0px);
     }
 
     .sidebar-scroller {
@@ -306,9 +306,9 @@
 
 @media (max-width: @screen-xs-max) {
     .sidebar-wrapper {
-        width: 300px;
-        -webkit-transform: translateX(-300px);
-        transform: translateX(-300px);
+        width: 80%;
+        -webkit-transform: translate3d(-100%, 0px, 0px);
+        transform: translate3d(-100%, 0px, 0px);
     }
     .sidebar-force-open {
         .sidebar-swipe {
@@ -317,11 +317,16 @@
     }
 
     .sidebar-open + .sidebar-swipe {
-        left: 300px;
+        left: 80%;
     }
 }
 
 @media (min-width: @screen-md-min) {
+    .sidebar-wrapper.sidebar-open-init {
+        -webkit-transform: translate3d(0px, 0px, 0px);
+        transform: translate3d(0px, 0px, 0px);
+    }
+
     .sidebar-force-open {
         .sidebar-wrapper {
             &.sidebar-open,
