@@ -6,7 +6,9 @@
     + .container,
     + .container-fluid,
     + .sidebar-trigger + .container,
-    + .sidebar-trigger + .container-fluid {
+    + .sidebar-trigger + .container-fluid,
+    + .sidebar-trigger + .sidebar-trigger + .container,
+    + .sidebar-trigger + .sidebar-trigger + .container-fluid {
         margin-top: @navbar-height + @navbar-margin-bottom;
     }
 }
@@ -15,16 +17,29 @@
     + .container,
     + .container-fluid,
     + .sidebar-trigger + .container,
-    + .sidebar-trigger + .container-fluid {
+    + .sidebar-trigger + .container-fluid,
+    + .sidebar-trigger + .sidebar-trigger + .container,
+    + .sidebar-trigger + .sidebar-trigger + .container-fluid {
         margin-bottom: @navbar-height + @navbar-margin-bottom;
     }
 }
 
 @media (min-width: @screen-md-min) {
-    .sidebar-force-open {
+    .sidebar-force-open:not(.sidebar-right) {
         + .container,
-        + .container-fluid {
+        + .container-fluid,
+        + .sidebar-trigger + .container,
+        + .sidebar-trigger + .container-fluid {
             margin-left: @sidebar-wrapper-width;
+        }
+    }
+
+    .sidebar-force-open.sidebar-right {
+        + .container,
+        + .container-fluid,
+        + .sidebar-trigger + .container,
+        + .sidebar-trigger + .container-fluid {
+            margin-right: @sidebar-wrapper-width;
         }
     }
 }

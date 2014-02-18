@@ -21,6 +21,18 @@
         this.$wrapper       = $('.' + this.options.classWrapper, this.$element);
         this.eventType      = this.mobileCheck() ? 'touchstart' : 'click';
         this.scrollbarWidth = null;
+        this.$element.attr('data-sidebar', 'true');
+
+        if ('right' != this.options.position) {
+            this.options.position = 'left';
+
+        } else {
+            this.$element.addClass('sidebar-right');
+        }
+
+        if (this.$element.hasClass('sidebar-right')) {
+            this.options.position = 'right';
+        }
 
         if (this.options.locked) {
             this.options.forceToggle = 'always';
@@ -63,21 +75,23 @@
     };
 
     Sidebar.DEFAULTS = {
-        classToggle:     'sidebar-toggle',
-        classWrapper:    'sidebar-wrapper',
-        classOpen:       'sidebar-open',
-        classLocked:     'sidebar-locked',
-        classForceOpen:  'sidebar-force-open',
-        classOnDragging: 'sidebar-dragging',
-        openOnHover:     false,
-        forceToggle:     false,//false, true, 'always'
-        locked:          false,
-        minLockWidth:    992,
-        keyboardEvent:   {
-            ctrlKey:         true,
-            shiftKey:        false,
-            altKey:          true,
-            keyCode:         'S'.charCodeAt(0)
+        classToggle:      'sidebar-toggle',
+        classWrapper:     'sidebar-wrapper',
+        classOpen:        'sidebar-open',
+        classLocked:      'sidebar-locked',
+        classForceOpen:   'sidebar-force-open',
+        classOnDragging:  'sidebar-dragging',
+        openOnHover:      false,
+        forceToggle:      false,//false, true, 'always'
+        locked:           false,
+        position:         'left',//left, right
+        minLockWidth:     992,
+        disabledKeyboard: false,
+        keyboardEvent:    {
+            ctrlKey:          true,
+            shiftKey:         false,
+            altKey:           true,
+            keyCode:          'S'.charCodeAt(0)
         }
     };
 
@@ -95,7 +109,7 @@
     };
 
     Sidebar.prototype.keyboardAction = function(event) {
-        if (!event instanceof jQuery.Event) {
+        if (!event instanceof jQuery.Event || this.options.disabledKeyboard) {
             return;
         }
 
@@ -107,6 +121,10 @@
                 && event.keyCode  == kbe.keyCode) {
             this.toggle(event);
         }
+    };
+
+    Sidebar.prototype.getPosition = function () {
+        return this.options.position;
     };
 
     Sidebar.prototype.isLocked = function () {
@@ -162,6 +180,7 @@
             return;
         }
 
+        $('[data-sidebar=true]').sidebar('forceClose');
         this.$wrapper.addClass(this.options.classOpen);
         $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
     };
@@ -244,7 +263,7 @@
         })
 
         .on('dragstart', $.proxy(function (event) {
-            this.dragStartPosition = getPosition(this.$wrapper);
+            this.dragStartPosition = getWrapperPosition(this.$wrapper);
         }, this))
 
         .on('drag', $.proxy(function (event) {
@@ -263,7 +282,7 @@
                     return;
             }
 
-            if (horizontal > 0) {
+            if (('left' == this.getPosition() && horizontal > 0) || ('right' == this.getPosition() && horizontal < 0)) {
                 horizontal = 0;
             }
 
@@ -281,10 +300,18 @@
                 return;
             }
 
-            if (this.isOpen() && 'left' == event.gesture.direction) {
+            var closeGesture = 'left';
+            var openGesture = 'right';
+
+            if ('right' == this.getPosition()) {
+                closeGesture = 'right';
+                openGesture = 'left';
+            }
+
+            if (this.isOpen() && closeGesture == event.gesture.direction) {
                 this.forceClose();
 
-            } else if ('right' == event.gesture.direction) {
+            } else if (openGesture == event.gesture.direction) {
                 if (this.isOpen() && isOverMinWidth.apply(this) && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
                     this.forceOpen();
 
@@ -317,7 +344,7 @@
         }, this));
     };
 
-    function getPosition ($wrapper) {
+    function getWrapperPosition ($wrapper) {
         var transform = {e: 0, f: 0};
 
         if ($wrapper.css('transform')) {
