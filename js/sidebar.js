@@ -14,13 +14,25 @@
     // ========================
 
     var Sidebar = function (element, options) {
-        this.guid       = jQuery.guid;
-        this.options    = $.extend({}, Sidebar.DEFAULTS, options);
-        this.$element   = $(element);
-        this.$toggle    = $('.' + this.options.classToggle, this.$element);
-        this.$wrapper   = $('.' + this.options.classWrapper, this.$element);
-        this.eventType  = this.mobileCheck() ? 'touchstart' : 'click';
-        
+        this.guid           = jQuery.guid;
+        this.options        = $.extend({}, Sidebar.DEFAULTS, options);
+        this.$element       = $(element);
+        this.$toggle        = $('.' + this.options.classToggle, this.$element);
+        this.$wrapper       = $('.' + this.options.classWrapper, this.$element);
+        this.eventType      = this.mobileCheck() ? 'touchstart' : 'click';
+        this.scrollbarWidth = null;
+
+        if (this.options.locked) {
+            this.options.forceToggle = 'always';
+            this.$element.css('-webkit-transition', 'none');
+            this.$element.css('transition', 'none');
+            this.$wrapper.css('-webkit-transition', 'none');
+            this.$wrapper.css('transition', 'none');
+            this.$element.addClass(this.options.classLocked);
+            this.$element.addClass(this.options.classForceOpen);
+            this.$wrapper.addClass(this.options.classOpen + '-init');
+        }
+
         if(!this.mobileCheck() && this.options.openOnHover) {
             this.$element.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
             this.$element.on('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.close, this));
@@ -28,9 +40,10 @@
 
         this.$toggle.on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
         $(window).on( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
+        $(window).on('resize.st.sidebar' + this.guid, $.proxy(onResizeWindow, this));
 
         if (this.$wrapper.hasClass(this.options.classOpen + '-init')) {
-            if ($(window).innerWidth() >= this.options.minLockWidth) {
+            if (isOverMinWidth.apply(this)) {
                 this.$wrapper.addClass(this.options.classOpen);
             }
 
@@ -39,20 +52,26 @@
 
         if (this.$wrapper.hasClass(this.options.classOpen)) {
             $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
-            $(window).on('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
         }
 
         this.initSwipe();
+
+        this.$element.css('-webkit-transition', '');
+        this.$element.css('transition', '');
+        this.$wrapper.css('-webkit-transition', '');
+        this.$wrapper.css('transition', '');
     };
 
     Sidebar.DEFAULTS = {
         classToggle:     'sidebar-toggle',
         classWrapper:    'sidebar-wrapper',
         classOpen:       'sidebar-open',
+        classLocked:     'sidebar-locked',
         classForceOpen:  'sidebar-force-open',
         classOnDragging: 'sidebar-dragging',
         openOnHover:     false,
         forceToggle:     false,//false, true, 'always'
+        locked:          false,
         minLockWidth:    992,
         keyboardEvent:   {
             ctrlKey:         true,
@@ -90,16 +109,20 @@
         }
     };
 
+    Sidebar.prototype.isLocked = function () {
+        return this.options.locked;
+    };
+
     Sidebar.prototype.isOpen = function () {
         return this.$wrapper.hasClass(this.options.classOpen);
     };
 
-    Sidebar.prototype.isLocked = function () {
+    Sidebar.prototype.isFullyOpened = function () {
         return this.$element.hasClass(this.options.classForceOpen);
     };
 
     Sidebar.prototype.forceOpen = function () {
-        if (this.isOpen() && this.isLocked()) {
+        if (this.isOpen() && this.isFullyOpened()) {
             return;
         }
 
@@ -108,7 +131,7 @@
     };
 
     Sidebar.prototype.forceClose = function () {
-        if (!this.isOpen()) {
+        if (!this.isOpen() || (this.isLocked() && isOverMinWidth.apply(this))) {
             return;
         }
 
@@ -126,7 +149,7 @@
         event.stopPropagation();
         event.preventDefault();
 
-        if ($(window).innerWidth() >= this.options.minLockWidth) {
+        if (isOverMinWidth.apply(this)) {
             this.close();
 
         } else {
@@ -141,17 +164,15 @@
 
         this.$wrapper.addClass(this.options.classOpen);
         $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
-        $(window).on('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
     };
 
     Sidebar.prototype.close = function () {
-        if (!this.isOpen() || (this.isLocked() && $(window).innerWidth() >= this.options.minLockWidth)) {
+        if (!this.isOpen() || (this.isFullyOpened() && isOverMinWidth.apply(this))) {
             return;
         }
 
         this.$wrapper.removeClass(this.options.classOpen);
         $(document).off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
-        $(window).off('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
     };
 
     Sidebar.prototype.toggle = function (event) {
@@ -169,17 +190,17 @@
         }
 
         if (this.isOpen()) {
-            if (this.isLocked()) {
+            if (this.isFullyOpened()) {
                 this.forceClose();
 
-            } else if ($(window).innerWidth() >= this.options.minLockWidth && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
+            } else if (isOverMinWidth.apply(this) && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
                 this.forceOpen();
 
             } else {
                 this.close();
             }
 
-        } else if ($(window).innerWidth() >= this.options.minLockWidth && 'always' == this.options.forceToggle) {
+        } else if (isOverMinWidth.apply(this) && 'always' == this.options.forceToggle) {
             this.forceOpen();
 
         } else {
@@ -194,7 +215,7 @@
         }
 
         $(document).off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
-        $(window).off('resize.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
+        $(window).off('resize.st.sidebar' + this.guid, $.proxy(onResizeWindow, this));
         this.$toggle.off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
         $(window).off( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
         this.destroySwipe();
@@ -264,10 +285,10 @@
                 this.forceClose();
 
             } else if ('right' == event.gesture.direction) {
-                if (this.isOpen() && $(window).innerWidth() >= this.options.minLockWidth && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
+                if (this.isOpen() && isOverMinWidth.apply(this) && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
                     this.forceOpen();
 
-                } else if ($(window).innerWidth() >= this.options.minLockWidth && 'always' == this.options.forceToggle) {
+                } else if (isOverMinWidth.apply(this) && 'always' == this.options.forceToggle) {
                     this.forceOpen();
 
                 } else {
@@ -278,7 +299,7 @@
             return;
 
             if (this.isOpen()) {
-                if ($(window).innerWidth() >= this.options.minLockWidth && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
+                if (isOverMinWidth.apply(this) && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
                     this.forceOpen();
 
                 } else {
@@ -286,7 +307,7 @@
                 }
 
             } else {
-                if ($(window).innerWidth() >= this.options.minLockWidth && 'always' == this.options.forceToggle) {
+                if (isOverMinWidth.apply(this) && 'always' == this.options.forceToggle) {
                     this.forceOpen();
 
                 } else {
@@ -321,6 +342,50 @@
         }
 
         return transform.e;
+    }
+
+    function onResizeWindow (event) {
+        if (isOverMinWidth.apply(this) && this.isLocked()) {
+            this.forceOpen();
+
+            return;
+        }
+
+        this.closeExternal(event);
+    }
+
+    function isOverMinWidth (event) {
+        var $window = $(window);
+        var windowWidth = $window.innerWidth();
+
+        if ($('body').height() > $window.innerHeight()) {
+            if (null == this.scrollbarWidth) {
+                var widthNoScroll = 100;
+                var inner = document.createElement('div');
+                var outer = document.createElement('div');
+                    outer.style.visibility = 'hidden';
+                    outer.style.width = '100px';
+
+                document.body.appendChild(outer);
+
+                widthNoScroll = outer.offsetWidth;
+                outer.style.overflow = 'scroll';
+                inner.style.width = '100%';
+                outer.appendChild(inner);
+
+                this.scrollbarWidth = widthNoScroll - inner.offsetWidth;
+
+                outer.parentNode.removeChild(outer);
+            }
+
+            windowWidth += this.scrollbarWidth;
+        }
+
+        if (windowWidth >= this.options.minLockWidth) {
+            return true;
+        }
+
+        return false;
     }
 
     Sidebar.prototype.cleanSwipe = function () {

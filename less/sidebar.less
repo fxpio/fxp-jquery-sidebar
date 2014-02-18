@@ -322,6 +322,10 @@
 }
 
 @media (min-width: @screen-md-min) {
+    .sidebar-trigger.sidebar-locked .sidebar-toggle {
+        display: none;
+    }
+
     .sidebar-wrapper.sidebar-open-init {
         -webkit-transform: translate3d(0px, 0px, 0px);
         transform: translate3d(0px, 0px, 0px);
