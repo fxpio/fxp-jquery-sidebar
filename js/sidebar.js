@@ -57,6 +57,9 @@
         if (this.$wrapper.hasClass(this.options.classOpen + '-init')) {
             if (isOverMinWidth.apply(this)) {
                 this.$wrapper.addClass(this.options.classOpen);
+
+            } else {
+                this.$wrapper.removeClass(this.options.classOpen);
             }
 
             this.$wrapper.removeClass(this.options.classOpen + '-init');
