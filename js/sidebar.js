@@ -45,9 +45,17 @@
             this.$wrapper.addClass(this.options.classOpen + '-init');
         }
 
-        if(!this.mobileCheck() && this.options.openOnHover) {
+        if(!this.mobileCheck() && this.options.openOnHover && null == this.options.toggleId) {
             this.$element.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
             this.$element.on('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.close, this));
+        }
+
+        if (null != this.options.toggleId) {
+            this.$toggle.remove();
+            this.$toggle = $('#' + this.options.toggleId);
+
+        } else {
+            this.$element.addClass('sidebar-togglable');
         }
 
         this.$toggle.on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
@@ -89,6 +97,7 @@
         locked:           false,
         position:         'left',//left, right
         minLockWidth:     992,
+        toggleId:         null,
         disabledKeyboard: false,
         keyboardEvent:    {
             ctrlKey:          true,

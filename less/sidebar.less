@@ -12,6 +12,7 @@
 
 .sidebar-toggle {
     position: absolute;
+    display: none;
     top: 0;
     left: 0;
     height: @navbar-height + 1;
@@ -39,6 +40,12 @@
 
     + .navbar-brand > img {
         margin-left: 10px;
+    }
+}
+
+.sidebar-togglable {
+    .sidebar-toggle {
+        display: block;
     }
 }
 
