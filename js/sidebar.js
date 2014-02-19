@@ -50,7 +50,7 @@
             this.$element.on('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.close, this));
         }
 
-        if (null != this.options.toggleId) {
+        if (null != this.options.toggleId && 1 == $('#' + this.options.toggleId).size()) {
             this.$toggle.remove();
             this.$toggle = $('#' + this.options.toggleId);
 
