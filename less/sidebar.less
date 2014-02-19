@@ -103,6 +103,15 @@
         text-decoration: none;
     }
 
+    .sidebar-item.sidebar-item-mini {
+        font-size: 0.7em;
+
+        > a {
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
+    }
+
     .sidebar-group {
         padding-top: 20px;
 
@@ -231,19 +240,25 @@
             }
         }
 
-        .sidebar-item > a {
-            color: @sidebar-default-link-color;
-            background-color: @sidebar-default-link-bg;
+        .sidebar-item {
+            > a {
+                color: @sidebar-default-link-color;
+                background-color: @sidebar-default-link-bg;
 
-            &:hover,
-            &:focus {
-                color: @sidebar-default-link-hover-color;
-                background-color: @sidebar-default-link-hover-bg;
+                &:hover,
+                &:focus {
+                    color: @sidebar-default-link-hover-color;
+                    background-color: @sidebar-default-link-hover-bg;
+                }
+
+                &.active {
+                    color: @sidebar-default-link-active-color;
+                    background-color: @sidebar-default-link-active-bg;
+                }
             }
 
-            &.active {
-                color: @sidebar-default-link-active-color;
-                background-color: @sidebar-default-link-active-bg;
+            &.sidebar-item-mini > a {
+                color: @sidebar-default-link-mini-color;
             }
         }
     }
@@ -272,19 +287,25 @@
             }
         }
 
-        .sidebar-item > a {
-            color: @sidebar-inverse-link-color;
-            background-color: @sidebar-inverse-link-bg;
+        .sidebar-item {
+            > a {
+                color: @sidebar-inverse-link-color;
+                background-color: @sidebar-inverse-link-bg;
 
-            &:hover,
-            &:focus {
-                color: @sidebar-inverse-link-hover-color;
-                background-color: @sidebar-inverse-link-hover-bg;
+                &:hover,
+                &:focus {
+                    color: @sidebar-inverse-link-hover-color;
+                    background-color: @sidebar-inverse-link-hover-bg;
+                }
+
+                &.active {
+                    color: @sidebar-inverse-link-active-color;
+                    background-color: @sidebar-inverse-link-active-bg;
+                }
             }
 
-            &.active {
-                color: @sidebar-inverse-link-active-color;
-                background-color: @sidebar-inverse-link-active-bg;
+            &.sidebar-item-mini > a {
+                color: @sidebar-inverse-link-mini-color;
             }
         }
     }
