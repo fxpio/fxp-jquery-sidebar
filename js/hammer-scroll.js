@@ -191,7 +191,10 @@
         this.contentPosition -= delta;
         this.contentPosition = Math.max(this.contentPosition, 0);
 
-        if ((contentHeight - this.contentPosition) < wrapperHeight) {
+        if (this.$content.outerHeight() <= this.$element.innerHeight()) {
+            this.contentPosition = 0;
+
+        } else if ((contentHeight - this.contentPosition) < wrapperHeight) {
             this.contentPosition = contentHeight - wrapperHeight;
         }
 
