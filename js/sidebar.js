@@ -77,6 +77,10 @@
             $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
         }
 
+        if (this.options.sidebarStickyHeader && $.fn.stickyheader && !$.fn.hammerScroll) {
+            this.stickyHeader = $('.sidebar-scroller', this.$wrapper).stickyheader().data('st.stickyheader');
+        }
+
         this.initSwipe();
 
         this.$element.css('-webkit-transition', '');
@@ -86,24 +90,25 @@
     };
 
     Sidebar.DEFAULTS = {
-        classToggle:      'sidebar-toggle',
-        classWrapper:     'sidebar-wrapper',
-        classOpen:        'sidebar-open',
-        classLocked:      'sidebar-locked',
-        classForceOpen:   'sidebar-force-open',
-        classOnDragging:  'sidebar-dragging',
-        openOnHover:      false,
-        forceToggle:      false,//false, true, 'always'
-        locked:           false,
-        position:         'left',//left, right
-        minLockWidth:     992,
-        toggleId:         null,
-        disabledKeyboard: false,
-        keyboardEvent:    {
-            ctrlKey:          true,
-            shiftKey:         false,
-            altKey:           true,
-            keyCode:          'S'.charCodeAt(0)
+        classToggle:          'sidebar-toggle',
+        classWrapper:         'sidebar-wrapper',
+        classOpen:            'sidebar-open',
+        classLocked:          'sidebar-locked',
+        classForceOpen:       'sidebar-force-open',
+        classOnDragging:      'sidebar-dragging',
+        openOnHover:          false,
+        forceToggle:          false,//false, true, 'always'
+        locked:               false,
+        position:             'left',//left, right
+        minLockWidth:         992,
+        toggleId:             null,
+        sidebarSstickyheader: true,
+        disabledKeyboard:     false,
+        keyboardEvent:        {
+            ctrlKey:              true,
+            shiftKey:             false,
+            altKey:               true,
+            keyCode:              'S'.charCodeAt(0)
         }
     };
 
@@ -253,6 +258,10 @@
         this.$toggle.off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
         $(window).off( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
         this.destroySwipe();
+
+        if (undefined != this.stickyHeader) {
+            this.stickyHeader.destroy();
+        }
     };
 
     Sidebar.prototype.initSwipe = function () {
@@ -263,7 +272,8 @@
         if ($.fn.hammerScroll) {
             this.hammerScroll = $('.sidebar-scroller', this.$wrapper).hammerScroll({
                 contentWrapperClass: 'sidebar-scroller-content',
-                eventDelegated: true
+                eventDelegated: true,
+                hammerStickyHeader: this.options.sidebarStickyHeader
             }).data('st.hammerscroll');
         }
 
@@ -280,7 +290,7 @@
             hold: false,
             swipe: false,
             drag_block_horizontal: true,
-            drag_block_vertical: true,
+            drag_block_vertical: $.fn.hammerScroll,
             drag_lock_to_axis: false,
             drag_min_distance: 3
         })
