@@ -51,7 +51,8 @@
         contentWrapperClass: 'hammer-scroll-content',
         maxBounce:           100,
         eventDelegated:      false,
-        hammerStickyHeader:  false
+        hammerStickyHeader:  false,
+        inertiaVelocity:     0.4
     };
 
     /**
@@ -113,6 +114,10 @@
             var maxScroll = height - wrapperHeight;
             var vertical = -Math.round(event.gesture.deltaY + this.dragStartPosition);
 
+            // inertia
+            var inertia = -event.gesture.deltaY * event.gesture.velocityY * (1 + this.options.inertiaVelocity);
+            vertical = Math.round(vertical + inertia);
+
             // top bounce
             if (vertical < 0) {
                 vertical = 0;
@@ -128,6 +133,7 @@
                 vertical = 0;
             }
 
+            this.$content.on('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
             this.$content.css('-webkit-transform', 'translate3d(0px, ' + -vertical +'px, 0px)');
             this.$content.css('transform', 'translate3d(0px, ' + -vertical +'px, 0px)');
         }
@@ -148,6 +154,14 @@
             this.stickyHeader.destroy();
         }
     };
+
+    function dragTransitionEnd () {
+        this.$content.off('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
+
+        if (undefined != this.stickyHeader) {
+            this.stickyHeader.checkPosition();
+        }
+    }
 
     function wrapContent () {
         var $content = $([
