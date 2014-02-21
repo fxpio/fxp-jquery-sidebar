@@ -31,7 +31,7 @@
             var $group = $(element);
             var top = $group.position()['top'];
 
-            if (top > 0) {
+            if (top >= 0) {
                 this.$element.parent().find('> [data-sticky-index="' + index + '"]').remove();
                 $group.removeAttr('data-sticky-ref');
 
