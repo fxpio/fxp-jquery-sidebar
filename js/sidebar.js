@@ -158,6 +158,7 @@
 
         this.$element.addClass(this.options.classForceOpen);
         this.open();
+        this.$toggle.removeClass(this.options.classToggle + '-opened');
     };
 
     Sidebar.prototype.forceClose = function () {
@@ -194,6 +195,7 @@
 
         $('[data-sidebar=true]').sidebar('forceClose');
         this.$wrapper.addClass(this.options.classOpen);
+        this.$toggle.addClass(this.options.classToggle + '-opened');
         $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
     };
 
@@ -203,6 +205,7 @@
         }
 
         this.$wrapper.removeClass(this.options.classOpen);
+        this.$toggle.removeClass(this.options.classToggle + '-opened');
         $(document).off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
     };
 
