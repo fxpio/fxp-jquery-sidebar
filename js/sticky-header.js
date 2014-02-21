@@ -27,7 +27,7 @@
     };
 
     StickyHeader.prototype.checkPosition = function () {
-        this.$element.find('> ul > li > span').each($.proxy(function(index, element) {
+        this.$element.find('> ul > li > span, div > ul > li > span').each($.proxy(function(index, element) {
             var $group = $(element);
             var top = $group.position()['top'];
 
