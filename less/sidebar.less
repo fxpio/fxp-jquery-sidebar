@@ -56,6 +56,9 @@
     bottom: 0;
     width: @sidebar-wrapper-width;
     cursor: default;
+    -moz-user-select: -moz-none;
+    user-select: none;
+    -ms-touch-action: none;
 
     -webkit-transform: translate3d(-@sidebar-wrapper-width, 0px, 0px);
     transform: translate3d(-@sidebar-wrapper-width, 0px, 0px);
@@ -75,6 +78,11 @@
         left: 0;
         right: -18px;
         height: 100%;
+
+        .sidebar-scroller-content {
+            -webkit-transition: -webkit-transform 0.2s;
+            transition: transform 0.2s;
+        }
     }
 
     .sidebar-menu {

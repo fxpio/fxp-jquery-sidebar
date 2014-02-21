@@ -257,6 +257,13 @@
             return;
         }
 
+        if ($.fn.hammerScroll) {
+            this.hammerScroll = $('.sidebar-scroller', this.$wrapper).hammerScroll({
+                contentWrapperClass: 'sidebar-scroller-content',
+                eventDelegated: true
+            }).data('st.hammerscroll');
+        }
+
         this.$swipe = $('<div id="sidebar-swipe' + this.guid + '" class="sidebar-swipe"></div>').appendTo(this.$element);
         this.$swipe.on('mouseover', function (event) {
             event.stopPropagation();
@@ -270,29 +277,26 @@
             hold: false,
             swipe: false,
             drag_block_horizontal: true,
-            drag_lock_to_axis: true,
+            drag_block_vertical: true,
+            drag_lock_to_axis: false,
             drag_min_distance: 3
         })
 
-        .on('dragstart', $.proxy(function (event) {
-            this.dragStartPosition = getWrapperPosition(this.$wrapper);
-        }, this))
-
         .on('drag', $.proxy(function (event) {
-            event.stopPropagation();
-            event.preventDefault();
+            if (undefined != this.hammerScroll) {
+                this.hammerScroll.onDrag(event);
+            }
+
+            if ('left' != event.gesture.direction && 'right' != event.gesture.direction) {
+                return;
+            }
+
+            if (undefined == this.dragStartPosition) {
+                this.dragStartPosition = getWrapperPosition(this.$wrapper);
+            }
 
             var width = this.$wrapper.outerWidth();
-            var horizontal = 0;
-
-            switch (event.gesture.direction) {
-                case 'left':
-                case 'right':
-                    horizontal = Math.round(this.dragStartPosition + event.gesture.deltaX);
-                    break;
-                default:
-                    return;
-            }
+            var horizontal = Math.round(this.dragStartPosition + event.gesture.deltaX);
 
             if (('left' == this.getPosition() && horizontal > 0) || ('right' == this.getPosition() && horizontal < 0)) {
                 horizontal = 0;
@@ -306,6 +310,10 @@
         }, this))
 
         .on('dragend', $.proxy(function (event) {
+            if (undefined != this.hammerScroll) {
+                this.hammerScroll.onDragEnd(event);
+            }
+
             this.cleanSwipe();
 
             if (Math.abs(event.gesture.deltaX) <= (this.$wrapper.innerWidth() / 4)) {
