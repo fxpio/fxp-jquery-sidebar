@@ -287,7 +287,8 @@
                 this.hammerScroll.onDrag(event);
             }
 
-            if ('left' != event.gesture.direction && 'right' != event.gesture.direction) {
+            if (('left' != event.gesture.direction && 'right' != event.gesture.direction)
+                    || (this.options.locked && isOverMinWidth.apply(this))) {
                 return;
             }
 
