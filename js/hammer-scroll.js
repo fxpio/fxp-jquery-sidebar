@@ -117,7 +117,6 @@
 
         delete this.dragStartPosition;
         delete this.dragBottomPosition;
-        this.$content.removeClass('hammer-scroll-content-on-drag');
     };
 
     HammerScroll.prototype.destroy = function () {
