@@ -223,6 +223,8 @@
 @zindex-sidebar-wrapper:       @zindex-navbar - 1;
 @zindex-sidebar-toggle-fixed:  @zindex-navbar-fixed + 1;
 @zindex-sidebar-wrapper-fixed: @zindex-navbar-fixed - 1;
+@zindex-datetime-picker:       @zindex-navbar;
+@zindex-hammer-scrollbar:      1000;
 
 // Media queries breakpoints
 // --------------------------------------------------
@@ -414,6 +416,7 @@
 @sidebar-default-link-hover-bg:      @gray-lighter;
 @sidebar-default-link-active-color:  @brand-primary;
 @sidebar-default-link-active-bg:     @sidebar-default-link-bg;
+@sidebar-default-scrollbar-bg:       #000;
 
 @sidebar-toggle-inverse-color:       @navbar-inverse-toggle-icon-bar-bg;
 @sidebar-toggle-inverse-hover-color: @navbar-inverse-link-hover-color;
@@ -428,6 +431,7 @@
 @sidebar-inverse-link-hover-bg:      lighten(@sidebar-inverse-link-bg, 5%);
 @sidebar-inverse-link-active-color:  lighten(@brand-primary, 46%);
 @sidebar-inverse-link-active-bg:     @sidebar-inverse-link-bg;
+@sidebar-inverse-scrollbar-bg:       #fff;
 
 
 // Pagination
@@ -672,6 +676,7 @@
 //@badge-border-radius:         10px;
 
 
+<<<<<<< HEAD
 // Breadcrumbs
 // -------------------------
 //@breadcrumb-padding-vertical:   8px;
@@ -680,6 +685,16 @@
 //@breadcrumb-color:              #ccc;
 //@breadcrumb-active-color:       @gray-light;
 //@breadcrumb-separator:          "/";
+=======
+// Hammer Scroll
+// --------------------------------------------------
+
+@hammer-scrollbar-bg: #000;
+@hammer-scrollbar-opacity: 0.32;
+@hammer-scrollbar-width: 3px;
+@hammer-scrollbar-radius: 2px;
+@hammer-scrollbar-margin: 2px;
+>>>>>>> 3fe384f... Adds scrollbar on hammer scroll
 
 
 // Carousel

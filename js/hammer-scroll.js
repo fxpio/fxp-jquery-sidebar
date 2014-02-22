@@ -14,6 +14,7 @@
     // ==============================
 
     var HammerScroll = function (element, options) {
+        this.guid     = jQuery.guid;
         this.options  = $.extend({}, HammerScroll.DEFAULTS, options);
         this.$element = $(element);
 
@@ -21,13 +22,22 @@
             this.stickyHeader = this.$element.stickyheader().data('st.stickyheader');
         }
 
+        this.$element.css('overflow-y', 'hidden');
         this.$content = wrapContent.apply(this);
 
         if (null != this.$element.css('right')) {
             this.$element.css('right', 0);
         }
 
-        this.$element.css('overflow-y', 'hidden');
+        $(window).on('resize.st.hammerscroll' + this.guid, $.proxy(this.resizeScroll, this));
+
+        if (this.options.scrollbar) {
+            this.$scrollbar = generateScrollbar.apply(this);
+            this.resizeScrollbar();
+
+            $(window).on('resize.st.hammerscroll-bar' + this.guid, $.proxy(this.resizeScrollbar, this));
+        }
+
         this.$element.on('DOMMouseScroll mousewheel', $.proxy(onMouseScroll, this));
 
         if (!this.options.eventDelegated) {
@@ -54,7 +64,9 @@
         hammerStickyHeader:  false,
         inertiaVelocity:     0.7,
         inertiaDuration:     0.2,
-        inertiaFunction:     'ease'
+        inertiaFunction:     'ease',
+        scrollbar:           true,
+        scrollbarInverse:    false
     };
 
     /**
@@ -68,6 +80,7 @@
 
             $.proxy(changeTransition, this)(this.$content, 'none');
             $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -vertical + 'px, 0px)');
+            $.proxy(refreshScrollbarPosition, this)(false, -vertical);
 
             if (undefined != this.stickyHeader) {
                 this.stickyHeader.checkPosition();
@@ -88,6 +101,7 @@
 
             this.$content.on('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
             $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -vertical + 'px, 0px)');
+            $.proxy(refreshScrollbarPosition, this)(true, -vertical);
         }
 
         delete this.dragStartPosition;
@@ -97,6 +111,8 @@
         this.$content = unwrapContent.apply(this);
         this.$element.css('overflow-y', '');
         this.$element.off('DOMMouseScroll mousewheel', $.proxy(onMouseScroll, this));
+        $(window).off('resize.st.hammerscroll' + this.guid, $.proxy(this.resizeScroll, this));
+        $(window).off('resize.st.hammerscroll-bar' + this.guid, $.proxy(this.resizeScrollbar, this));
 
         if (!this.options.eventDelegated) {
             this.hammer.dispose();
@@ -107,8 +123,43 @@
         }
     };
 
+    HammerScroll.prototype.resizeScroll = function () {
+        var position = this.$content.position()['top'];
+
+        if (position >= 0) {
+            $.proxy(changeTransition, this)(this.$content, 'none');
+            $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, 0px, 0px)');
+
+            return;
+        }
+
+        var bottomPosition = position + this.$content.outerHeight();
+        var maxBottom = this.$element.innerHeight();
+
+        if (bottomPosition < maxBottom) {
+            position += maxBottom - bottomPosition;
+
+            $.proxy(changeTransition, this)(this.$content, 'none');
+            $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + position + 'px, 0px)');
+        }
+    };
+
+    HammerScroll.prototype.resizeScrollbar = function () {
+        if (undefined == this.$scrollbar) {
+            return;
+        }
+
+        var wrapperHeight = this.$element.innerHeight();
+        var contentHeight = this.$content.outerHeight();
+        var height = Math.round(wrapperHeight * Math.min(wrapperHeight / contentHeight, 1));
+
+        this.$scrollbar.height(height);
+        $.proxy(refreshScrollbarPosition, this)(false, this.$content.position()['top']);
+    };
+
     function dragTransitionEnd () {
         this.$content.off('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
+        $.proxy(refreshScrollbarPosition, this)(true, this.$content.position()['top']);
 
         if (undefined != this.stickyHeader) {
             this.stickyHeader.checkPosition();
@@ -179,7 +230,32 @@
         return null;
     }
 
+    function generateScrollbar () {
+        var $scrollbar = $('<div class="hammer-scrollbar"></div>');
+
+        if (this.options.scrollbarInverse) {
+            $scrollbar.addClass('hammer-scroll-inverse');
+        }
+
+        this.$element.prepend($scrollbar);
+
+        return $scrollbar;
+    }
+
+    function refreshScrollbarPosition (usedTransition, position) {
+        if (undefined == this.$scrollbar) {
+            return;
+        }
+
+        var percentScroll = -position / (this.$content.outerHeight() - this.$element.innerHeight());
+        var delta = Math.round(percentScroll * (this.$element.innerHeight() - this.$scrollbar.outerHeight()));
+
+        $.proxy(changeTransition, this)(this.$scrollbar, usedTransition ? undefined : 'none');
+        $.proxy(changeTransform, this)(this.$scrollbar, 'translate3d(0px, ' + delta + 'px, 0px)');
+    }
+
     function onMouseScroll (event) {
+        var position = -this.$content.position()['top'];
         var wrapperHeight = this.$element.innerHeight();
         var contentHeight = this.$content.outerHeight();
         var delta = (event.originalEvent.type == 'DOMMouseScroll' ?
@@ -189,22 +265,19 @@
         event.stopPropagation();
         event.preventDefault();
 
-        if (undefined == this.contentPosition) {
-            this.contentPosition = getPosition(this.$content);
-        }
-
-        this.contentPosition -= delta;
-        this.contentPosition = Math.max(this.contentPosition, 0);
+        position -= delta;
+        position = Math.max(position, 0);
 
         if (this.$content.outerHeight() <= this.$element.innerHeight()) {
-            this.contentPosition = 0;
+            position = 0;
 
-        } else if ((contentHeight - this.contentPosition) < wrapperHeight) {
-            this.contentPosition = contentHeight - wrapperHeight;
+        } else if ((contentHeight - position) < wrapperHeight) {
+            position = contentHeight - wrapperHeight;
         }
 
         $.proxy(changeTransition, this)(this.$content, 'none');
-        $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -this.contentPosition + 'px, 0px)');
+        $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -position + 'px, 0px)');
+        $.proxy(refreshScrollbarPosition, this)(false, -position);
 
         if (undefined != this.stickyHeader) {
             this.stickyHeader.checkPosition();

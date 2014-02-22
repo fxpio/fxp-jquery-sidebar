@@ -90,25 +90,26 @@
     };
 
     Sidebar.DEFAULTS = {
-        classToggle:          'sidebar-toggle',
-        classWrapper:         'sidebar-wrapper',
-        classOpen:            'sidebar-open',
-        classLocked:          'sidebar-locked',
-        classForceOpen:       'sidebar-force-open',
-        classOnDragging:      'sidebar-dragging',
-        openOnHover:          false,
-        forceToggle:          false,//false, true, 'always'
-        locked:               false,
-        position:             'left',//left, right
-        minLockWidth:         992,
-        toggleId:             null,
-        sidebarSstickyheader: true,
-        disabledKeyboard:     false,
-        keyboardEvent:        {
-            ctrlKey:              true,
-            shiftKey:             false,
-            altKey:               true,
-            keyCode:              'S'.charCodeAt(0)
+        classToggle:         'sidebar-toggle',
+        classWrapper:        'sidebar-wrapper',
+        classOpen:           'sidebar-open',
+        classLocked:         'sidebar-locked',
+        classForceOpen:      'sidebar-force-open',
+        classOnDragging:     'sidebar-dragging',
+        openOnHover:         false,
+        forceToggle:         false,//false, true, 'always'
+        locked:              false,
+        position:            'left',//left, right
+        minLockWidth:        992,
+        toggleId:            null,
+        sidebarStickyHeader: false,
+        hammerScrollbar:     true,
+        disabledKeyboard:    false,
+        keyboardEvent:       {
+            ctrlKey:             true,
+            shiftKey:            false,
+            altKey:              true,
+            keyCode:             'S'.charCodeAt(0)
         }
     };
 
@@ -272,8 +273,10 @@
         if ($.fn.hammerScroll) {
             this.hammerScroll = $('.sidebar-scroller', this.$wrapper).hammerScroll({
                 contentWrapperClass: 'sidebar-scroller-content',
-                eventDelegated: true,
-                hammerStickyHeader: this.options.sidebarStickyHeader
+                eventDelegated:      true,
+                hammerStickyHeader:  this.options.sidebarStickyHeader,
+                scrollbar:           this.options.hammerScrollbar,
+                scrollbarInverse:    'right' == this.options.position
             }).data('st.hammerscroll');
         }
 

@@ -1,0 +1,24 @@
+//
+// Hammer Scroll
+// --------------------------------------------------
+
+// Scrollbar
+// --------------------------------------------------
+
+.hammer-scrollbar {
+    display: block;
+    position: absolute;
+    width: @hammer-scrollbar-width;
+    height: 100%;
+    background-color: @hammer-scrollbar-bg;
+    right: @hammer-scrollbar-margin;
+    opacity: @hammer-scrollbar-opacity;
+    z-index: @zindex-hammer-scrollbar;
+    .border-top-radius(@hammer-scrollbar-radius);
+    .border-bottom-radius(@hammer-scrollbar-radius);
+
+    &.hammer-scroll-inverse {
+        left: @hammer-scrollbar-margin;
+        right: inherit;
+    }
+}
