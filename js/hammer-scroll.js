@@ -52,7 +52,9 @@
         maxBounce:           100,
         eventDelegated:      false,
         hammerStickyHeader:  false,
-        inertiaVelocity:     0.4
+        inertiaVelocity:     0.7,
+        inertiaDuration:     0.2,
+        inertiaFunction:     'ease'
     };
 
     /**
@@ -61,37 +63,11 @@
      * @param Event event The hammer event
      */
     HammerScroll.prototype.onDrag = function (event) {
-        if (undefined == this.dragStartPosition) {
-            this.dragStartPosition = getPosition(this.$content);
-        }
-
         if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
-            var wrapperHeight = this.$element.innerHeight();
-            var height = this.$content.outerHeight();
-            var maxScroll = height - wrapperHeight + this.options.maxBounce;
-            var vertical = -Math.round(event.gesture.deltaY + this.dragStartPosition);
+            var vertical = $.proxy(limitVerticalValue, this)(event, this.options.maxBounce);
 
-            // top bounce
-            if (vertical < -this.options.maxBounce) {
-                vertical = -this.options.maxBounce;
-
-            // bottom bounce with scroll
-            } else if (height > wrapperHeight) {
-                if (vertical > maxScroll) {
-                    vertical = maxScroll;
-                }
-
-            // bottom bounce without scroll
-            } else {
-                if (vertical > this.options.maxBounce) {
-                    vertical = this.options.maxBounce;
-                }
-            }
-
-            this.$content.css('-webkit-transition', 'none');
-            this.$content.css('transition', 'none');
-            this.$content.css('-webkit-transform', 'translate3d(0px, ' + -vertical +'px, 0px)');
-            this.$content.css('transform', 'translate3d(0px, ' + -vertical +'px, 0px)');
+            $.proxy(changeTransition, this)(this.$content, 'none');
+            $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -vertical + 'px, 0px)');
 
             if (undefined != this.stickyHeader) {
                 this.stickyHeader.checkPosition();
@@ -105,37 +81,13 @@
      * @param Event event The hammer event
      */
     HammerScroll.prototype.onDragEnd = function (event) {
-        this.$content.css('-webkit-transition', '');
-        this.$content.css('transition', '');
+        $.proxy(changeTransition, this)(this.$content);
 
         if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
-            var wrapperHeight = this.$element.innerHeight();
-            var height = this.$content.outerHeight();
-            var maxScroll = height - wrapperHeight;
-            var vertical = -Math.round(event.gesture.deltaY + this.dragStartPosition);
-
-            // inertia
-            var inertia = -event.gesture.deltaY * event.gesture.velocityY * (1 + this.options.inertiaVelocity);
-            vertical = Math.round(vertical + inertia);
-
-            // top bounce
-            if (vertical < 0) {
-                vertical = 0;
-
-            // bottom bounce with scroll
-            } else if (height > wrapperHeight) {
-                if (vertical > maxScroll) {
-                    vertical = maxScroll;
-                }
-
-            // bottom bounce without scroll
-            } else {
-                vertical = 0;
-            }
+            var vertical = $.proxy(limitVerticalValue, this)(event, 0, true);
 
             this.$content.on('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
-            this.$content.css('-webkit-transform', 'translate3d(0px, ' + -vertical +'px, 0px)');
-            this.$content.css('transform', 'translate3d(0px, ' + -vertical +'px, 0px)');
+            $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -vertical + 'px, 0px)');
         }
 
         delete this.dragStartPosition;
@@ -161,6 +113,45 @@
         if (undefined != this.stickyHeader) {
             this.stickyHeader.checkPosition();
         }
+    }
+
+    function limitVerticalValue (event, maxBounce, inertia) {
+        if (undefined == this.dragStartPosition) {
+            this.dragStartPosition = getPosition(this.$content);
+        }
+
+        var wrapperHeight = this.$element.innerHeight();
+        var height = this.$content.outerHeight();
+        var maxScroll = height - wrapperHeight + maxBounce;
+        var vertical = -Math.round(event.gesture.deltaY + this.dragStartPosition);
+
+        // inertia
+        if (inertia) {
+            var inertiaVal = -event.gesture.deltaY * event.gesture.velocityY * (1 + this.options.inertiaVelocity);
+            vertical = Math.round(vertical + inertiaVal);
+        }
+
+        // top bounce
+        if (vertical < -maxBounce) {
+            vertical = -maxBounce;
+
+        // bottom bounce with scroll
+        } else if (height > wrapperHeight) {
+            if (vertical > maxScroll) {
+                vertical = maxScroll;
+            }
+
+        // bottom bounce without scroll
+        } else {
+            if (0 == maxBounce) {
+                vertical = 0;
+
+            } else if (vertical > maxBounce) {
+                vertical = maxBounce;
+            }
+        }
+
+        return vertical;
     }
 
     function wrapContent () {
@@ -212,10 +203,8 @@
             this.contentPosition = contentHeight - wrapperHeight;
         }
 
-        this.$content.css('-webkit-transition', 'none');
-        this.$content.css('transition', 'none');
-        this.$content.css('-webkit-transform', 'translate3d(0px, ' + -this.contentPosition + 'px, 0px)');
-        this.$content.css('transform', 'translate3d(0px, ' + -this.contentPosition + 'px, 0px)');
+        $.proxy(changeTransition, this)(this.$content, 'none');
+        $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -this.contentPosition + 'px, 0px)');
 
         if (undefined != this.stickyHeader) {
             this.stickyHeader.checkPosition();
@@ -248,6 +237,29 @@
         }
 
         return transform.f;
+    }
+
+    function changeTransition ($target, transition) {
+        if (undefined == transition) {
+            transition = 'transform ' + this.options.inertiaDuration + 's';
+
+            if (null != this.options.inertiaFunction) {
+                transition += ' ' + this.options.inertiaFunction;
+            }
+        }
+
+        if ('' == transition) {
+            $target.css('-webkit-transition', transition);
+            $target.css('transition', transition);
+        }
+
+        $target.get(0).style['-webkit-transition'] = 'none' == transition ? transition : '-webkit-' + transition;
+        $target.get(0).style['transition'] = transition;
+    }
+
+    function changeTransform ($target, transform) {
+        $target.css('-webkit-transform', transform);
+        $target.css('transform', transform);
     }
 
 
