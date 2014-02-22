@@ -153,6 +153,13 @@
         var contentHeight = this.$content.outerHeight();
         var height = Math.round(wrapperHeight * Math.min(wrapperHeight / contentHeight, 1));
 
+        if (height < wrapperHeight) {
+            this.$scrollbar.addClass('hammer-scroll-active');
+
+        } else {
+            this.$scrollbar.removeClass('hammer-scroll-active');
+        }
+
         this.$scrollbar.height(height);
         $.proxy(refreshScrollbarPosition, this)(false, this.$content.position()['top']);
     };

@@ -6,7 +6,7 @@
 // --------------------------------------------------
 
 .hammer-scrollbar {
-    display: block;
+    display: none;
     position: absolute;
     width: @hammer-scrollbar-width;
     height: 100%;
@@ -16,6 +16,10 @@
     z-index: @zindex-hammer-scrollbar;
     .border-top-radius(@hammer-scrollbar-radius);
     .border-bottom-radius(@hammer-scrollbar-radius);
+
+    &.hammer-scroll-active {
+        display: block;
+    }
 
     &.hammer-scroll-inverse {
         left: @hammer-scrollbar-margin;
