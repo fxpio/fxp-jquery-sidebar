@@ -295,88 +295,91 @@
             drag_min_distance: 3
         })
 
-        .on('drag', $.proxy(function (event) {
-            if (undefined != this.hammerScroll) {
-                this.hammerScroll.onDrag(event);
-            }
+        .on('drag', $.proxy(onDrag, this))
+        .on('dragend', $.proxy(onDragEnd, this));
+    };
 
-            if (('left' != event.gesture.direction && 'right' != event.gesture.direction)
-                    || (this.options.locked && isOverMinWidth.apply(this))) {
-                return;
-            }
+    function onDrag (event) {
+        if (undefined != this.hammerScroll) {
+            this.hammerScroll.onDrag(event);
+        }
 
-            if (undefined == this.dragStartPosition) {
-                this.dragStartPosition = getWrapperPosition(this.$wrapper);
-            }
-
-            var width = this.$wrapper.outerWidth();
-            var horizontal = Math.round(this.dragStartPosition + event.gesture.deltaX);
-
-            if (('left' == this.getPosition() && horizontal > 0) || ('right' == this.getPosition() && horizontal < 0)) {
-                horizontal = 0;
-            }
-
-            this.$wrapper.addClass(this.options.classOnDragging);
-            this.$wrapper.css('-webkit-transition', 'none');
-            this.$wrapper.css('transition', 'none');
-            this.$wrapper.css('-webkit-transform', 'translate3d(' + horizontal +'px, 0px, 0px)');
-            this.$wrapper.css('transform', 'translate3d(' + horizontal +'px, 0px, 0px)');
-        }, this))
-
-        .on('dragend', $.proxy(function (event) {
-            if (undefined != this.hammerScroll) {
-                this.hammerScroll.onDragEnd(event);
-            }
-
-            this.cleanSwipe();
-
-            if (Math.abs(event.gesture.deltaX) <= (this.$wrapper.innerWidth() / 4)) {
-                return;
-            }
-
-            var closeGesture = 'left';
-            var openGesture = 'right';
-
-            if ('right' == this.getPosition()) {
-                closeGesture = 'right';
-                openGesture = 'left';
-            }
-
-            if (this.isOpen() && closeGesture == event.gesture.direction) {
-                this.forceClose();
-
-            } else if (openGesture == event.gesture.direction) {
-                if (this.isOpen() && isOverMinWidth.apply(this) && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
-                    this.forceOpen();
-
-                } else if (isOverMinWidth.apply(this) && 'always' == this.options.forceToggle) {
-                    this.forceOpen();
-
-                } else {
-                    this.open();
-                }
-            }
-
+        if (('left' != event.gesture.direction && 'right' != event.gesture.direction)
+                || (this.options.locked && isOverMinWidth.apply(this))) {
             return;
+        }
 
-            if (this.isOpen()) {
-                if (isOverMinWidth.apply(this) && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
-                    this.forceOpen();
+        if (undefined == this.dragStartPosition) {
+            this.dragStartPosition = getWrapperPosition(this.$wrapper);
+        }
 
-                } else {
-                    this.forceClose();
-                }
+        var width = this.$wrapper.outerWidth();
+        var horizontal = Math.round(this.dragStartPosition + event.gesture.deltaX);
+
+        if (('left' == this.getPosition() && horizontal > 0) || ('right' == this.getPosition() && horizontal < 0)) {
+            horizontal = 0;
+        }
+
+        this.$wrapper.addClass(this.options.classOnDragging);
+        this.$wrapper.css('-webkit-transition', 'none');
+        this.$wrapper.css('transition', 'none');
+        this.$wrapper.css('-webkit-transform', 'translate3d(' + horizontal +'px, 0px, 0px)');
+        this.$wrapper.css('transform', 'translate3d(' + horizontal +'px, 0px, 0px)');
+    }
+
+    function onDragEnd (event) {
+        if (undefined != this.hammerScroll) {
+            this.hammerScroll.onDragEnd(event);
+        }
+
+        this.cleanSwipe();
+
+        if (Math.abs(event.gesture.deltaX) <= (this.$wrapper.innerWidth() / 4)) {
+            return;
+        }
+
+        var closeGesture = 'left';
+        var openGesture = 'right';
+
+        if ('right' == this.getPosition()) {
+            closeGesture = 'right';
+            openGesture = 'left';
+        }
+
+        if (this.isOpen() && closeGesture == event.gesture.direction) {
+            this.forceClose();
+
+        } else if (openGesture == event.gesture.direction) {
+            if (this.isOpen() && isOverMinWidth.apply(this) && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
+                this.forceOpen();
+
+            } else if (isOverMinWidth.apply(this) && 'always' == this.options.forceToggle) {
+                this.forceOpen();
 
             } else {
-                if (isOverMinWidth.apply(this) && 'always' == this.options.forceToggle) {
-                    this.forceOpen();
-
-                } else {
-                    this.open();
-                }
+                this.open();
             }
-        }, this));
-    };
+        }
+
+        return;
+
+        if (this.isOpen()) {
+            if (isOverMinWidth.apply(this) && $.inArray(this.options.forceToggle, [true, 'always']) >= 0) {
+                this.forceOpen();
+
+            } else {
+                this.forceClose();
+            }
+
+        } else {
+            if (isOverMinWidth.apply(this) && 'always' == this.options.forceToggle) {
+                this.forceOpen();
+
+            } else {
+                this.open();
+            }
+        }
+    }
 
     function getWrapperPosition ($wrapper) {
         var transform = {e: 0, f: 0};
