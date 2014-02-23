@@ -93,16 +93,10 @@
     HammerScroll.prototype.onDrag = function (event) {
         if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
             if (this.options.useScroll) {
-                if (undefined == this.dragStartPosition) {
-                    this.dragStartPosition = -this.$element.scrollTop();
-                }
+                var vertical = $.proxy(limitVerticalValue, this)(event, 0);
 
-                if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
-                    var vertical = -Math.round(event.gesture.deltaY + this.dragStartPosition);
-
-                    this.$element.scrollTop(vertical);
-                    $.proxy(refreshScrollbarPosition, this)(false, this.$element.scrollTop());
-                }
+                this.$element.scrollTop(vertical);
+                $.proxy(refreshScrollbarPosition, this)(false, this.$element.scrollTop());
 
             } else {
                 var vertical = $.proxy(limitVerticalValue, this)(event, this.options.maxBounce);
@@ -250,12 +244,14 @@
      * @private
      */
     function limitVerticalValue (event, maxBounce, inertia) {
+        var useScroll = this.options.useScroll;
+
         if (undefined == this.dragStartPosition) {
-            this.dragStartPosition = getPosition(this.$content);
+            this.dragStartPosition = useScroll ? -this.$element.scrollTop() : getPosition(this.$content);
         }
 
         var wrapperHeight = this.$element.innerHeight();
-        var height = this.$content.outerHeight();
+        var height = useScroll ? this.$element.get(0).scrollHeight : this.$content.outerHeight();
         var maxScroll = height - wrapperHeight + maxBounce;
         var vertical = -Math.round(event.gesture.deltaY + this.dragStartPosition);
 
