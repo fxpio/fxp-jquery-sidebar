@@ -118,7 +118,18 @@
      * @param Event event The hammer event
      */
     HammerScroll.prototype.onDragEnd = function (event) {
-        if (!this.options.useScroll) {
+        if (this.options.useScroll) {
+            if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
+                var vertical = $.proxy(limitVerticalValue, this)(event, 0, true);
+
+                this.$element.animate({
+                    scrollTop: vertical
+                }, this.options.inertiaDuration * 1000, $.proxy(dragTransitionEnd, this));
+
+                $.proxy(refreshScrollbarPosition, this)(true, vertical);
+            }
+
+        } else {
             $.proxy(changeTransition, this)(this.$content);
 
             if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
@@ -222,8 +233,10 @@
      * @private
      */
     function dragTransitionEnd () {
+        var top = this.options.useScroll ? this.$element.scrollTop() : this.$content.position()['top'];
+
         this.$content.off('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
-        $.proxy(refreshScrollbarPosition, this)(true, this.$content.position()['top']);
+        $.proxy(refreshScrollbarPosition, this)(true, top);
 
         if (undefined != this.stickyHeader) {
             this.stickyHeader.checkPosition();
