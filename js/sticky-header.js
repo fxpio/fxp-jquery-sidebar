@@ -13,6 +13,14 @@
     // STICKY HEADER CLASS DEFINITION
     // ==============================
 
+    /**
+     * @constructor
+     *
+     * @param htmlString|Element|Array|jQuery element
+     * @param Array                           options
+     *
+     * @this
+     */
     var StickyHeader = function (element, options) {
         this.guid       = jQuery.guid;
         this.options    = $.extend({}, StickyHeader.DEFAULTS, options);
@@ -22,10 +30,20 @@
         this.checkPosition();
     };
 
+    /**
+     * Defaults options.
+     *
+     * @type Array
+     */
     StickyHeader.DEFAULTS = {
         classSticky: 'sticky-header'
     };
 
+    /**
+     * Checks the position of content and refresh the sticky header.
+     *
+     * @this
+     */
     StickyHeader.prototype.checkPosition = function () {
         this.$element.find('> ul > li > span, div > ul > li > span').each($.proxy(function(index, element) {
             var $group = $(element);
@@ -56,6 +74,11 @@
         }, this));
     };
 
+    /**
+     * Destroy instance.
+     *
+     * @this
+     */
     StickyHeader.prototype.destroy = function () {
         this.$element.off('scroll.st.stickyheader', $.proxy(StickyHeader.prototype.checkPosition, this));
         this.$element.parent().find('> .' + this.options.classSticky).remove();

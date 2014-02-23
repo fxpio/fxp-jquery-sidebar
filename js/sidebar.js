@@ -13,6 +13,14 @@
     // SIDEBAR CLASS DEFINITION
     // ========================
 
+    /**
+     * @constructor
+     *
+     * @param htmlString|Element|Array|jQuery element
+     * @param Array                           options
+     *
+     * @this
+     */
     var Sidebar = function (element, options) {
         this.guid           = jQuery.guid;
         this.options        = $.extend({}, Sidebar.DEFAULTS, options);
@@ -81,7 +89,7 @@
             this.stickyHeader = $('.sidebar-scroller', this.$wrapper).stickyheader().data('st.stickyheader');
         }
 
-        this.initSwipe();
+        this.initHammer();
 
         this.$element.css('-webkit-transition', '');
         this.$element.css('transition', '');
@@ -89,6 +97,11 @@
         this.$wrapper.css('transition', '');
     };
 
+    /**
+     * Defaults options.
+     *
+     * @type Array
+     */
     Sidebar.DEFAULTS = {
         classToggle:         'sidebar-toggle',
         classWrapper:        'sidebar-wrapper',
@@ -113,6 +126,12 @@
         }
     };
 
+    /**
+     * Check if is a mobile device.
+     *
+     * @return Boolean
+     * @this
+     */
     Sidebar.prototype.mobileCheck = function () {
         var check = false;
 
@@ -126,6 +145,13 @@
         return check;
     };
 
+    /**
+     * Binding actions of keyboard.
+     *
+     * @param jQuery.Event event
+     *
+     * @this
+     */
     Sidebar.prototype.keyboardAction = function(event) {
         if (!event instanceof jQuery.Event || this.options.disabledKeyboard) {
             return;
@@ -141,22 +167,51 @@
         }
     };
 
+    /**
+     * Get sidebar position.
+     *
+     * @return string The position (left or right)
+     * @this
+     */
     Sidebar.prototype.getPosition = function () {
         return this.options.position;
     };
 
+    /**
+     * Checks if sidebar is locked (always open).
+     *
+     * @return Boolean
+     * @this
+     */
     Sidebar.prototype.isLocked = function () {
         return this.options.locked;
     };
 
+    /**
+     * Checks if sidebar is locked (always open).
+     *
+     * @return Boolean
+     * @this
+     */
     Sidebar.prototype.isOpen = function () {
         return this.$wrapper.hasClass(this.options.classOpen);
     };
 
+    /**
+     * Checks if sidebar is fully opened.
+     *
+     * @return Boolean
+     * @this
+     */
     Sidebar.prototype.isFullyOpened = function () {
         return this.$element.hasClass(this.options.classForceOpen);
     };
 
+    /**
+     * Force open the sidebar.
+     *
+     * @this
+     */
     Sidebar.prototype.forceOpen = function () {
         if (this.isOpen() && this.isFullyOpened()) {
             return;
@@ -167,6 +222,11 @@
         this.$toggle.removeClass(this.options.classToggle + '-opened');
     };
 
+    /**
+     * Force close the sidebar.
+     *
+     * @this
+     */
     Sidebar.prototype.forceClose = function () {
         if (!this.isOpen() || (this.isLocked() && isOverMinWidth.apply(this))) {
             return;
@@ -176,6 +236,11 @@
         this.close();
     };
 
+    /**
+     * Close the sidebar since external action.
+     *
+     * @this
+     */
     Sidebar.prototype.closeExternal = function (event) {
         var $target = $(event.currentTarget.activeElement);
 
@@ -194,6 +259,11 @@
         }
     };
 
+    /**
+     * Open the sidebar.
+     *
+     * @this
+     */
     Sidebar.prototype.open = function () {
         if (this.isOpen()) {
             return;
@@ -205,6 +275,11 @@
         $(document).on(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
     };
 
+    /**
+     * Close open the sidebar.
+     *
+     * @this
+     */
     Sidebar.prototype.close = function () {
         if (!this.isOpen() || (this.isFullyOpened() && isOverMinWidth.apply(this))) {
             return;
@@ -215,6 +290,11 @@
         $(document).off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.closeExternal, this));
     };
 
+    /**
+     * Toggle the sidebar ("close, "open", "force open").
+     *
+     * @this
+     */
     Sidebar.prototype.toggle = function (event) {
         if (event) {
             var $parents = $(event.target).parents('.' + this.options.classWrapper);
@@ -248,6 +328,11 @@
         }
     };
 
+    /**
+     * Destroy instance.
+     *
+     * @this
+     */
     Sidebar.prototype.destroy = function () {
         if(!this.mobileCheck()) {
             this.$element.off('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
@@ -258,14 +343,19 @@
         $(window).off('resize.st.sidebar' + this.guid, $.proxy(onResizeWindow, this));
         this.$toggle.off(this.eventType + '.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.toggle, this));
         $(window).off( 'keyup.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.keyboardAction, this));
-        this.destroySwipe();
+        this.destroyHammer();
 
         if (undefined != this.stickyHeader) {
             this.stickyHeader.destroy();
         }
     };
 
-    Sidebar.prototype.initSwipe = function () {
+    /**
+     * Init the hammer instance.
+     *
+     * @this
+     */
+    Sidebar.prototype.initHammer = function () {
         if (!Hammer) {
             return;
         }
@@ -302,6 +392,14 @@
         .on('dragend', $.proxy(onDragEnd, this));
     };
 
+    /**
+     * Action of "on drag" hammer event.
+     *
+     * @param Event event The hammer event
+     *
+     * @this
+     * @private
+     */
     function onDrag (event) {
         if (undefined != this.hammerScroll) {
             this.hammerScroll.onDrag(event);
@@ -330,12 +428,20 @@
         this.$wrapper.css('transform', 'translate3d(' + horizontal +'px, 0px, 0px)');
     }
 
+    /**
+     * Action of "on drag end" hammer event.
+     *
+     * @param Event event The hammer event
+     *
+     * @this
+     * @private
+     */
     function onDragEnd (event) {
         if (undefined != this.hammerScroll) {
             this.hammerScroll.onDragEnd(event);
         }
 
-        this.cleanSwipe();
+        cleanHammer.apply(this)
 
         if (Math.abs(event.gesture.deltaX) <= (this.$wrapper.innerWidth() / 4)) {
             return;
@@ -384,22 +490,32 @@
         }
     }
 
-    function getWrapperPosition ($wrapper) {
+    /**
+     * Get the sidebar wrapper position.
+     *
+     * @param jQuery $target
+     *
+     * @return Integer The Y axis position
+     *
+     * @this
+     * @private
+     */
+    function getWrapperPosition ($target) {
         var transform = {e: 0, f: 0};
 
-        if ($wrapper.css('transform')) {
+        if ($target.css('transform')) {
             if ('function' === typeof CSSMatrix) {
-                transform = new CSSMatrix($wrapper.css('transform'));
+                transform = new CSSMatrix($target.css('transform'));
 
             } else if ('function' === typeof WebKitCSSMatrix) {
-                transform = new WebKitCSSMatrix($wrapper.css('transform'));
+                transform = new WebKitCSSMatrix($target.css('transform'));
 
             } else if ('function' === typeof MSCSSMatrix) {
-                transform = new MSCSSMatrix($wrapper.css('transform'));
+                transform = new MSCSSMatrix($target.css('transform'));
 
             } else {
                 var reMatrix = /matrix\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)/;
-                var match = $wrapper.css('transform').match(reMatrix);
+                var match = $target.css('transform').match(reMatrix);
 
                 if (match) {
                     transform.e = parseInt(match[1]);
@@ -411,6 +527,14 @@
         return transform.e;
     }
 
+    /**
+     * Close the sidebar or reopen the locked sidebar on window resize event.
+     *
+     * @param Event event The event
+     *
+     * @this
+     * @private
+     */
     function onResizeWindow (event) {
         if (isOverMinWidth.apply(this) && this.isLocked()) {
             this.forceOpen();
@@ -421,6 +545,17 @@
         this.closeExternal(event);
     }
 
+    /**
+     * Checks if the window width is wider than the minimum width defined in
+     * options.
+     *
+     * @param Event event The event
+     *
+     * @return Boolean
+     *
+     * @this
+     * @private
+     */
     function isOverMinWidth (event) {
         var $window = $(window);
         var windowWidth = $window.innerWidth();
@@ -455,7 +590,13 @@
         return false;
     }
 
-    Sidebar.prototype.cleanSwipe = function () {
+    /**
+     * Cleans the hammer configuration on the wrapper element.
+     *
+     * @this
+     * @private
+     */
+    function cleanHammer () {
         this.$wrapper.removeData('drap-start-position');
         this.$wrapper.css('-webkit-transition', '');
         this.$wrapper.css('transition', '');
@@ -465,7 +606,13 @@
         delete this.dragStartPosition;
     };
 
-    Sidebar.prototype.destroySwipe = function () {
+    /**
+     * Destroy the hammer configuration.
+     *
+     * @this
+     * @private
+     */
+    Sidebar.prototype.destroyHammer = function () {
         if (!Hammer) {
             return;
         }

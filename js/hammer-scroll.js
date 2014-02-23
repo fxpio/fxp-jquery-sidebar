@@ -13,6 +13,14 @@
     // HAMMER SCROLL CLASS DEFINITION
     // ==============================
 
+    /**
+     * @constructor
+     *
+     * @param htmlString|Element|Array|jQuery element
+     * @param Array                           options
+     *
+     * @this
+     */
     var HammerScroll = function (element, options) {
         this.guid     = jQuery.guid;
         this.options  = $.extend({}, HammerScroll.DEFAULTS, options);
@@ -57,6 +65,11 @@
         }
     };
 
+    /**
+     * Defaults options.
+     *
+     * @type Array
+     */
     HammerScroll.DEFAULTS = {
         contentWrapperClass: 'hammer-scroll-content',
         maxBounce:           100,
@@ -107,6 +120,11 @@
         delete this.dragStartPosition;
     };
 
+    /**
+     * Destroy instance.
+     *
+     * @this
+     */
     HammerScroll.prototype.destroy = function () {
         this.$content = unwrapContent.apply(this);
         this.$element.css('overflow-y', '');
@@ -123,6 +141,13 @@
         }
     };
 
+    /**
+     * Resizes the scoll content.
+     * Moves the content on bottom if the bottom content is above of bottom
+     * wrapper.
+     *
+     * @this
+     */
     HammerScroll.prototype.resizeScroll = function () {
         var position = this.$content.position()['top'];
 
@@ -144,6 +169,11 @@
         }
     };
 
+    /**
+     * Resizes the scrollbar.
+     *
+     * @this
+     */
     HammerScroll.prototype.resizeScrollbar = function () {
         if (undefined == this.$scrollbar) {
             return;
@@ -164,6 +194,12 @@
         $.proxy(refreshScrollbarPosition, this)(false, this.$content.position()['top']);
     };
 
+    /**
+     * Refresh the sticky header on end of scroll inertia transition.
+     *
+     * @this
+     * @private
+     */
     function dragTransitionEnd () {
         this.$content.off('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
         $.proxy(refreshScrollbarPosition, this)(true, this.$content.position()['top']);
@@ -173,6 +209,19 @@
         }
     }
 
+    /**
+     * Limits the vertical value with top or bottom wrapper position (with or
+     * without the max bounce).
+     *
+     * @param Event   event
+     * @param Integer maxBounce
+     * @param Boolean inertia
+     *
+     * @return Integer The limited vertical value
+     *
+     * @this
+     * @private
+     */
     function limitVerticalValue (event, maxBounce, inertia) {
         if (undefined == this.dragStartPosition) {
             this.dragStartPosition = getPosition(this.$content);
@@ -212,6 +261,14 @@
         return vertical;
     }
 
+    /**
+     * Wraps the content.
+     *
+     * @return jQuery The content
+     *
+     * @this
+     * @private
+     */
     function wrapContent () {
         var $content = $([
             '<div class="' + this.options.contentWrapperClass + '"></div>'
@@ -226,6 +283,14 @@
         return $content;
     }
 
+    /**
+     * Unwraps the content.
+     *
+     * @return null
+     *
+     * @this
+     * @private
+     */
     function unwrapContent () {
         var self = this;
 
@@ -237,6 +302,14 @@
         return null;
     }
 
+    /**
+     * Creates the scrollbar.
+     *
+     * @return jQuery The scrollbar
+     *
+     * @this
+     * @private
+     */
     function generateScrollbar () {
         var $scrollbar = $('<div class="hammer-scrollbar"></div>');
 
@@ -249,6 +322,17 @@
         return $scrollbar;
     }
 
+    /**
+     * Refreshs the scrollbar position.
+     *
+     * @param Boolean usedTransition Used the transition
+     * @param Decimal position       The new position of content
+     *
+     * @return jQuery The content
+     *
+     * @this
+     * @private
+     */
     function refreshScrollbarPosition (usedTransition, position) {
         if (undefined == this.$scrollbar) {
             return;
@@ -261,6 +345,14 @@
         $.proxy(changeTransform, this)(this.$scrollbar, 'translate3d(0px, ' + delta + 'px, 0px)');
     }
 
+    /**
+     * Action on mouse scroll event.
+     *
+     * @param jQuery.Event event
+     *
+     * @this
+     * @private
+     */
     function onMouseScroll (event) {
         var position = -this.$content.position()['top'];
         var wrapperHeight = this.$element.innerHeight();
@@ -291,6 +383,16 @@
         }
     }
 
+    /**
+     * Get the vertical position of target element.
+     *
+     * @param jQuery $target
+     *
+     * @return Integer
+     *
+     * @this
+     * @private
+     */
     function getPosition ($target) {
         var transformCss = $target.css('transform');
         var transform = {e: 0, f: 0};
@@ -319,6 +421,15 @@
         return transform.f;
     }
 
+    /**
+     * Changes the css transition configuration on target element.
+     *
+     * @param jQuery $target    The element to edited
+     * @param String transition The css transition configuration of target
+     *
+     * @this
+     * @private
+     */
     function changeTransition ($target, transition) {
         if (undefined == transition) {
             transition = 'transform ' + this.options.inertiaDuration + 's';
@@ -337,6 +448,15 @@
         $target.get(0).style['transition'] = transition;
     }
 
+    /**
+     * Changes the css transform configuration on target element.
+     *
+     * @param jQuery $target   The element to edited
+     * @param String transform The css transform configuration of target
+     *
+     * @this
+     * @private
+     */
     function changeTransform ($target, transform) {
         $target.css('-webkit-transform', transform);
         $target.css('transform', transform);
