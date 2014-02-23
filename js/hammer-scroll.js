@@ -37,7 +37,9 @@
             this.$element.css('right', 0);
         }
 
-        $(window).on('resize.st.hammerscroll' + this.guid, $.proxy(this.resizeScroll, this));
+        if (!this.options.useScroll) {
+            $(window).on('resize.st.hammerscroll' + this.guid, $.proxy(this.resizeScroll, this));
+        }
 
         if (this.options.scrollbar) {
             this.$scrollbar = generateScrollbar.apply(this);
@@ -79,7 +81,8 @@
         inertiaDuration:     0.2,
         inertiaFunction:     'ease',
         scrollbar:           true,
-        scrollbarInverse:    false
+        scrollbarInverse:    false,
+        useScroll:           false
     };
 
     /**
@@ -89,11 +92,25 @@
      */
     HammerScroll.prototype.onDrag = function (event) {
         if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
-            var vertical = $.proxy(limitVerticalValue, this)(event, this.options.maxBounce);
+            if (this.options.useScroll) {
+                if (undefined == this.dragStartPosition) {
+                    this.dragStartPosition = -this.$element.scrollTop();
+                }
 
-            $.proxy(changeTransition, this)(this.$content, 'none');
-            $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -vertical + 'px, 0px)');
-            $.proxy(refreshScrollbarPosition, this)(false, -vertical);
+                if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
+                    var vertical = -Math.round(event.gesture.deltaY + this.dragStartPosition);
+
+                    this.$element.scrollTop(vertical);
+                    $.proxy(refreshScrollbarPosition, this)(false, this.$element.scrollTop());
+                }
+
+            } else {
+                var vertical = $.proxy(limitVerticalValue, this)(event, this.options.maxBounce);
+
+                $.proxy(changeTransition, this)(this.$content, 'none');
+                $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -vertical + 'px, 0px)');
+                $.proxy(refreshScrollbarPosition, this)(false, -vertical);
+            }
 
             if (undefined != this.stickyHeader) {
                 this.stickyHeader.checkPosition();
@@ -107,14 +124,16 @@
      * @param Event event The hammer event
      */
     HammerScroll.prototype.onDragEnd = function (event) {
-        $.proxy(changeTransition, this)(this.$content);
+        if (!this.options.useScroll) {
+            $.proxy(changeTransition, this)(this.$content);
 
-        if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
-            var vertical = $.proxy(limitVerticalValue, this)(event, 0, true);
+            if ('up' == event.gesture.direction || 'down' == event.gesture.direction) {
+                var vertical = $.proxy(limitVerticalValue, this)(event, 0, true);
 
-            this.$content.on('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
-            $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -vertical + 'px, 0px)');
-            $.proxy(refreshScrollbarPosition, this)(true, -vertical);
+                this.$content.on('transitionend msTransitionEnd oTransitionEnd', $.proxy(dragTransitionEnd, this));
+                $.proxy(changeTransform, this)(this.$content, 'translate3d(0px, ' + -vertical + 'px, 0px)');
+                $.proxy(refreshScrollbarPosition, this)(true, -vertical);
+            }
         }
 
         delete this.dragStartPosition;
@@ -140,7 +159,7 @@
             this.stickyHeader.destroy();
         }
 
-        jQuery.removeData(this.$element, 'st.hammerscroll');
+        this.$element.removeData('st.hammerscroll');
     };
 
     /**
@@ -151,6 +170,10 @@
      * @this
      */
     HammerScroll.prototype.resizeScroll = function () {
+        if (this.options.useScroll) {
+            return;
+        }
+
         var position = this.$content.position()['top'];
 
         if (position >= 0) {
@@ -181,9 +204,11 @@
             return;
         }
 
+        var useScroll = this.options.useScroll;
         var wrapperHeight = this.$element.innerHeight();
-        var contentHeight = this.$content.outerHeight();
+        var contentHeight = useScroll ? this.$element.get(0).scrollHeight : this.$content.outerHeight();
         var height = Math.round(wrapperHeight * Math.min(wrapperHeight / contentHeight, 1));
+        var top = useScroll ? this.$element.scrollTop() : this.$content.position()['top'];
 
         if (height < wrapperHeight) {
             this.$scrollbar.addClass('hammer-scroll-active');
@@ -193,7 +218,7 @@
         }
 
         this.$scrollbar.height(height);
-        $.proxy(refreshScrollbarPosition, this)(false, this.$content.position()['top']);
+        $.proxy(refreshScrollbarPosition, this)(false, top);
     };
 
     /**
@@ -276,11 +301,17 @@
             '<div class="' + this.options.contentWrapperClass + '"></div>'
         ].join(''));
 
-        this.$element.children().each(function () {
-            $content.append(this);
-        });
+        if (this.options.useScroll) {
+            this.$element.before($content);
+            $content.append(this.$element);
 
-        this.$element.append($content);
+        } else {
+            this.$element.children().each(function () {
+                $content.append(this);
+            });
+
+            this.$element.append($content);
+        }
 
         return $content;
     }
@@ -296,9 +327,15 @@
     function unwrapContent () {
         var self = this;
 
-        this.$content.children().each(function () {
-            self.$element.append(this);
-        });
+        if (this.options.useScroll) {
+            this.$content.before(this.$element);
+
+        } else {
+            this.$content.children().each(function () {
+                self.$element.append(this);
+            });
+        }
+
         this.$content.remove();
 
         return null;
@@ -319,7 +356,12 @@
             $scrollbar.addClass('hammer-scroll-inverse');
         }
 
-        this.$element.prepend($scrollbar);
+        if (this.options.useScroll) {
+            this.$content.prepend($scrollbar);
+
+        } else {
+            this.$element.prepend($scrollbar);
+        }
 
         return $scrollbar;
     }
@@ -340,8 +382,11 @@
             return;
         }
 
-        var percentScroll = -position / (this.$content.outerHeight() - this.$element.innerHeight());
-        var delta = Math.round(percentScroll * (this.$element.innerHeight() - this.$scrollbar.outerHeight()));
+        var useScroll = this.options.useScroll;
+        var wrapperHeight = this.$element.innerHeight();
+        var contentHeight = useScroll ? this.$element.get(0).scrollHeight : this.$content.outerHeight();
+        var percentScroll = (useScroll ? position : -position) / (contentHeight - wrapperHeight);
+        var delta = Math.round(percentScroll * (wrapperHeight - this.$scrollbar.outerHeight()));
 
         $.proxy(changeTransition, this)(this.$scrollbar, usedTransition ? undefined : 'none');
         $.proxy(changeTransform, this)(this.$scrollbar, 'translate3d(0px, ' + delta + 'px, 0px)');
@@ -356,6 +401,24 @@
      * @private
      */
     function onMouseScroll (event) {
+        if (this.options.useScroll) {
+            var delta = (event.originalEvent.type == 'DOMMouseScroll' ?
+                    event.originalEvent.detail * -40 :
+                        event.originalEvent.wheelDelta);
+            var position = this.$element.scrollTop() - delta;
+
+            event.stopPropagation();
+            event.preventDefault();
+            this.$element.scrollTop(position);
+            $.proxy(refreshScrollbarPosition, this)(false, this.$element.scrollTop());
+
+            if (undefined != this.stickyHeader) {
+                this.stickyHeader.checkPosition();
+            }
+
+            return;
+        }
+
         var position = -this.$content.position()['top'];
         var wrapperHeight = this.$element.innerHeight();
         var contentHeight = this.$content.outerHeight();
