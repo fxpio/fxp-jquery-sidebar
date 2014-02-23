@@ -291,6 +291,8 @@
         if (undefined != this.stickyHeader) {
             this.stickyHeader.destroy();
         }
+
+        jQuery.removeData(this.$element, 'st.sidebar');
     };
 
     /**

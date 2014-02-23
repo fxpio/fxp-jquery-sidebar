@@ -82,6 +82,8 @@
     StickyHeader.prototype.destroy = function () {
         this.$element.off('scroll.st.stickyheader', $.proxy(StickyHeader.prototype.checkPosition, this));
         this.$element.parent().find('> .' + this.options.classSticky).remove();
+
+        jQuery.removeData(this.$element, 'st.stickyheader');
     };
 
 
