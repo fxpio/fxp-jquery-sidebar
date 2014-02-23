@@ -292,7 +292,7 @@
             this.stickyHeader.destroy();
         }
 
-        jQuery.removeData(this.$element, 'st.sidebar');
+        this.$element.removeData('st.sidebar');
     };
 
     /**
