@@ -130,6 +130,7 @@
      * Check if is a mobile device.
      *
      * @return Boolean
+     *
      * @this
      */
     Sidebar.prototype.mobileCheck = function () {
@@ -171,6 +172,7 @@
      * Get sidebar position.
      *
      * @return string The position (left or right)
+     *
      * @this
      */
     Sidebar.prototype.getPosition = function () {
@@ -181,6 +183,7 @@
      * Checks if sidebar is locked (always open).
      *
      * @return Boolean
+     *
      * @this
      */
     Sidebar.prototype.isLocked = function () {
@@ -191,6 +194,7 @@
      * Checks if sidebar is locked (always open).
      *
      * @return Boolean
+     *
      * @this
      */
     Sidebar.prototype.isOpen = function () {
@@ -201,6 +205,7 @@
      * Checks if sidebar is fully opened.
      *
      * @return Boolean
+     *
      * @this
      */
     Sidebar.prototype.isFullyOpened = function () {
