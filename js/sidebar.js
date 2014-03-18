@@ -348,7 +348,7 @@
     function closeExternal (event) {
         var $target = $(event.currentTarget.activeElement);
 
-        if ($(event.target).parents('.' + this.options.classWrapper).size() > 0 || $target.parents('.' + this.options.classWrapper).size() > 0 || $target.hasClass('sidebar-swipe')) {
+        if (this.isLocked() || $(event.target).parents('.' + this.options.classWrapper).size() > 0 || $target.parents('.' + this.options.classWrapper).size() > 0 || $target.hasClass('sidebar-swipe')) {
             return;
         }
 
