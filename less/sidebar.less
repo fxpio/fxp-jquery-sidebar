@@ -64,8 +64,10 @@
     -webkit-transform: translate3d(-@sidebar-wrapper-width, 0px, 0px);
     transform: translate3d(-@sidebar-wrapper-width, 0px, 0px);
 
-    -webkit-transition: -webkit-transform 0.2s;
-    transition: transform 0.2s;
+    &.sidebar-ready {
+        -webkit-transition: -webkit-transform 0.2s;
+        transition: transform 0.2s;
+    }
 
     &.sidebar-open {
         -webkit-transform: translate3d(0px, 0px, 0px);

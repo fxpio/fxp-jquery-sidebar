@@ -98,6 +98,7 @@
         this.$element.css('transition', '');
         this.$wrapper.css('-webkit-transition', '');
         this.$wrapper.css('transition', '');
+        this.$wrapper.addClass('sidebar-ready');
     };
 
     /**
