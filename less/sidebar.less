@@ -430,7 +430,8 @@
         transform: translate3d(-100%, 0px, 0px);
     }
 
-    .sidebar-open + .sidebar-swipe {
+    .sidebar-open + .sidebar-swipe,
+    .sidebar-force-open .sidebar-open + .sidebar-swipe {
         left: 80%;
     }
 
@@ -460,6 +461,14 @@
                 left: auto;
                 right: 0;
             }
+        }
+    }
+}
+
+@media (max-width: @screen-sm-max) {
+    .sidebar-force-open {
+        .sidebar-wrapper:not(.sidebar-open) + .sidebar-swipe {
+            left: 0;
         }
     }
 }
