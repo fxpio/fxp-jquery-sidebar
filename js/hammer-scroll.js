@@ -471,9 +471,57 @@
         var transformCss = $target.css('transform');
         var transform = {e: 0, f: 0};
 
+<<<<<<< HEAD
         if (transformCss) {
             if ('function' === typeof CSSMatrix) {
                 transform = new CSSMatrix(transformCss);
+=======
+        } else {
+            onMouseScrollCssTransform(event);
+        }
+    }
+
+    /**
+     * Prevent scroll event (blocks the scroll on the tab keyboard event with
+     * the item is outside the wrapper).
+     *
+     * @param {jQuery.Event|Event} event
+     *
+     * @private
+     */
+    function preventScroll(event) {
+        $(event.target).eq(0).scrollTop(0);
+    }
+
+    // HAMMER SCROLL CLASS DEFINITION
+    // ==============================
+
+    /**
+     * @constructor
+     *
+     * @param {string|elements|object|jQuery} element
+     * @param {object}                        options
+     *
+     * @this HammerScroll
+     */
+    var HammerScroll = function (element, options) {
+        this.guid     = jQuery.guid;
+        this.options  = $.extend({}, HammerScroll.DEFAULTS, options);
+        this.$element = $(element).eq(0);
+
+        var self = this;
+
+        if (this.options.hammerStickyHeader && $.fn.stickyHeader) {
+            this.stickyHeader = this.$element.stickyHeader().data('st.stickyheader');
+        }
+
+        if (!this.options.useScroll) {
+            this.options.nativeScroll = false;
+            this.$element.scrollTop(0);
+            $(window).on('resize.st.hammerscroll' + this.guid, null, this, this.resizeScroll);
+            this.$element.on('scroll.st.hammerscroll', preventScroll);
+        }
+>>>>>>> 5f038fd... Fixes strict syntax with jslint
 
             } else if ('function' === typeof WebKitCSSMatrix) {
                 transform = new WebKitCSSMatrix(transformCss);

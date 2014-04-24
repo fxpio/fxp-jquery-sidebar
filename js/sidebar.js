@@ -447,8 +447,8 @@
             $(document).on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
         }
 
-        if (this.options.sidebarStickyHeader && $.fn.stickyheader && !$.fn.hammerScroll) {
-            this.stickyHeader = $('.sidebar-scroller', this.$wrapper).stickyheader().data('st.stickyheader');
+        if (this.options.sidebarStickyHeader && $.fn.stickyHeader && !$.fn.hammerScroll) {
+            this.stickyHeader = $('.sidebar-scroller', this.$wrapper).stickyHeader().data('st.stickyheader');
         }
 
         initHammer(this);
