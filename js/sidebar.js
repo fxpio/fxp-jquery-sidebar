@@ -683,9 +683,7 @@
     // SIDEBAR PLUGIN DEFINITION
     // =========================
 
-    old = $.fn.sidebar;
-
-    $.fn.sidebar = function (option, value) {
+    function Plugin(option, value) {
         return this.each(function () {
             var $this   = $(this),
                 data    = $this.data('st.sidebar'),
@@ -703,8 +701,11 @@
                 data[option](value);
             }
         });
-    };
+    }
 
+    old = $.fn.sidebar;
+
+    $.fn.sidebar             = Plugin;
     $.fn.sidebar.Constructor = Sidebar;
 
 
@@ -724,7 +725,7 @@
     $(window).on('load', function () {
         $('[data-sidebar="true"]').each(function () {
             var $this = $(this);
-            $this.sidebar($this.data());
+            Plugin.call($this, $this.data());
         });
     });
 

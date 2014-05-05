@@ -588,9 +588,13 @@
     // HAMMER SCROLL PLUGIN DEFINITION
     // ===============================
 
+<<<<<<< HEAD
     var old = $.fn.hammerScroll;
 
     $.fn.hammerScroll = function (option, _relatedTarget) {
+=======
+    function Plugin(option, value) {
+>>>>>>> 83e3fe0... Fix JS noConflict mode
         return this.each(function () {
             var $this   = $(this);
             var data    = $this.data('st.hammerscroll');
@@ -608,8 +612,11 @@
                 data[option]();
             }
         });
-    };
+    }
 
+    old = $.fn.hammerScroll;
+
+    $.fn.hammerScroll             = Plugin;
     $.fn.hammerScroll.Constructor = HammerScroll;
 
 
@@ -629,7 +636,7 @@
     $(window).on('load', function () {
         $('[data-hammer-scroll="true"]').each(function () {
             var $this = $(this);
-            $this.hammerScroll($this.data());
+            Plugin.call($this, $this.data());
         });
     });
 

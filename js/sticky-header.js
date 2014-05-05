@@ -103,9 +103,7 @@
     // STICKY HEADER PLUGIN DEFINITION
     // ===============================
 
-    old = $.fn.stickyHeader;
-
-    $.fn.stickyHeader = function (option, value) {
+    function Plugin(option, value) {
         return this.each(function () {
             var $this   = $(this),
                 data    = $this.data('st.stickyheader'),
@@ -123,8 +121,11 @@
                 data[option](value);
             }
         });
-    };
+    }
 
+    old = $.fn.stickyHeader;
+
+    $.fn.stickyHeader             = Plugin;
     $.fn.stickyHeader.Constructor = StickyHeader;
 
 
@@ -144,7 +145,7 @@
     $(window).on('load', function () {
         $('[data-sticky-header="true"]').each(function () {
             var $this = $(this);
-            $this.stickyHeader($this.data());
+            Plugin.call($this, $this.data());
         });
     });
 
