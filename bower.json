@@ -5,7 +5,7 @@
     "François Pluchino <francois.pluchino@sonatra.com>"
   ],
   "description": "A jquery responsive sidebar with hammerjs",
-  "main": "js/datetime-picker.js",
+  "main": "js/sidebar.js",
   "keywords": [
     "sidebar",
     "drawer",
