@@ -1,0 +1,75 @@
+//
+// Navbar
+// --------------------------------------------------
+
+.navbar-fixed-top + .sidebar-trigger,
+.navbar-fixed-bottom + .sidebar-trigger,
+.navbar-fixed-top + .sidebar-trigger + .sidebar-trigger,
+.navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger {
+    .sidebar-toggle {
+        position: fixed;
+        z-index: @zindex-sidebar-toggle-fixed;
+    }
+    .sidebar-wrapper {
+        z-index: @zindex-sidebar-wrapper-fixed;
+    }
+}
+
+.navbar-fixed-bottom + .sidebar-trigger,
+.navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger {
+    .sidebar-toggle {
+        top: inherit;
+        bottom: 0;
+    }
+}
+
+
+//
+// Container
+// --------------------------------------------------
+
+.navbar-fixed-top {
+    + .container,
+    + .container-fluid,
+    + .sidebar-trigger + .container,
+    + .sidebar-trigger + .container-fluid,
+    + .sidebar-trigger + .sidebar-trigger + .container,
+    + .sidebar-trigger + .sidebar-trigger + .container-fluid {
+        margin-top: @navbar-height + @navbar-margin-bottom;
+    }
+}
+
+.navbar-fixed-bottom {
+    + .container,
+    + .container-fluid,
+    + .sidebar-trigger + .container,
+    + .sidebar-trigger + .container-fluid,
+    + .sidebar-trigger + .sidebar-trigger + .container,
+    + .sidebar-trigger + .sidebar-trigger + .container-fluid {
+        margin-bottom: @navbar-height + @navbar-margin-bottom;
+    }
+}
+
+@media (min-width: (@screen-sm-max + 1)) {
+    .sidebar-force-open:not(.sidebar-right) {
+        + .container,
+        + .sidebar-trigger + .container {
+            padding-left: @sidebar-wrapper-width + (@grid-gutter-width / 2);
+        }
+        + .container-fluid,
+        + .sidebar-trigger + .container-fluid {
+            margin-left: @sidebar-wrapper-width;
+        }
+    }
+
+    .sidebar-force-open.sidebar-right {
+        + .container,
+        + .sidebar-trigger + .container {
+            padding-right: @sidebar-wrapper-width + (@grid-gutter-width / 2);
+        }
+        + .container-fluid,
+        + .sidebar-trigger + .container-fluid {
+            margin-right: @sidebar-wrapper-width;
+        }
+    }
+}
