@@ -1,0 +1,33 @@
+{
+  "name": "sonatra-jquery-sidebar",
+  "version": "1.0.0",
+  "authors": [
+    "François Pluchino <francois.pluchino@sonatra.com>"
+  ],
+  "description": "A jquery responsive sidebar with hammerjs",
+  "main": "js/datetime-picker.js",
+  "keywords": [
+    "sidebar",
+    "drawer",
+    "responsive",
+    "hammerjs",
+    "hammer scroll",
+    "jquery"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/sonatra/sonatra-jquery-sidebar",
+  "dependencies": {
+    "jquery": ">=1.11.0",
+    "hammerjs": "1.0.*"
+  },
+  "devDependencies": {
+    "bootstrap": ">=3.0",
+    "font-awesome": ">=4.2",
+    "sonatra-hammer-scroll": "latest"
+  },
+  "ignore": [
+    "examples",
+    "doc",
+    "README.md"
+  ]
+}
