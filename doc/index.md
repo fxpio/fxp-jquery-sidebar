@@ -22,7 +22,7 @@ Add library in your `bower.json`:
 ```json
 {
     "dependencies": {
-        "sonatra-jquery-sidebar: "latest"
+        "sonatra-jquery-sidebar": "latest"
     }
 }
 ```
