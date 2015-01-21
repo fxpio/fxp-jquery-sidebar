@@ -7,7 +7,6 @@
 .navbar-fixed-top + .sidebar-trigger + .sidebar-trigger,
 .navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger {
     .sidebar-toggle {
-        position: fixed;
         z-index: @zindex-sidebar-toggle-fixed;
     }
     .sidebar-wrapper {
@@ -50,7 +49,57 @@
     }
 }
 
+@media (max-width: @screen-sm-max) {
+    .navbar-fixed-top + .sidebar-trigger,
+    .navbar-fixed-bottom + .sidebar-trigger,
+    .navbar-fixed-top + .sidebar-trigger + .sidebar-trigger,
+    .navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger {
+        .sidebar-toggle {
+            z-index: @zindex-sidebar-toggle;
+        }
+        .sidebar-wrapper {
+            z-index: @zindex-sidebar-wrapper;
+        }
+    }
+}
+
 @media (min-width: (@screen-sm-max + 1)) {
+    .navbar-static-top + .sidebar-trigger.sidebar-locked,
+    .navbar-static-bottom + .sidebar-trigger.sidebar-locked,
+    .navbar-static-top + .sidebar-trigger + .sidebar-trigger.sidebar-locked,
+    .navbar-static-bottom + .sidebar-trigger + .sidebar-trigger.sidebar-locked {
+        .sidebar-toggle {
+            z-index: @zindex-sidebar-toggle-static;
+        }
+        .sidebar-wrapper {
+            z-index: @zindex-sidebar-wrapper-static;
+        }
+    }
+
+    .navbar-fixed-top + .sidebar-trigger.sidebar-locked {
+        .sidebar-wrapper {
+            top: @navbar-height + 1;
+        }
+    }
+
+    .navbar-fixed-bottom + .sidebar-trigger.sidebar-locked {
+        .sidebar-wrapper {
+            bottom: @navbar-height + 1;
+        }
+    }
+
+    .navbar-static-top + .sidebar-trigger.sidebar-locked {
+        .sidebar-wrapper .sidebar-menu {
+            margin-top: @navbar-height + 1;
+        }
+    }
+
+    .navbar-static-bottom + .sidebar-trigger.sidebar-locked {
+        .sidebar-wrapper .sidebar-menu {
+            margin-bottom: @navbar-height + 1;
+        }
+    }
+
     .sidebar-force-open:not(.sidebar-right) {
         + .container,
         + .sidebar-trigger + .container {

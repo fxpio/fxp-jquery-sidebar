@@ -20,7 +20,11 @@
 /**
  * @param {jQuery} $
  *
- * @typedef {Sidebar} Sidebar
+ * @typedef {jQuery|undefined} Sidebar.$swipe            The swipe element
+ * @typedef {Hammer|undefined} Sidebar.hammer            The hammer
+ * @typedef {Number|undefined} Sidebar.dragStartPosition The drag start position
+ * @typedef {Number|undefined} Sidebar.dragDirection     The hammer direction on drag start
+ *
  */
 (function ($) {
     'use strict';
@@ -34,6 +38,68 @@
      */
     function mobileCheck() {
         return Boolean(navigator.userAgent.match(/Android|iPhone|iPad|iPod|IEMobile|BlackBerry|Opera Mini/i));
+    }
+
+    /**
+     * Get the width of native scrollbar.
+     *
+     * @returns {Number}
+     */
+    function getNativeScrollWidth() {
+        var sbDiv = document.createElement("div"),
+            size;
+        sbDiv.style.width = '100px';
+        sbDiv.style.height = '100px';
+        sbDiv.style.overflow = 'scroll';
+        sbDiv.style.position = 'absolute';
+        sbDiv.style.top = '-9999px';
+
+        document.body.appendChild(sbDiv);
+        size = sbDiv.offsetWidth - sbDiv.clientWidth;
+        document.body.removeChild(sbDiv);
+
+        return size;
+    }
+
+    /**
+     * Changes the css transition configuration on target element.
+     *
+     * @param {jQuery} $target    The element to edited
+     * @param {string} transition The css transition configuration of target
+     *
+     * @private
+     */
+    function changeTransition($target, transition) {
+        $target.css('-webkit-transition', transition);
+        $target.css('transition', transition);
+    }
+
+    /**
+     * Binding actions of mouse over swipe element.
+     *
+     * @param {jQuery.Event|Event} event
+     *
+     * @private
+     */
+    function preventMouseOver(event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    /**
+     * Binding actions of click on tag A in wrapper.
+     *
+     * @param {jQuery.Event|Event} event
+     *
+     * @private
+     */
+    function preventClick(event) {
+        if (event.originalEvent.type === 'click') {
+            return;
+        }
+
+        event.stopPropagation();
+        event.preventDefault();
     }
 
     /**
@@ -72,41 +138,14 @@
      * @private
      */
     function isOverMinWidth(self) {
-        var scrollbarWidth = 'scrollbarWidth',
-            isOver = false,
-            $window = $(window),
-            windowWidth = $window.innerWidth(),
-            widthNoScroll,
-            inner,
-            outer;
+        var $window = $(window),
+            windowWidth = $window.innerWidth();
 
         if ($('body').height() > $window.innerHeight()) {
-            if (null === self.scrollbarWidth) {
-                inner = document.createElement('div');
-                outer = document.createElement('div');
-                outer.style.visibility = 'hidden';
-                outer.style.width = '100px';
-
-                document.body.appendChild(outer);
-
-                widthNoScroll = outer.offsetWidth;
-                outer.style.overflow = 'scroll';
-                inner.style.width = '100%';
-                outer.appendChild(inner);
-
-                self[scrollbarWidth] = widthNoScroll - inner.offsetWidth;
-
-                outer.parentNode.removeChild(outer);
-            }
-
-            windowWidth += self[scrollbarWidth];
+            windowWidth += self.nativeScrollWidth;
         }
 
-        if (windowWidth >= self.options.minLockWidth) {
-            isOver = true;
-        }
-
-        return isOver;
+        return windowWidth >= self.options.minLockWidth;
     }
 
     /**
@@ -120,16 +159,24 @@
      */
     function closeExternal(event) {
         var self = event.data,
-            $target = $(event.currentTarget.activeElement);
+            $target = $(event.currentTarget.activeElement),
+            $directTarget = $(event.target),
+            isOver = isOverMinWidth(self);
 
-        if ((self.isLocked() && isOverMinWidth(self)) || $(event.target).parents('.' + self.options.classWrapper).size() > 0 || $target.parents('.' + self.options.classWrapper).size() > 0 || $target.hasClass('sidebar-swipe')) {
+        if ((self.isLocked() && isOver) ||
+                $target.hasClass(self.options.classWrapper) ||
+                $directTarget.hasClass(self.options.classWrapper) ||
+                $target.hasClass('sidebar-swipe') ||
+                $directTarget.hasClass('sidebar-swipe') ||
+                $target.parents('.' + self.options.classWrapper).size() > 0 ||
+                $directTarget.parents('.' + self.options.classWrapper).size() > 0) {
             return;
         }
 
         event.stopPropagation();
         event.preventDefault();
 
-        if (isOverMinWidth(self)) {
+        if (isOver) {
             self.close();
 
         } else {
@@ -149,6 +196,8 @@
     function onResizeWindow(event) {
         var self = event.data;
 
+        changeTransition(self.$wrapper, 'none');
+
         if (isOverMinWidth(self) && self.isLocked()) {
             self.forceOpen();
 
@@ -156,18 +205,57 @@
         }
 
         closeExternal(event);
+
+        if (undefined === self.resizeDelay) {
+            self.resizeDelay = setTimeout(function () {
+                delete self.resizeDelay;
+                changeTransition(self.$wrapper, '');
+            }, 500);
+        }
     }
 
     /**
-     * Get the sidebar wrapper position.
+     * Init the hammer scroll instance.
      *
-     * @param {jQuery} $target
-     *
-     * @returns {number} The Y axis position
+     * @param {Sidebar} self The sidebar instance
      *
      * @private
      */
-    function getWrapperPosition($target) {
+    function initHammerScroll(self) {
+        var options = {
+                autoConfig:         false,
+                useScroll:          self.options.useScroll,
+                nativeScroll:       self.options.nativeScroll,
+                forceNativeScroll:  mobileCheck() ? true : self.options.forceNativeScroll,
+                scrollbar:          !mobileCheck(),
+                hammerStickyHeader: self.options.hammerStickyHeader,
+                scrollbarInverse:   Sidebar.POSITION_RIGHT === self.options.position
+            };
+
+        self.$wrapper.hammerScroll($.extend({}, options, self.options.hammerScroll));
+    }
+
+    /**
+     * Destroy the hammer scroll configuration.
+     *
+     * @param {Sidebar} self The sidebar instance
+     *
+     * @private
+     */
+    function destroyHammerScroll(self) {
+        self.$wrapper.hammerScroll('destroy');
+    }
+
+    /**
+     * Get the horizontal position of target element.
+     *
+     * @param {jQuery} $target The jquery target
+     *
+     * @return {number}
+     *
+     * @private
+     */
+    function getTargetPosition($target) {
         var transformCss = $target.css('transform'),
             transform = {e: 0, f: 0},
             reMatrix,
@@ -198,101 +286,135 @@
     }
 
     /**
-     * Cleans the hammer configuration on the wrapper element.
+     * Changes the css transform configuration on target element.
      *
-     * @param {Sidebar} self The sidebar instance
+     * @param {jQuery} $target   The element to edited
+     * @param {string} transform The css transform configuration of target
      *
      * @private
      */
-    function cleanHammer(self) {
-        self.$wrapper.removeData('drap-start-position');
-        self.$wrapper.css('-webkit-transition', '');
-        self.$wrapper.css('transition', '');
-        self.$wrapper.css('-webkit-transform', '');
-        self.$wrapper.css('transform', '');
-        self.$wrapper.removeClass(self.options.classOnDragging);
-        delete self.dragStartPosition;
+    function changeTransform($target, transform) {
+        $target.css('-webkit-transform', transform);
+        $target.css('transform', transform);
+    }
+
+    /**
+     * Translate the jquery element with Translate 3D CSS.
+     *
+     * @param {jQuery } $target The jquery element
+     * @param {Number}  delta   The delta of translate
+     */
+    function changeTranslate($target, delta) {
+        var trans = delta + 'px, 0px, 0px';
+
+        changeTransform($target, 'translate3d(' + trans + ')');
+    }
+
+    /**
+     * Action of "on drag start" hammer event.
+     *
+     * @param {Sidebar} self  The sidebar instance
+     * @param {object}  event The hammer event
+     *
+     * @typedef {Number} event.direction The hammer direction const
+     *
+     * @private
+     */
+    function onDragStart(self, event) {
+        event.preventDefault();
+        self.dragDirection = event.direction;
+        self.$wrapper.css('user-select', 'none');
     }
 
     /**
      * Action of "on drag" hammer event.
      *
      * @param {Sidebar} self  The sidebar instance
-     * @param {Event}   event The hammer event
+     * @param {object}  event The hammer event
+     *
+     * @typedef {Number} event.deltaX The hammer delta X
      *
      * @private
      */
     function onDrag(self, event) {
-        var dragStartPosition = 'dragStartPosition',
-            horizontal;
+        var delta;
 
-        if (undefined !== self.hammerScroll) {
-            self.hammerScroll.onDrag(event);
-        }
+        event.preventDefault();
 
-        if ((Hammer.DIRECTION_LEFT !== event.gesture.direction && Hammer.DIRECTION_RIGHT !== event.gesture.direction)
-                || (self.options.locked && isOverMinWidth(self))) {
+        if (-1 === $.inArray(self.dragDirection, [Hammer.DIRECTION_LEFT, Hammer.DIRECTION_RIGHT]) ||
+                self.options.locked && isOverMinWidth(self)) {
             return;
         }
 
         if (undefined === self.dragStartPosition) {
-            self[dragStartPosition] = getWrapperPosition(self.$wrapper);
+            self.dragStartPosition = getTargetPosition(self.$wrapper);
         }
 
-        horizontal = Math.round(self.dragStartPosition + event.gesture.deltaX);
+        delta = Math.round(self.dragStartPosition + event.deltaX);
 
-        if ((Sidebar.POSITION_LEFT === self.getPosition() && horizontal > 0) || (Sidebar.POSITION_RIGHT === self.getPosition() && horizontal < 0)) {
-            horizontal = 0;
+        if ((Sidebar.POSITION_LEFT === self.getPosition() && delta > 0) ||
+                (Sidebar.POSITION_RIGHT === self.getPosition() && delta < 0)) {
+            delta = 0;
         }
 
         self.$wrapper.addClass(self.options.classOnDragging);
-        self.$wrapper.css('-webkit-transition', 'none');
-        self.$wrapper.css('transition', 'none');
-        self.$wrapper.css('-webkit-transform', 'translate3d(' + horizontal + 'px, 0px, 0px)');
-        self.$wrapper.css('transform', 'translate3d(' + horizontal + 'px, 0px, 0px)');
+        changeTransition(self.$wrapper, 'none');
+        changeTranslate(self.$wrapper, delta);
     }
 
     /**
      * Action of "on drag end" hammer event.
      *
      * @param {Sidebar} self  The sidebar instance
-     * @param {Event}   event The hammer event
+     * @param {object}  event The hammer event
+     *
+     *
+     * @typedef {Number} event.deltaX    The hammer delta X
+     * @typedef {Number} event.direction The hammer direction const
      *
      * @private
      */
     function onDragEnd(self, event) {
-        var closeGesture = Sidebar.POSITION_LEFT,
-            openGesture = Sidebar.POSITION_RIGHT;
+        var closeGesture = Hammer.DIRECTION_LEFT,
+            openGesture  = Hammer.DIRECTION_RIGHT;
 
-        if (undefined !== self.hammerScroll) {
-            self.hammerScroll.onDragEnd(event);
-        }
+        delete self.dragStartPosition;
 
-        cleanHammer(self);
+        event.preventDefault();
 
-        if (Math.abs(event.gesture.deltaX) <= (self.$wrapper.innerWidth() / 4)) {
+        self.$wrapper.removeClass(self.options.classOnDragging);
+        self.$wrapper.css('user-select', '');
+        changeTransition(self.$wrapper, '');
+        changeTransform(self.$wrapper, '');
+
+        if (Math.abs(event.deltaX) <= (self.$wrapper.innerWidth() / 4)) {
+            delete self.dragDirection;
+
             return;
         }
 
         if (Sidebar.POSITION_RIGHT === self.getPosition()) {
-            closeGesture = Sidebar.POSITION_RIGHT;
-            openGesture = Sidebar.POSITION_LEFT;
+            closeGesture = Hammer.DIRECTION_RIGHT;
+            openGesture = Hammer.DIRECTION_LEFT;
         }
 
-        if (self.isOpen() && closeGesture === event.gesture.direction) {
+        if (self.isOpen() && closeGesture === self.dragDirection) {
             self.forceClose();
 
-        } else if (openGesture === event.gesture.direction) {
-            if (self.isOpen() && isOverMinWidth(self) && $.inArray(self.options.forceToggle, [true, 'always']) >= 0) {
+        } else if (openGesture === self.dragDirection) {
+            if (self.isOpen() && isOverMinWidth(self) &&
+                    $.inArray(self.options.forceToggle, [Sidebar.FORCE_TOGGLE, Sidebar.FORCE_TOGGLE_ALWAYS]) >= 0) {
                 self.forceOpen();
 
-            } else if (isOverMinWidth(self) && 'always' === self.options.forceToggle) {
+            } else if (isOverMinWidth(self) && Sidebar.FORCE_TOGGLE_ALWAYS === self.options.forceToggle) {
                 self.forceOpen();
 
             } else {
                 self.open();
             }
         }
+
+        delete self.dragDirection;
     }
 
     /**
@@ -303,48 +425,30 @@
      * @private
      */
     function initHammer(self) {
-        if (!Hammer) {
+        if (!self.options.draggable || typeof Hammer !== 'function') {
             return;
         }
 
-        var swipe = '$swipe',
-            hammer = 'hammer',
-            hammerScroll = 'hammerScroll';
+        self.$swipe = $('<div id="sidebar-swipe' + self.guid + '" class="sidebar-swipe"></div>');
+        self.$swipe.appendTo(self.$element);
+        self.$swipe.on('mouseover.st.sidebar' + self.guid, preventMouseOver);
 
-        if ($.fn.hammerScroll) {
-            self[hammerScroll] = $('.sidebar-scroller', self.$wrapper).hammerScroll({
-                contentWrapperClass: 'sidebar-scroller-content',
-                eventDelegated:      true,
-                hammerStickyHeader:  self.options.sidebarStickyHeader,
-                scrollbar:           self.options.hammerScrollbar,
-                scrollbarInverse:    Sidebar.POSITION_RIGHT === self.options.position
-            }).data('st.hammerscroll');
-        }
+        self.hammer = new Hammer(self.$element.get(0), $.extend(true, {}, self.options.hammer));
+        self.hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+        self.hammer.get('swipe').set({ enable: false });
+        self.hammer.get('tap').set({ enable: false });
 
-        self[swipe] = $('<div id="sidebar-swipe' + self.guid + '" class="sidebar-swipe"></div>').appendTo(self.$element);
-        self[swipe].on('mouseover', function (event) {
-            event.stopPropagation();
-            event.preventDefault();
+        self.hammer.on('panstart', function (event) {
+            onDragStart(self, event);
+        });
+        self.hammer.on('pan', function (event) {
+            onDrag(self, event);
+        });
+        self.hammer.on('panend', function (event) {
+            onDragEnd(self, event);
         });
 
-        self[hammer] = new Hammer(self.$element[0], {
-            tap: false,
-            transform: false,
-            release: false,
-            hold: false,
-            swipe: false,
-            drag_block_horizontal: true,
-            drag_block_vertical: $.fn.hammerScroll,
-            drag_lock_to_axis: false,
-            drag_min_distance: 5
-        })
-
-            .on('drag', function (event) {
-                onDrag(self, event);
-            })
-            .on('dragend', function (event) {
-                onDragEnd(self, event);
-            });
+        self.$wrapper.on('click.st.sidebar dragstart.st.sidebar drag.st.sidebar dragend.st.sidebar', 'a', null, preventClick);
     }
 
     /**
@@ -355,12 +459,19 @@
      * @private
      */
     function destroyHammer(self) {
-        if (!Hammer) {
+        if (!self.options.draggable || typeof Hammer !== 'function') {
             return;
         }
 
-        self.$swipe.off('mouseover');
-        self.$element.remove(self.$swipe);
+        self.$swipe.remove();
+        self.$swipe.off('mouseover.st.sidebar' + self.guid, preventMouseOver);
+
+        self.$wrapper.off('click.st.sidebar dragstart.st.sidebar drag.st.sidebar dragend.st.sidebar', 'a', preventClick);
+
+        self.hammer.destroy();
+
+        delete self.$swipe;
+        delete self.hammer;
     }
 
     // SIDEBAR CLASS DEFINITION
@@ -375,16 +486,13 @@
      * @this Sidebar
      */
     var Sidebar = function (element, options) {
-        this.guid           = jQuery.guid;
-        this.options        = $.extend({}, Sidebar.DEFAULTS, options);
-        this.$element       = $(element);
-        this.$toggle        = $('.' + this.options.classToggle, this.$element);
-        this.$wrapper       = $('.' + this.options.classWrapper, this.$element);
-        this.eventType      = mobileCheck() ? 'touchstart' : 'click';
-        this.scrollbarWidth = null;
-        this.hammer         = undefined;
-        this.hammerScroll   = undefined;
-        this.$swipe         = undefined;
+                this.guid      = jQuery.guid;
+        this.options   = $.extend(true, {}, Sidebar.DEFAULTS, options);
+        this.eventType = mobileCheck() ? 'touchstart' : 'click';
+        this.nativeScrollWidth = getNativeScrollWidth();
+        this.$element  = $(element);
+        this.$toggle   = $('.' + this.options.classToggle, this.$element);
+        this.$wrapper  = $('.' + this.options.classWrapper, this.$element);
         this.$element.attr('data-sidebar', 'true');
 
         var $findToggle;
@@ -400,20 +508,18 @@
             this.options.position = Sidebar.POSITION_RIGHT;
         }
 
-        if (this.options.locked) {
-            this.options.forceToggle = 'always';
-            this.$element.css('-webkit-transition', 'none');
-            this.$element.css('transition', 'none');
-            this.$wrapper.css('-webkit-transition', 'none');
-            this.$wrapper.css('transition', 'none');
-            this.$element.addClass(this.options.classLocked);
-            this.$element.addClass(this.options.classForceOpen);
-            this.$wrapper.addClass(this.options.classOpen + '-init');
+        if (this.options.position === Sidebar.POSITION_RIGHT) {
+            this.options.keyboardEvent.shiftKey = true;
         }
 
-        if (!mobileCheck() && this.options.openOnHover && null === this.options.toggleId) {
-            this.$element.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
-            this.$element.on('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.close, this));
+        if (this.options.locked) {
+            this.options.forceToggle = 'always';
+            changeTransition(this.$element, 'none');
+            changeTransition(this.$wrapper, 'none');
+            this.$element
+                .addClass(this.options.classLocked)
+                .addClass(this.options.classForceOpen);
+            this.$wrapper.addClass(this.options.classOpen + '-init');
         }
 
         if (null !== this.options.toggleId) {
@@ -426,6 +532,11 @@
 
         } else {
             this.$element.addClass('sidebar-togglable');
+        }
+
+        if (!mobileCheck() && this.options.openOnHover && null === this.options.toggleId) {
+            this.$element.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
+            this.$element.on('mouseout.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.close, this));
         }
 
         this.$toggle.on(this.eventType + '.st.sidebar' + this.guid, null, this, Sidebar.prototype.toggle);
@@ -447,16 +558,10 @@
             $(document).on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
         }
 
-        if (this.options.sidebarStickyHeader && $.fn.stickyHeader && !$.fn.hammerScroll) {
-            this.stickyHeader = $('.sidebar-scroller', this.$wrapper).stickyHeader().data('st.stickyheader');
-        }
-
+        initHammerScroll(this);
         initHammer(this);
-
-        this.$element.css('-webkit-transition', '');
-        this.$element.css('transition', '');
-        this.$wrapper.css('-webkit-transition', '');
-        this.$wrapper.css('transition', '');
+        changeTransition(this.$element, '');
+        changeTransition(this.$wrapper, '');
         this.$wrapper.addClass('sidebar-ready');
     },
         old;
@@ -467,26 +572,31 @@
      * @type {object}
      */
     Sidebar.DEFAULTS = {
-        classToggle:         'sidebar-toggle',
-        classWrapper:        'sidebar-wrapper',
-        classOpen:           'sidebar-open',
-        classLocked:         'sidebar-locked',
-        classForceOpen:      'sidebar-force-open',
-        classOnDragging:     'sidebar-dragging',
-        openOnHover:         false,
-        forceToggle:         false,//false, true, 'always'
-        locked:              false,
-        position:            Sidebar.POSITION_LEFT,//left, right
-        minLockWidth:        992,
-        toggleId:            null,
-        sidebarStickyHeader: false,
-        hammerScrollbar:     true,
-        disabledKeyboard:    false,
-        keyboardEvent:       {
-            ctrlKey:             true,
-            shiftKey:            false,
-            altKey:              true,
-            keyCode:             'S'.charCodeAt(0)
+        classToggle:        'sidebar-toggle',
+        classWrapper:       'sidebar-wrapper',
+        classOpen:          'sidebar-open',
+        classLocked:        'sidebar-locked',
+        classForceOpen:     'sidebar-force-open',
+        classOnDragging:    'sidebar-dragging',
+        openOnHover:        false,
+        forceToggle:        Sidebar.FORCE_TOGGLE_NO,
+        locked:             false,
+        position:           Sidebar.POSITION_LEFT,
+        minLockWidth:       992,
+        toggleId:           null,
+        draggable:          true,
+        useScroll:          false,
+        nativeScroll:       false,
+        forceNativeScroll:  false,
+        hammerStickyHeader: true,
+        hammerScroll:       {},
+        hammer:             {},
+        disabledKeyboard:   false,
+        keyboardEvent:      {
+            ctrlKey:  true,
+            shiftKey: false,
+            altKey:   true,
+            keyCode:  'S'.charCodeAt(0)
         }
     };
 
@@ -503,6 +613,27 @@
      * @type {string}
      */
     Sidebar.POSITION_RIGHT = 'right';
+
+    /**
+     * Not force toggle.
+     *
+     * @type {boolean}
+     */
+    Sidebar.FORCE_TOGGLE_NO = false;
+
+    /**
+     * Force toggle.
+     *
+     * @type {boolean}
+     */
+    Sidebar.FORCE_TOGGLE = true;
+
+    /**
+     * Always force toggle.
+     *
+     * @type {string}
+     */
+    Sidebar.FORCE_TOGGLE_ALWAYS = 'always';
 
     /**
      * Get sidebar position.
@@ -590,6 +721,7 @@
         $('[data-sidebar=true]').sidebar('forceClose');
         this.$wrapper.addClass(this.options.classOpen);
         this.$toggle.addClass(this.options.classToggle + '-opened');
+        this.$wrapper.hammerScroll('resizeScroll');
         $(document).on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
     };
 
@@ -606,6 +738,7 @@
         this.$wrapper.removeClass(this.options.classOpen);
         this.$toggle.removeClass(this.options.classToggle + '-opened');
         $(document).off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
+        this.$wrapper.hammerScroll('resizeScroll');
     };
 
     /**
@@ -671,11 +804,9 @@
         this.$toggle.off(this.eventType + '.st.sidebar' + this.guid, Sidebar.prototype.toggle);
         $(window).off('keyup.st.sidebar' + this.guid, keyboardAction);
         destroyHammer(this);
+        destroyHammerScroll(this);
 
-        if (undefined !== this.stickyHeader) {
-            this.stickyHeader.destroy();
-        }
-
+        this.$wrapper.removeClass('sidebar-ready');
         this.$element.removeData('st.sidebar');
     };
 

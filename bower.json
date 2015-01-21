@@ -18,12 +18,12 @@
   "homepage": "https://github.com/sonatra/sonatra-jquery-sidebar",
   "dependencies": {
     "jquery": ">=1.11.0",
-    "hammerjs": "2.0.*"
+    "sonatra-hammer-scroll": "latest"
   },
   "devDependencies": {
-    "bootstrap": ">=3.0",
-    "font-awesome": ">=4.2",
-    "sonatra-hammer-scroll": "latest"
+    "hammerjs": "~2",
+    "bootstrap": "~3",
+    "font-awesome": "~4"
   },
   "ignore": [
     "examples",

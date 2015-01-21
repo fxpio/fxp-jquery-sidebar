@@ -1,5 +1,5 @@
 .sidebar-toggle {
-  position: absolute;
+  position: fixed;
   display: none;
   top: 0;
   left: 0;
@@ -28,7 +28,7 @@
   display: block;
 }
 .sidebar-wrapper {
-  position: fixed;
+  position: fixed !important;
   top: 0;
   overflow: hidden;
   bottom: 0;
@@ -36,6 +36,8 @@
   cursor: default;
   -moz-user-select: -moz-none;
   user-select: none;
+  border-left: none;
+  border-right: 1px solid transparent;
   -webkit-transform: translate3d(-210px, 0px, 0px);
   transform: translate3d(-210px, 0px, 0px);
 }
@@ -47,18 +49,10 @@
   -webkit-transform: translate3d(0px, 0px, 0px);
   transform: translate3d(0px, 0px, 0px);
 }
-.sidebar-wrapper .sidebar-scroller {
-  position: absolute;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  left: 0;
-  right: -18px;
-  height: 100%;
-}
 .sidebar-wrapper .sidebar-menu {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
   list-style: none;
   text-align: left;
   font-size: 14px;
@@ -117,7 +111,7 @@
 }
 .sidebar-swipe {
   position: fixed;
-  z-index: 1001;
+  z-index: 1030;
   width: 20px;
   left: 0;
   top: 0;
@@ -130,10 +124,10 @@
   left: 210px;
 }
 .sidebar-trigger .sidebar-toggle {
-  z-index: 1002;
+  z-index: 1033;
 }
 .sidebar-trigger .sidebar-wrapper {
-  z-index: 1003;
+  z-index: 1032;
 }
 .sidebar-wrapper.sidebar-default {
   color: #222222;
@@ -243,6 +237,8 @@
 }
 .sidebar-right .sidebar-wrapper {
   right: 0;
+  border-right: none;
+  border-left: 1px solid transparent;
   -webkit-transform: translate3d(210px, 0px, 0px);
   transform: translate3d(210px, 0px, 0px);
 }
@@ -311,8 +307,11 @@
   .sidebar-trigger.sidebar-locked .sidebar-toggle {
     display: none;
   }
-  .sidebar-trigger.sidebar-locked .sidebar-wrapper {
-    margin-top: 51px;
+  .sidebar-trigger.sidebar-locked .sidebar-wrapper.sidebar-default {
+    border-color: #eeeeee;
+  }
+  .sidebar-trigger.sidebar-locked .sidebar-wrapper.sidebar-inverse {
+    border-color: #344252;
   }
   .sidebar-wrapper.sidebar-open-init {
     -webkit-transform: translate3d(0px, 0px, 0px);
