@@ -2,13 +2,13 @@
 .navbar-fixed-bottom + .sidebar-trigger .sidebar-toggle,
 .navbar-fixed-top + .sidebar-trigger + .sidebar-trigger .sidebar-toggle,
 .navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger .sidebar-toggle {
-  z-index: 1031;
+  z-index: 1033;
 }
 .navbar-fixed-top + .sidebar-trigger .sidebar-wrapper,
 .navbar-fixed-bottom + .sidebar-trigger .sidebar-wrapper,
 .navbar-fixed-top + .sidebar-trigger + .sidebar-trigger .sidebar-wrapper,
 .navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger .sidebar-wrapper {
-  z-index: 1029;
+  z-index: 1032;
 }
 .navbar-fixed-bottom + .sidebar-trigger .sidebar-toggle,
 .navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger .sidebar-toggle {
@@ -58,16 +58,20 @@
   .navbar-static-bottom + .sidebar-trigger + .sidebar-trigger.sidebar-locked .sidebar-wrapper {
     z-index: 999;
   }
-  .navbar-fixed-top + .sidebar-trigger.sidebar-locked .sidebar-wrapper {
+  .navbar-fixed-top + .sidebar-trigger.sidebar-locked .sidebar-wrapper,
+  .navbar-fixed-top + .sidebar-trigger + .sidebar-trigger.sidebar-locked .sidebar-wrapper {
     top: 51px;
   }
-  .navbar-fixed-bottom + .sidebar-trigger.sidebar-locked .sidebar-wrapper {
+  .navbar-fixed-bottom + .sidebar-trigger.sidebar-locked .sidebar-wrapper,
+  .navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger.sidebar-locked .sidebar-wrapper {
     bottom: 51px;
   }
-  .navbar-static-top + .sidebar-trigger.sidebar-locked .sidebar-wrapper .sidebar-menu {
+  .navbar-static-top + .sidebar-trigger.sidebar-locked .sidebar-wrapper .sidebar-menu,
+  .navbar-static-top + .sidebar-trigger + .sidebar-trigger.sidebar-locked .sidebar-wrapper .sidebar-menu {
     margin-top: 51px;
   }
-  .navbar-static-bottom + .sidebar-trigger.sidebar-locked .sidebar-wrapper .sidebar-menu {
+  .navbar-static-bottom + .sidebar-trigger.sidebar-locked .sidebar-wrapper .sidebar-menu,
+  .navbar-static-bottom + .sidebar-trigger + .sidebar-trigger.sidebar-locked .sidebar-wrapper .sidebar-menu {
     margin-bottom: 51px;
   }
   .sidebar-force-open:not(.sidebar-right) + .container,

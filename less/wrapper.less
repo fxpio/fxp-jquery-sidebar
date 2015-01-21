@@ -7,10 +7,10 @@
 .navbar-fixed-top + .sidebar-trigger + .sidebar-trigger,
 .navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger {
     .sidebar-toggle {
-        z-index: @zindex-sidebar-toggle-fixed;
+        z-index: @zindex-sidebar-toggle;
     }
     .sidebar-wrapper {
-        z-index: @zindex-sidebar-wrapper-fixed;
+        z-index: @zindex-sidebar-wrapper;
     }
 }
 
@@ -76,25 +76,29 @@
         }
     }
 
-    .navbar-fixed-top + .sidebar-trigger.sidebar-locked {
+    .navbar-fixed-top + .sidebar-trigger.sidebar-locked,
+    .navbar-fixed-top + .sidebar-trigger + .sidebar-trigger.sidebar-locked {
         .sidebar-wrapper {
             top: @navbar-height + 1;
         }
     }
 
-    .navbar-fixed-bottom + .sidebar-trigger.sidebar-locked {
+    .navbar-fixed-bottom + .sidebar-trigger.sidebar-locked,
+    .navbar-fixed-bottom + .sidebar-trigger + .sidebar-trigger.sidebar-locked {
         .sidebar-wrapper {
             bottom: @navbar-height + 1;
         }
     }
 
-    .navbar-static-top + .sidebar-trigger.sidebar-locked {
+    .navbar-static-top + .sidebar-trigger.sidebar-locked,
+    .navbar-static-top + .sidebar-trigger + .sidebar-trigger.sidebar-locked {
         .sidebar-wrapper .sidebar-menu {
             margin-top: @navbar-height + 1;
         }
     }
 
-    .navbar-static-bottom + .sidebar-trigger.sidebar-locked {
+    .navbar-static-bottom + .sidebar-trigger.sidebar-locked,
+    .navbar-static-bottom + .sidebar-trigger + .sidebar-trigger.sidebar-locked {
         .sidebar-wrapper .sidebar-menu {
             margin-bottom: @navbar-height + 1;
         }
