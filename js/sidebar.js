@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+/*global define*/
 /*global jQuery*/
 /*global window*/
 /*global navigator*/
@@ -20,13 +21,24 @@
 /**
  * @param {jQuery} $
  *
+ * @typedef {object}           define.amd                The require AMD
  * @typedef {jQuery|undefined} Sidebar.$swipe            The swipe element
  * @typedef {Hammer|undefined} Sidebar.hammer            The hammer
  * @typedef {Number|undefined} Sidebar.dragStartPosition The drag start position
  * @typedef {Number|undefined} Sidebar.dragDirection     The hammer direction on drag start
  *
  */
-(function ($) {
+(function (factory) {
+    'use strict';
+
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery', 'sonatra-hammer-scroll'], factory);
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+}(function ($) {
     'use strict';
 
     /**
@@ -864,4 +876,4 @@
         });
     });
 
-}(jQuery));
+}));
