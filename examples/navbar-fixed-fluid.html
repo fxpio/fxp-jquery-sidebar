@@ -206,9 +206,22 @@
         </div>
     </div>
 </div>
-<script src="../bower_components/jquery/dist/jquery.js"></script>
-<script src="../bower_components/hammerjs/hammer.js"></script>
-<script src="../bower_components/sonatra-hammer-scroll/js/hammer-scroll.js"></script>
-<script src="../js/sidebar.js"></script>
+<script>
+    var require = {
+        paths: {
+            'jquery': '../bower_components/jquery/dist/jquery',
+            'hammerjs': '../bower_components/hammerjs/hammer',
+            'sonatra-hammer-scroll': '../bower_components/sonatra-hammer-scroll/js/hammer-scroll',
+            'sonatra-sticky-header': '../bower_components/sonatra-hammer-scroll/js/sticky-header',
+            'sonatra-sidebar': '../js/sidebar'
+        },
+        deps: ['hammerjs', 'sonatra-sticky-header', 'sonatra-sidebar'],
+        callback: function (Hammer) {
+            window.Hammer = Hammer;
+            $(window).trigger('load');
+        }
+    };
+</script>
+<script src="../bower_components/requirejs/require.js" async="async"></script>
 </body>
 </html>
