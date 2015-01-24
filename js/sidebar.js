@@ -238,8 +238,7 @@
                 autoConfig:         false,
                 useScroll:          self.options.useScroll,
                 nativeScroll:       self.options.nativeScroll,
-                forceNativeScroll:  mobileCheck() ? true : self.options.forceNativeScroll,
-                scrollbar:          !mobileCheck(),
+                forceNativeScroll:  self.options.forceNativeScroll,
                 hammerStickyHeader: self.options.hammerStickyHeader,
                 scrollbarInverse:   Sidebar.POSITION_RIGHT === self.options.position
             };
@@ -600,7 +599,9 @@
         nativeScroll:       false,
         forceNativeScroll:  false,
         hammerStickyHeader: true,
-        hammerScroll:       {},
+        hammerScroll:       {
+            mobileAutoConfig: false
+        },
         hammer:             {},
         disabledKeyboard:   false,
         keyboardEvent:      {
