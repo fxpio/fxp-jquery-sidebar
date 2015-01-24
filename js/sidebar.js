@@ -333,7 +333,6 @@
      * @private
      */
     function onDragStart(self, event) {
-        event.preventDefault();
         self.dragDirection = event.direction;
         self.$wrapper.css('user-select', 'none');
     }
@@ -351,12 +350,12 @@
     function onDrag(self, event) {
         var delta;
 
-        event.preventDefault();
-
         if (-1 === $.inArray(self.dragDirection, [Hammer.DIRECTION_LEFT, Hammer.DIRECTION_RIGHT]) ||
                 self.options.locked && isOverMinWidth(self)) {
             return;
         }
+
+        event.preventDefault();
 
         if (undefined === self.dragStartPosition) {
             self.dragStartPosition = getTargetPosition(self.$wrapper);
