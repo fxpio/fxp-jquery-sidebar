@@ -9,23 +9,16 @@
 // Z-index master list
 // -------------------------
 
-@zindex-sidebar-toggle:         @zindex-navbar-fixed + 3;
-@zindex-sidebar-wrapper:        @zindex-navbar-fixed + 2;
-@zindex-sidebar-toggle-fixed:   @zindex-navbar-fixed + 1;
-@zindex-sidebar-wrapper-fixed:  @zindex-navbar-fixed - 1;
-@zindex-sidebar-toggle-static:  @zindex-navbar + 1;
-@zindex-sidebar-wrapper-static: @zindex-navbar - 1;
+@zindex-sidebar:        @zindex-navbar-fixed + 2;
+@zindex-sidebar-fixed:  @zindex-navbar-fixed - 1;
+@zindex-sidebar-static: @zindex-navbar - 1;
 
 
 // Custom Sidebar
 // -------------------------
 
-@sidebar-wrapper-width:              @navbar-brand-width;
+@sidebar-width:                      @navbar-brand-width;
 @sidebar-default-font-size:          @font-size-base;
-@sidebar-default-toggle-fa-icon:     @navbar-default-toggle-fa-icon;
-@sidebar-default-toggle-font-size:   @navbar-default-toggle-font-size;
-@sidebar-default-toggle-color:       @navbar-default-toggle-icon-bar-bg;
-@sidebar-default-toggle-hover-color: @navbar-default-link-hover-color;
 @sidebar-default-color:              @gray-dark;
 @sidebar-default-bg:                 #fff;
 @sidebar-default-border-color:       @gray-lighter;
@@ -40,8 +33,6 @@
 @sidebar-default-link-active-bg:     @sidebar-default-link-bg;
 @sidebar-default-scrollbar-bg:       #555;
 
-@sidebar-toggle-inverse-color:       @navbar-inverse-toggle-icon-bar-bg;
-@sidebar-toggle-inverse-hover-color: @navbar-inverse-link-hover-color;
 @sidebar-inverse-color:              @navbar-inverse-color;
 @sidebar-inverse-bg:                 #2a3542;
 @sidebar-inverse-border-color:       lighten(@sidebar-inverse-bg, 5%);
