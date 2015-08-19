@@ -17,14 +17,14 @@
   "license": "MIT",
   "homepage": "https://github.com/sonatra/sonatra-jquery-sidebar",
   "dependencies": {
-    "jquery": ">=1.11.0",
-    "sonatra-hammer-scroll": "latest"
+    "jquery": "^2.1.0",
+    "hammerjs": "^2.0.0"
   },
   "devDependencies": {
     "requirejs": "~2",
-    "hammerjs": "~2",
-    "bootstrap": "~3",
-    "font-awesome": "~4"
+    "bootstrap": "3.*",
+    "font-awesome": "4.*",
+    "sonatra-jquery-scroller": "latest"
   },
   "ignore": [
     "examples",
