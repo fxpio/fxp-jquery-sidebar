@@ -1,14 +1,21 @@
-﻿.html-scroll,
-.html-scroll > body {
+﻿html,
+body,
+.container-main {
     height: 100%;
     width: 100%;
     margin: 0;
 }
 
-.container-sidebar {
-    width: 100%;
-    height: 100%;
+.container-main {
     overflow-y: auto;
+}
+
+.container-main.container-fixed-top {
+     padding-top: 70px;
+}
+
+.container-main.container-fixed-bottom {
+    padding-bottom: 70px;
 }
 
 .navbar-toggle.btn-sidebar-toggle-left {

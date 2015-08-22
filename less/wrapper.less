@@ -1,5 +1,5 @@
 //
-// Navbar
+// Wrapper Bootstrap
 // --------------------------------------------------
 
 .sidebar {
@@ -10,21 +10,6 @@
         + .sidebar-swipe {
             z-index: @zindex-sidebar;
         }
-    }
-}
-
-
-//
-// Container
-// --------------------------------------------------
-
-.container-sidebar {
-    &.container-fixed-top {
-        padding-top: @navbar-height + @navbar-margin-bottom;
-    }
-
-    &.container-fixed-bottom {
-        padding-bottom: @navbar-height + @navbar-margin-bottom;
     }
 }
 
@@ -79,7 +64,7 @@
         }
     }
 
-    .container-sidebar {
+    .container-main {
         &.container-force-open-left {
             > .container {
                 padding-left: @sidebar-width + (@grid-gutter-width / 2);

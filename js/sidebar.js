@@ -557,7 +557,7 @@
      */
     Sidebar.DEFAULTS = {
         classWrapper:       'sidebar-wrapper',
-        classContainer:     'container-sidebar',
+        classContainer:     'container-main',
         classOpen:          'sidebar-open',
         classLocked:        'sidebar-locked',
         classForceOpen:     'sidebar-force-open',
