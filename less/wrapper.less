@@ -5,10 +5,10 @@
 .sidebar {
     &.sidebar-fixed-top,
     &.sidebar-fixed-bottom {
-        z-index: @zindex-sidebar;
+        z-index: @zindex-sidebar-fixed;
 
         + .sidebar-swipe {
-            z-index: @zindex-sidebar;
+            z-index: @zindex-sidebar-fixed - 2;
         }
     }
 }
@@ -18,6 +18,10 @@
         &.sidebar-fixed-top,
         &.sidebar-fixed-bottom {
             z-index: @zindex-sidebar;
+
+            + .sidebar-swipe {
+                z-index: @zindex-sidebar - 2;
+            }
         }
     }
 }
@@ -29,7 +33,7 @@
             z-index: @zindex-sidebar-static;
 
             + .sidebar-swipe {
-                z-index: @zindex-sidebar-static;
+                z-index: @zindex-sidebar-static - 2;
             }
         }
 
