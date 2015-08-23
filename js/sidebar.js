@@ -571,7 +571,10 @@
         draggable:          true,
         useScroller:        true,
         scroller:           {
-            scrollerStickyHeader: true
+            scrollerStickyHeader: true,
+            stickyOptions: {
+                selector: '> .sidebar-menu > .sidebar-group > span'
+            }
         },
         hammer:             {},
         disabledKeyboard:   false,
