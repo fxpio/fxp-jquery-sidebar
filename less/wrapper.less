@@ -2,7 +2,7 @@
 // Wrapper Bootstrap
 // --------------------------------------------------
 
-.sidebar {
+.sidebar:not(.sidebar-full-locked) {
     &.sidebar-fixed-top,
     &.sidebar-fixed-bottom {
         z-index: @zindex-sidebar-fixed;
@@ -14,7 +14,7 @@
 }
 
 @media (max-width: @screen-sm-max) {
-    .sidebar {
+    .sidebar:not(.sidebar-full-locked) {
         &.sidebar-fixed-top,
         &.sidebar-fixed-bottom {
             z-index: @zindex-sidebar;
@@ -27,7 +27,7 @@
 }
 
 @media (min-width: (@screen-sm-max + 1)) {
-    .sidebar.sidebar-locked {
+    .sidebar.sidebar-locked:not(.sidebar-full-locked) {
         &.sidebar-static-top,
         &.sidebar-static-bottom {
             z-index: @zindex-sidebar-static;
