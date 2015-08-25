@@ -392,7 +392,7 @@
         self.$element.after(self.$swipe);
 
         self.hammer = new Hammer(self.$wrapper.get(0), $.extend(true, {}, self.options.hammer));
-        self.hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+        self.hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL });
         self.hammer.get('swipe').set({ enable: false });
         self.hammer.get('tap').set({ enable: false });
 
