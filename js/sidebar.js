@@ -435,7 +435,6 @@
      */
     function initScroller(self) {
         var options = {
-            contentSelector:  '.sidebar-menu',
             scrollbarInverse: Sidebar.POSITION_RIGHT === self.options.position
         };
 
@@ -571,6 +570,7 @@
         draggable:          true,
         useScroller:        true,
         scroller:           {
+            contentSelector: '.sidebar-menu',
             scrollerStickyHeader: true,
             stickyOptions: {
                 selector: '> .sidebar-menu > .sidebar-group > span'
