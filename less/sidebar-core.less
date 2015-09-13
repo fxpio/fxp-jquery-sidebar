@@ -344,12 +344,34 @@
         transform: translate3d(0px, 0px, 0px);
     }
 
-    .sidebar-force-open,
-    .sidebar-force-open.sidebar-right {
-        &.sidebar {
+    .sidebar-force-open {
+        &.sidebar.sidebar-default {
             &.sidebar-open,
             &.sidebar-dragging {
-                .box-shadow(none);
+                .box-shadow(@sidebar-default-shadow-open-left);
+            }
+        }
+
+        &.sidebar.sidebar-inverse {
+            &.sidebar-open,
+            &.sidebar-dragging {
+                .box-shadow(@sidebar-inverse-shadow-open-left);
+            }
+        }
+    }
+
+    .sidebar-force-open.sidebar-right {
+        &.sidebar.sidebar-default {
+            &.sidebar-open,
+            &.sidebar-dragging {
+                .box-shadow(@sidebar-default-shadow-open-right);
+            }
+        }
+
+        &.sidebar.sidebar-inverse {
+            &.sidebar-open,
+            &.sidebar-dragging {
+                .box-shadow(@sidebar-inverse-shadow-open-right);
             }
         }
     }
