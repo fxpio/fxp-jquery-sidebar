@@ -784,6 +784,17 @@
     };
 
     /**
+     * Refresh the scroller.
+     *
+     * @this Sidebar
+     */
+    Sidebar.prototype.refresh = function () {
+        if ($.fn.scroller && this.options.useScroller) {
+            this.$element.scroller('refresh');
+        }
+    };
+
+    /**
      * Destroy instance.
      *
      * @this Sidebar
