@@ -8,6 +8,7 @@ body,
 
 .container-main {
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .container-main.container-fixed-top {
