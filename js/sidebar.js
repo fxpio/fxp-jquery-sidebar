@@ -156,7 +156,7 @@
      * @private
      */
     function keyboardAction(event) {
-        if (! (event instanceof jQuery.Event)) {
+        if (!(event instanceof jQuery.Event)) {
             return;
         }
 
@@ -212,15 +212,15 @@
             isOver = isOverMinWidth(self);
 
         if ((self.isLocked() && isOver) ||
-            $target.hasClass(self.options.classWrapper) ||
-            $directTarget.hasClass(self.options.classWrapper) ||
-            $target.hasClass('sidebar-swipe') ||
-            $directTarget.hasClass('sidebar-swipe') ||
-            $target.parents('.' + self.options.classWrapper).size() > 0 ||
-            $directTarget.parents('.' + self.options.classWrapper).size() > 0 ||/*
-            (self.$toggle !== null && self.$toggle.attr('id') === $target.attr('id')) ||
-            (self.$toggle !== null && self.$toggle.attr('id') === $target.attr('id')) ||*/
-            true === self.mouseDragEnd) {
+                $target.hasClass(self.options.classWrapper) ||
+                $directTarget.hasClass(self.options.classWrapper) ||
+                $target.hasClass('sidebar-swipe') ||
+                $directTarget.hasClass('sidebar-swipe') ||
+                $target.parents('.' + self.options.classWrapper).size() > 0 ||
+                $directTarget.parents('.' + self.options.classWrapper).size() > 0 ||/*
+                (self.$toggle !== null && self.$toggle.attr('id') === $target.attr('id')) ||
+                (self.$toggle !== null && self.$toggle.attr('id') === $target.attr('id')) ||*/
+                true === self.mouseDragEnd) {
             self.mouseDragEnd = null;
             return;
         }
@@ -259,7 +259,7 @@
         closeExternal(event);
 
         if (undefined === self.resizeDelay) {
-            self.resizeDelay = setTimeout(function () {
+            self.resizeDelay = window.setTimeout(function () {
                 delete self.resizeDelay;
                 changeTransition(self.$element, '');
             }, 500);
@@ -295,7 +295,7 @@
         var delta;
 
         if (-1 === $.inArray(self.dragDirection, [Hammer.DIRECTION_LEFT, Hammer.DIRECTION_RIGHT]) ||
-            self.options.locked && isOverMinWidth(self)) {
+                (self.options.locked && isOverMinWidth(self))) {
             return;
         }
 
@@ -308,7 +308,7 @@
         delta = Math.round(self.dragStartPosition + event.deltaX);
 
         if ((Sidebar.POSITION_LEFT === self.getPosition() && delta > 0) ||
-            (Sidebar.POSITION_RIGHT === self.getPosition() && delta < 0)) {
+                (Sidebar.POSITION_RIGHT === self.getPosition() && delta < 0)) {
             delta = 0;
         }
 
@@ -362,7 +362,7 @@
 
         } else if (openGesture === self.dragDirection) {
             if (self.isOpen() && isOverMinWidth(self) &&
-                $.inArray(self.options.forceToggle, [Sidebar.FORCE_TOGGLE, Sidebar.FORCE_TOGGLE_ALWAYS]) >= 0) {
+                    $.inArray(self.options.forceToggle, [Sidebar.FORCE_TOGGLE, Sidebar.FORCE_TOGGLE_ALWAYS]) >= 0) {
                 self.forceOpen();
 
             } else if (isOverMinWidth(self) && Sidebar.FORCE_TOGGLE_ALWAYS === self.options.forceToggle) {
@@ -850,7 +850,8 @@
             }
 
             if (!data) {
-                $this.data('st.sidebar', (data = new Sidebar(this, options)));
+                data = new Sidebar(this, options);
+                $this.data('st.sidebar', data);
             }
 
             if (typeof option === 'string') {
