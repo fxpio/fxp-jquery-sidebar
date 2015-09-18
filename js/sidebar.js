@@ -490,6 +490,16 @@
         this.$wrapper.append(this.$element);
         this.$element.attr('data-sidebar', 'true');
 
+        if (undefined !== this.options.scrollerStickyHeader) {
+            this.options.scroller.scrollerStickyHeader = this.options.scrollerStickyHeader;
+            delete this.options.scrollerStickyHeader;
+        }
+
+        if (undefined !== this.options.scrollerScrollbar) {
+            this.options.scroller.scrollbar = this.options.scrollerScrollbar;
+            delete this.options.scrollerScrollbar;
+        }
+
         if (Sidebar.POSITION_RIGHT !== this.options.position) {
             this.options.position = Sidebar.POSITION_LEFT;
 
