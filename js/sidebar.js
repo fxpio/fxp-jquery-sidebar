@@ -393,7 +393,7 @@
 
         self.hammer = new Hammer(self.$wrapper.get(0), $.extend(true, {}, self.options.hammer));
 
-        if (!(/iPad|iPhone|iPod/.test(navigator.platform))) {
+        if (!(/iPad|iPhone|iPod/.test(navigator.userAgent)) && !((/Firefox/.test(navigator.userAgent) && /Tablet|Phone/.test(navigator.userAgent)))) {
             self.hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL });
         }
 
