@@ -830,7 +830,6 @@
         this.$wrapper.before(this.$element);
         this.$wrapper.remove();
 
-        this.$element.attr('data-sidebar', '');
         this.$element.removeClass('sidebar-ready');
         this.$element.removeData('st.sidebar');
 
