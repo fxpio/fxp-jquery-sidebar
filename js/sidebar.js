@@ -256,8 +256,6 @@
             return;
         }
 
-        closeExternal(event);
-
         if (undefined === self.resizeDelay) {
             self.resizeDelay = window.setTimeout(function () {
                 delete self.resizeDelay;
@@ -539,7 +537,7 @@
         }
 
         $(window).on('keyup.st.sidebar' + this.guid, null, this, keyboardAction);
-        $(window).on('resize.st.sidebar' + this.guid, null, this, onResizeWindow);
+        $(window).on('resize.st.sidebar' + this.guid, null, this, onResizeWindow);//TODO
 
         if (this.$element.hasClass(this.options.classOpen + '-init')) {
             if (isOverMinWidth(this)) {
