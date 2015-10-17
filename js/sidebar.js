@@ -845,6 +845,17 @@
     };
 
     /**
+     * Checks if sidebar is enabled.
+     *
+     * @returns {boolean}
+     *
+     * @this Sidebar
+     */
+    Sidebar.prototype.isEnabled = function () {
+        return this.enabled;
+    };
+
+    /**
      * Disable the sidebar.
      *
      * @this Sidebar
