@@ -526,6 +526,8 @@
                     .addClass(this.options.classLocked + '-toggle')
                     .addClass(this.options.classForceOpen + '-toggle');
             }
+
+            this.$container.addClass('container-force-open-' + this.options.position);
         }
 
         if (null !== this.$toggle) {
@@ -688,6 +690,7 @@
         }
 
         this.$element.addClass(this.options.classForceOpen);
+        this.$container.addClass('container-force-open-' + this.options.position);
         this.open();
 
         if (null !== this.$toggle) {
@@ -709,6 +712,7 @@
             this.$toggle.removeClass(this.options.classForceOpen + '-toggle');
         }
 
+        this.$container.removeClass('container-force-open-' + this.options.position);
         this.$element.removeClass(this.options.classForceOpen);
         this.close();
     };
