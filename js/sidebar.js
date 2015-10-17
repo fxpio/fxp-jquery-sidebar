@@ -492,12 +492,12 @@
         this.options = $.extend(true, {}, Sidebar.DEFAULTS, options);
         this.eventType = mobileCheck() ? 'touchstart' : 'click';
         this.nativeScrollWidth = getNativeScrollWidth();
-        this.enabled = true;
         this.$element = $(element);
         this.$toggle = null !== this.options.toggleId ?  $('#' + this.options.toggleId) : null;
         this.$wrapper = $('<div class="' + this.options.classWrapper + '"></div>');
         this.$container = $('> .' + this.options.classContainer, this.$element.parent());
         this.$swipe = null;
+        this.enabled = !this.$element.hasClass('sidebar-disabled');
         this.hammer = null;
         this.dragStartPosition = null;
         this.mouseDragEnd = null;
@@ -532,21 +532,36 @@
             this.options.keyboardEvent.shiftKey = true;
         }
 
+        if (!this.enabled) {
+            this.$element
+                .removeClass(this.options.classLocked)
+                .removeClass(this.options.classForceOpen)
+                .removeClass(this.options.classOpen)
+                .removeClass(this.options.classOpen + '-init');
+
+            if (null !== this.$toggle) {
+                this.$toggle.addClass('disabled');
+            }
+        }
+
         if (this.options.locked) {
             this.options.forceToggle = Sidebar.FORCE_TOGGLE_ALWAYS;
             changeTransition(this.$element, 'none');
-            this.$element
-                .addClass(this.options.classLocked)
-                .addClass(this.options.classForceOpen)
-                .addClass(this.options.classOpen + '-init');
 
-            if (null !== this.$toggle) {
-                this.$toggle
-                    .addClass(this.options.classLocked + '-toggle')
-                    .addClass(this.options.classForceOpen + '-toggle');
+            if (this.enabled) {
+                this.$element
+                    .addClass(this.options.classLocked)
+                    .addClass(this.options.classForceOpen)
+                    .addClass(this.options.classOpen + '-init');
+
+                if (null !== this.$toggle) {
+                    this.$toggle
+                        .addClass(this.options.classLocked + '-toggle')
+                        .addClass(this.options.classForceOpen + '-toggle');
+                }
+
+                this.$container.addClass('container-force-open-' + this.options.position);
             }
-
-            this.$container.addClass('container-force-open-' + this.options.position);
         }
 
         if (null !== this.$toggle) {
@@ -578,10 +593,6 @@
         initScroller(this);
         initHammer(this);
         changeTransition(this.$element, '');
-
-        if (this.$element.hasClass('sidebar-disabled')) {
-            this.disable();
-        }
 
         this.$element.addClass('sidebar-ready');
     },
@@ -878,9 +889,7 @@
         this.$element.addClass('sidebar-disabled');
 
         if (null !== this.$toggle) {
-            this.$toggle
-                .removeClass(this.options.classLocked + '-toggle')
-                .addClass('disabled');
+            this.$toggle.addClass('disabled');
 
             if (this.isLocked()) {
                 this.$toggle.addClass(this.options.classLocked + '-toggle-disabled')
@@ -913,8 +922,7 @@
 
             if (this.isLocked()) {
                 this.$toggle
-                    .removeClass(this.options.classLocked + '-toggle-disabled')
-                    .addClass(this.options.classLocked + '-toggle');
+                    .removeClass(this.options.classLocked + '-toggle-disabled');
             }
         }
 
