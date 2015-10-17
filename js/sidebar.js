@@ -548,17 +548,17 @@
             this.options.forceToggle = Sidebar.FORCE_TOGGLE_ALWAYS;
             changeTransition(this.$element, 'none');
 
+            if (null !== this.$toggle) {
+                this.$toggle
+                    .addClass(this.options.classLocked + '-toggle')
+                    .addClass(this.options.classForceOpen + '-toggle');
+            }
+
             if (this.enabled) {
                 this.$element
                     .addClass(this.options.classLocked)
                     .addClass(this.options.classForceOpen)
                     .addClass(this.options.classOpen + '-init');
-
-                if (null !== this.$toggle) {
-                    this.$toggle
-                        .addClass(this.options.classLocked + '-toggle')
-                        .addClass(this.options.classForceOpen + '-toggle');
-                }
 
                 this.$container.addClass('container-force-open-' + this.options.position);
             }
