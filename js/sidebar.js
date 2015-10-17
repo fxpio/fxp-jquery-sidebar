@@ -72,6 +72,24 @@
     }
 
     /**
+     * Trigger the event.
+     *
+     * @param {String}  type   The event type
+     * @param {Sidebar} self   The sidebar instance
+     * @param {*}       [data] The data
+     *
+     * @private
+     */
+    function triggerEvent(type, self, data) {
+        $.event.trigger({
+            type: 'sidebar:' + type + '.st.sidebar',
+            sidebar: self,
+            data: data,
+            time: new Date()
+        });
+    }
+
+    /**
      * Changes the css transition configuration on target element.
      *
      * @param {jQuery} $target    The element to edited
@@ -691,11 +709,13 @@
 
         this.$element.addClass(this.options.classForceOpen);
         this.$container.addClass('container-force-open-' + this.options.position);
-        this.open();
 
         if (null !== this.$toggle) {
             this.$toggle.addClass(this.options.classForceOpen + '-toggle');
         }
+
+        triggerEvent('force-open', this);
+        this.open();
     };
 
     /**
@@ -714,6 +734,7 @@
 
         this.$container.removeClass('container-force-open-' + this.options.position);
         this.$element.removeClass(this.options.classForceOpen);
+        triggerEvent('force-close', this);
         this.close();
     };
 
@@ -739,6 +760,8 @@
         if ($.fn.scroller && this.options.useScroller) {
             this.$element.scroller('resizeScrollbar');
         }
+
+        triggerEvent('open', this);
     };
 
     /**
@@ -761,6 +784,8 @@
         if ($.fn.scroller && this.options.useScroller) {
             this.$element.scroller('resizeScrollbar');
         }
+
+        triggerEvent('close', this);
     };
 
     /**
@@ -797,6 +822,8 @@
         } else {
             self.open();
         }
+
+        triggerEvent('toggle', this);
     };
 
     /**
@@ -808,6 +835,8 @@
         if ($.fn.scroller && this.options.useScroller) {
             this.$element.scroller('refresh');
         }
+
+        triggerEvent('refresh', this);
     };
 
     /**
