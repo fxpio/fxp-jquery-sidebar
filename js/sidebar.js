@@ -492,6 +492,7 @@
         this.options = $.extend(true, {}, Sidebar.DEFAULTS, options);
         this.eventType = mobileCheck() ? 'touchstart' : 'click';
         this.nativeScrollWidth = getNativeScrollWidth();
+        this.enabled = true;
         this.$element = $(element);
         this.$toggle = null !== this.options.toggleId ?  $('#' + this.options.toggleId) : null;
         this.$wrapper = $('<div class="' + this.options.classWrapper + '"></div>');
@@ -703,7 +704,7 @@
      * @this Sidebar
      */
     Sidebar.prototype.forceOpen = function () {
-        if (this.isOpen() && this.isFullyOpened()) {
+        if (!this.enabled || (this.isOpen() && this.isFullyOpened())) {
             return;
         }
 
@@ -724,7 +725,7 @@
      * @this Sidebar
      */
     Sidebar.prototype.forceClose = function () {
-        if (!this.isOpen() || (this.isLocked() && isOverMinWidth(this))) {
+        if (!this.enabled || !this.isOpen() || (this.isLocked() && isOverMinWidth(this))) {
             return;
         }
 
@@ -744,7 +745,7 @@
      * @this Sidebar
      */
     Sidebar.prototype.open = function () {
-        if (this.isOpen()) {
+        if (!this.enabled || this.isOpen()) {
             return;
         }
 
@@ -770,7 +771,7 @@
      * @this Sidebar
      */
     Sidebar.prototype.close = function () {
-        if (!this.isOpen() || (this.isFullyOpened() && isOverMinWidth(this))) {
+        if (!this.enabled || !this.isOpen() || (this.isFullyOpened() && isOverMinWidth(this))) {
             return;
         }
 
@@ -799,6 +800,10 @@
      */
     Sidebar.prototype.toggle = function (event) {
         var self = (undefined !== event) ? event.data : this;
+
+        if (!self.enabled) {
+            return;
+        }
 
         if (undefined !== event) {
             event.stopPropagation();
@@ -837,6 +842,67 @@
         }
 
         triggerEvent('refresh', this);
+    };
+
+    /**
+     * Disable the sidebar.
+     *
+     * @this Sidebar
+     */
+    Sidebar.prototype.disable = function () {
+        var prevIsLocked = this.isLocked();
+
+        if (!this.enabled) {
+            return;
+        }
+
+        this.options.locked = false;
+        this.forceClose();
+        this.options.locked = prevIsLocked;
+        this.$element.addClass('sidebar-disabled');
+
+        if (null !== this.$toggle) {
+            this.$toggle
+                .removeClass(this.options.classLocked + '-toggle')
+                .addClass('disabled');
+
+            if (this.isLocked()) {
+                this.$toggle.addClass(this.options.classLocked + '-toggle-disabled')
+            }
+        }
+        this.enabled = false;
+
+        triggerEvent('disable', this);
+    };
+
+    /**
+     * Enable the sidebar.
+     *
+     * @this Sidebar
+     */
+    Sidebar.prototype.enable = function () {
+        if (this.enabled) {
+            return;
+        }
+
+        this.enabled = true;
+        this.$element.removeClass('sidebar-disabled');
+
+        if (isOverMinWidth(this) && Sidebar.FORCE_TOGGLE_ALWAYS === this.options.forceToggle) {
+            this.forceOpen();
+        }
+
+        if (null !== this.$toggle) {
+            this.$toggle.removeClass('disabled');
+
+            if (this.isLocked()) {
+                this.$toggle
+                    .removeClass(this.options.classLocked + '-toggle-disabled')
+                    .addClass(this.options.classLocked + '-toggle');
+            }
+        }
+
+        triggerEvent('enable', this);
     };
 
     /**
