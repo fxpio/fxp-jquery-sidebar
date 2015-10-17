@@ -474,6 +474,55 @@
         }
     }
 
+    /**
+     * Action to detach toggle button.
+     *
+     * @param {Sidebar} self    The sidebar instance
+     * @param {jQuery}  $toggle The toggle
+     *
+     * @this Sidebar
+     */
+    function doDetachToggle(self, $toggle) {
+        $toggle
+            .off('mouseover.st.sidebar' + self.guid, $.proxy(Sidebar.prototype.open, self))
+            .off(self.eventType + '.st.sidebar' + self.guid, Sidebar.prototype.toggle)
+            .removeClass(self.options.classLocked + '-toggle')
+            .removeClass(self.options.classForceOpen + '-toggle')
+            .removeClass(self.options.classOpen + '-toggle');
+
+        if (!self.enabled) {
+            $toggle.removeClass('disabled');
+        }
+    }
+
+    /**
+     * Add css classname in toggle buttons.
+     *
+     * @param {Sidebar} self      The sidebar instance
+     * @param {String}  classname The css classname
+     *
+     * @this Sidebar
+     */
+    function addClassToggles(self, classname) {
+        self.$toggles.each(function (index, $toggle) {
+            $toggle.addClass(classname);
+        });
+    }
+
+    /**
+     * Add css classname in toggle buttons.
+     *
+     * @param {Sidebar} self      The sidebar instance
+     * @param {String}  classname The css classname
+     *
+     * @this Sidebar
+     */
+    function removeClassToggles(self, classname) {
+        self.$toggles.each(function (index, $toggle) {
+            $toggle.removeClass(classname);
+        });
+    }
+
     // SIDEBAR CLASS DEFINITION
     // ========================
 
@@ -491,7 +540,7 @@
         this.eventType = mobileCheck() ? 'touchstart' : 'click';
         this.nativeScrollWidth = getNativeScrollWidth();
         this.$element = $(element);
-        this.$toggle = null !== this.options.toggleId ?  $('#' + this.options.toggleId) : null;
+        this.$toggles = $([]);
         this.$wrapper = $('<div class="' + this.options.classWrapper + '"></div>');
         this.$container = $('> .' + this.options.classContainer, this.$element.parent());
         this.$swipe = null;
@@ -504,6 +553,10 @@
         this.$element.before(this.$wrapper);
         this.$wrapper.append(this.$element);
         this.$element.attr('data-sidebar', 'true');
+
+        if (null !== this.options.toggleId) {
+            this.attachToggle('#' + this.options.toggleId);
+        }
 
         if (undefined !== this.options.scrollerStickyHeader) {
             this.options.scroller.scrollerStickyHeader = this.options.scrollerStickyHeader;
@@ -536,21 +589,11 @@
                 .removeClass(this.options.classForceOpen)
                 .removeClass(this.options.classOpen)
                 .removeClass(this.options.classOpen + '-init');
-
-            if (null !== this.$toggle) {
-                this.$toggle.addClass('disabled');
-            }
         }
 
         if (this.options.locked) {
             this.options.forceToggle = Sidebar.FORCE_TOGGLE_ALWAYS;
             changeTransition(this.$element, 'none');
-
-            if (null !== this.$toggle) {
-                this.$toggle
-                    .addClass(this.options.classLocked + '-toggle')
-                    .addClass(this.options.classForceOpen + '-toggle');
-            }
 
             if (this.enabled) {
                 this.$element
@@ -559,14 +602,6 @@
                     .addClass(this.options.classOpen + '-init');
 
                 this.$container.addClass('container-force-open-' + this.options.position);
-            }
-        }
-
-        if (null !== this.$toggle) {
-            this.$toggle.on(this.eventType + '.st.sidebar' + this.guid, null, this, Sidebar.prototype.toggle);
-
-            if (!mobileCheck() && this.options.toggleOpenOnHover && null !== this.$toggle) {
-                this.$toggle.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
             }
         }
 
@@ -724,10 +759,7 @@
 
         this.$element.addClass(this.options.classForceOpen);
         this.$container.addClass('container-force-open-' + this.options.position);
-
-        if (null !== this.$toggle) {
-            this.$toggle.addClass(this.options.classForceOpen + '-toggle');
-        }
+        addClassToggles(this, this.options.classForceOpen + '-toggle');
 
         triggerEvent('force-open', this);
         this.open();
@@ -743,10 +775,7 @@
             return;
         }
 
-        if (null !== this.$toggle) {
-            this.$toggle.removeClass(this.options.classForceOpen + '-toggle');
-        }
-
+        removeClassToggles(this, this.options.classForceOpen + '-toggle');
         this.$container.removeClass('container-force-open-' + this.options.position);
         this.$element.removeClass(this.options.classForceOpen);
         triggerEvent('force-close', this);
@@ -765,10 +794,7 @@
 
         $('[data-sidebar=true]').sidebar('forceClose');
 
-        if (null !== this.$toggle) {
-            this.$toggle.addClass(this.options.classOpen);
-        }
-
+        addClassToggles(this, this.options.classOpen + '-toggle');
         this.$element.addClass(this.options.classOpen);
         $(document).on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
 
@@ -789,10 +815,7 @@
             return;
         }
 
-        if (null !== this.$toggle) {
-            this.$toggle.removeClass(this.options.classOpen);
-        }
-
+        removeClassToggles(this, this.options.classOpen + '-toggle');
         this.$element.removeClass(this.options.classOpen);
         $(document).off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
 
@@ -859,6 +882,85 @@
     };
 
     /**
+     * Attach a toggle button.
+     *
+     * @param {string|element|object|jQuery} $toggle
+     *
+     * @this Sidebar
+     */
+    Sidebar.prototype.attachToggle = function ($toggle) {
+        $toggle = $($toggle);
+
+        if (!this.enabled) {
+            $toggle.addClass('disabled');
+        }
+
+        if (this.isLocked()) {
+            $toggle.addClass(this.options.classLocked + '-toggle');
+        } else {
+            $toggle.removeClass(this.options.classLocked + '-toggle');
+        }
+
+        if (this.isFullyOpened()) {
+            $toggle.addClass(this.options.classForceOpen + '-toggle');
+        } else {
+            $toggle.removeClass(this.options.classForceOpen + '-toggle');
+        }
+
+        if (this.isOpen()) {
+            $toggle.addClass(this.options.classOpen + '-toggle');
+        } else {
+            $toggle.removeClass(this.options.classOpen + '-toggle');
+        }
+
+        $toggle.on(this.eventType + '.st.sidebar' + this.guid, null, this, Sidebar.prototype.toggle);
+
+        if (!mobileCheck() && this.options.toggleOpenOnHover) {
+            $toggle.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
+        }
+
+        this.$toggles.push($toggle);
+    };
+
+    /**
+     * Detach a toggle button.
+     *
+     * @param {string|element|object|jQuery} $toggle
+     *
+     * @this Sidebar
+     */
+    Sidebar.prototype.detachToggle = function ($toggle) {
+        var size = this.$toggles.length,
+            i;
+
+        $toggle = $($toggle);
+
+        for (i = 0; i < size; ++i) {
+            if (this.$toggles[i][0] === $toggle[0]) {
+                doDetachToggle(this, this.$toggles[i]);
+                this.$toggles.splice(i, 1);
+                break;
+            }
+        }
+    };
+
+    /**
+     * Detach a toggle button.
+     *
+     * @this Sidebar
+     */
+    Sidebar.prototype.detachToggles = function () {
+        var size = this.$toggles.length,
+            i;
+
+        for (i = 0; i < size; ++i) {
+            doDetachToggle(this, this.$toggles[i]);
+        }
+
+        this.$toggles.splice(0, size);
+    };
+
+    /**
      * Checks if sidebar is enabled.
      *
      * @returns {boolean}
@@ -885,14 +987,12 @@
         this.forceClose();
         this.options.locked = prevIsLocked;
         this.$element.addClass('sidebar-disabled');
+        addClassToggles(this, 'disabled');
 
-        if (null !== this.$toggle) {
-            this.$toggle.addClass('disabled');
-
-            if (this.isLocked()) {
-                this.$toggle.addClass(this.options.classLocked + '-toggle-disabled')
-            }
+        if (this.isLocked()) {
+            addClassToggles(this, this.options.classLocked + '-toggle-disabled');
         }
+
         this.enabled = false;
 
         triggerEvent('disable', this);
@@ -915,13 +1015,10 @@
             this.forceOpen();
         }
 
-        if (null !== this.$toggle) {
-            this.$toggle.removeClass('disabled');
+        removeClassToggles(this, 'disabled');
 
-            if (this.isLocked()) {
-                this.$toggle
-                    .removeClass(this.options.classLocked + '-toggle-disabled');
-            }
+        if (this.isLocked()) {
+            removeClassToggles(this, this.options.classLocked + '-toggle-disabled');
         }
 
         triggerEvent('enable', this);
@@ -933,11 +1030,7 @@
      * @this Sidebar
      */
     Sidebar.prototype.destroy = function () {
-        if (null !== this.$toggle) {
-            this.$toggle.off('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
-            this.$toggle.off(this.eventType + '.st.sidebar' + this.guid, Sidebar.prototype.toggle);
-        }
-
+        this.detachToggles();
         this.forceClose();
         $(window).off('keyup.st.sidebar' + this.guid, keyboardAction);
         $(window).off('resize.st.sidebar' + this.guid, onResizeWindow);
@@ -959,7 +1052,7 @@
         delete this.$element;
         delete this.$wrapper;
         delete this.$container;
-        delete this.$toggle;
+        delete this.$toggles;
         delete this.dragStartPosition;
         delete this.mouseDragEnd;
         delete this.dragDirection;
