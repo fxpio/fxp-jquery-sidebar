@@ -568,6 +568,10 @@
             delete this.options.scrollerScrollbar;
         }
 
+        if (this.$element.hasClass(this.options.classLocked)) {
+            this.options.locked = true;
+        }
+
         if (Sidebar.POSITION_RIGHT !== this.options.position) {
             this.options.position = Sidebar.POSITION_LEFT;
 
