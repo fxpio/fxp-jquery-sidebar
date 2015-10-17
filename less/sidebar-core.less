@@ -116,13 +116,17 @@
 .sidebar-swipe {
     position : fixed;
     z-index: @zindex-sidebar - 2;
-    width: 20px;
+    width: 10px;
     left: 0;
     top: 0;
     bottom: 0;
 
     -moz-user-select: -moz-none;
     user-select: none;
+
+    .sidebar-disabled + & {
+        display: none;
+    }
 }
 
 .sidebar-open + .sidebar-swipe,
