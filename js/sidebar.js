@@ -539,7 +539,7 @@
         }
 
         $(window).on('keyup.st.sidebar' + this.guid, null, this, keyboardAction);
-        $(window).on('resize.st.sidebar' + this.guid, null, this, onResizeWindow);//TODO
+        $(window).on('resize.st.sidebar' + this.guid, null, this, onResizeWindow);
 
         if (this.$element.hasClass(this.options.classOpen + '-init')) {
             if (isOverMinWidth(this)) {
