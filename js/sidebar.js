@@ -235,9 +235,7 @@
                 $target.hasClass('sidebar-swipe') ||
                 $directTarget.hasClass('sidebar-swipe') ||
                 $target.parents('.' + self.options.classWrapper).size() > 0 ||
-                $directTarget.parents('.' + self.options.classWrapper).size() > 0 ||/*
-                (self.$toggle !== null && self.$toggle.attr('id') === $target.attr('id')) ||
-                (self.$toggle !== null && self.$toggle.attr('id') === $target.attr('id')) ||*/
+                $directTarget.parents('.' + self.options.classWrapper).size() > 0 ||
                 true === self.mouseDragEnd) {
             self.mouseDragEnd = null;
             return;
