@@ -578,6 +578,11 @@
         initScroller(this);
         initHammer(this);
         changeTransition(this.$element, '');
+
+        if (this.$element.hasClass('sidebar-disabled')) {
+            this.disable();
+        }
+
         this.$element.addClass('sidebar-ready');
     },
         old;
