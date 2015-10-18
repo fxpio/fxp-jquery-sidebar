@@ -632,6 +632,7 @@
         changeTransition(this.$element, '');
 
         this.$element.addClass('sidebar-ready');
+        triggerEvent('ready', this);
     },
         old;
 
