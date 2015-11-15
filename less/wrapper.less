@@ -88,7 +88,8 @@
 
     &.container-force-open-left,
     &.container-force-open-right {
-        > .container {
+        > .container,
+        > .navbar > .container {
             @media (min-width: @screen-md-min) {
                 width: @container-md - @sidebar-width;
             }
@@ -102,7 +103,8 @@
     }
 
     &.container-force-open-left.container-force-open-right {
-        > .container {
+        > .container,
+        > .navbar > .container {
             @media (min-width: @screen-md-min) {
                 width: @container-md - (@sidebar-width * 2);
             }
