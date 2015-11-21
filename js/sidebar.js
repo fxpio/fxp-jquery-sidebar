@@ -697,7 +697,7 @@
         toggleOpenOnHover:  false,
         draggable:          true,
         closeOnSelect:      true,
-        closeOnSelectDelay: 0.3,
+        closeOnSelectDelay: 0.5,
         itemSelector:       '.sidebar-menu a',
         useScroller:        true,
         scroller:           {
