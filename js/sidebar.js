@@ -253,6 +253,41 @@
     }
 
     /**
+     * Clean the close delay.
+     *
+     * @param {Sidebar} self The sidebar instance
+     *
+     * @private
+     */
+    function cleanCloseDelay(self) {
+        if (null !== self.closeDelay) {
+            window.clearTimeout(self.closeDelay);
+            self.closeDelay = null;
+        }
+    }
+
+    /**
+     * Close the sidebar when an item is selected.
+     *
+     * @param {Event} event The event
+     *
+     * @typedef {Sidebar} Event.data The sidebar instance
+     *
+     * @private
+     */
+    function closeOnSelect(event) {
+        var self = event.data;
+
+        if (self.options.closeOnSelectDelay > 0) {
+            self.closeDelay = window.setTimeout(function () {
+                self.close();
+            }, self.options.closeOnSelectDelay * 1000);
+        } else {
+            self.close();
+        }
+    }
+
+    /**
      * Close the sidebar or reopen the locked sidebar on window resize event.
      *
      * @param {Event} event The event
@@ -293,6 +328,7 @@
     function onDragStart(self, event) {
         self.dragDirection = event.direction;
         self.$element.css('user-select', 'none');
+        cleanCloseDelay(self);
     }
 
     /**
@@ -549,6 +585,7 @@
         this.dragStartPosition = null;
         this.mouseDragEnd = null;
         this.dragDirection = null;
+        this.closeDelay = null;
 
         this.$element.before(this.$wrapper);
         this.$wrapper.append(this.$element);
@@ -627,6 +664,10 @@
             $(document).on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
         }
 
+        if (this.options.closeOnSelect) {
+            this.$element.on(this.eventType + '.st.sidebar' + this.guid, this.options.itemSelector, this, closeOnSelect);
+        }
+
         initScroller(this);
         initHammer(this);
         changeTransition(this.$element, '');
@@ -655,6 +696,9 @@
         toggleId:           null,
         toggleOpenOnHover:  false,
         draggable:          true,
+        closeOnSelect:      true,
+        closeOnSelectDelay: 0.3,
+        itemSelector:       '.sidebar-menu a',
         useScroller:        true,
         scroller:           {
             contentSelector: '.sidebar-menu',
@@ -762,6 +806,7 @@
             return;
         }
 
+        cleanCloseDelay(this);
         this.$element.addClass(this.options.classForceOpen);
         this.$container.addClass('container-force-open-' + this.options.position);
         addClassToggles(this, this.options.classForceOpen + '-toggle');
@@ -780,6 +825,7 @@
             return;
         }
 
+        cleanCloseDelay(this);
         removeClassToggles(this, this.options.classForceOpen + '-toggle');
         this.$container.removeClass('container-force-open-' + this.options.position);
         this.$element.removeClass(this.options.classForceOpen);
@@ -797,6 +843,7 @@
             return;
         }
 
+        cleanCloseDelay(this);
         $('[data-sidebar=true]').sidebar('forceClose');
 
         addClassToggles(this, this.options.classOpen + '-toggle');
@@ -820,6 +867,7 @@
             return;
         }
 
+        cleanCloseDelay(this);
         removeClassToggles(this, this.options.classOpen + '-toggle');
         this.$element.removeClass(this.options.classOpen);
         $(document).off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
@@ -1035,11 +1083,13 @@
      * @this Sidebar
      */
     Sidebar.prototype.destroy = function () {
+        cleanCloseDelay(this);
         this.detachToggles();
         this.forceClose();
         $(window).off('keyup.st.sidebar' + this.guid, keyboardAction);
         $(window).off('resize.st.sidebar' + this.guid, onResizeWindow);
         $(document).off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
+        this.$element.off(this.eventType + '.st.sidebar' + this.guid, this.options.itemSelector, closeOnSelect);
 
         destroyHammer(this);
         destroyScroller(this);
@@ -1061,6 +1111,7 @@
         delete this.dragStartPosition;
         delete this.mouseDragEnd;
         delete this.dragDirection;
+        delete this.closeDelay;
     };
 
 
