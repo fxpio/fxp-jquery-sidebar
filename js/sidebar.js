@@ -288,6 +288,23 @@
     }
 
     /**
+     * Reset the scrolling locker.
+     *
+     * @param {Event} event The event
+     *
+     * @typedef {Sidebar} Event.data The sidebar instance
+     *
+     * @private
+     */
+    function resetScrolling(event) {
+        var self = event.data;
+
+        self.resetScrolling = window.setTimeout(function () {
+            self.resetScrolling = null;
+        }, self.options.resetScrollDelay * 1000);
+    }
+
+    /**
      * Close the sidebar or reopen the locked sidebar on window resize event.
      *
      * @param {Event} event The event
@@ -326,6 +343,10 @@
      * @private
      */
     function onDragStart(self, event) {
+        if (null !== self.resetScrolling) {
+            return;
+        }
+
         self.dragDirection = event.direction;
         self.$element.css('user-select', 'none');
         cleanCloseDelay(self);
@@ -343,6 +364,10 @@
      */
     function onDrag(self, event) {
         var delta;
+
+        if (null !== self.resetScrolling) {
+            return;
+        }
 
         if (-1 === $.inArray(self.dragDirection, [Hammer.DIRECTION_LEFT, Hammer.DIRECTION_RIGHT]) ||
                 (self.options.locked && isOverMinWidth(self))) {
@@ -382,6 +407,10 @@
     function onDragEnd(self, event) {
         var closeGesture = Hammer.DIRECTION_LEFT,
             openGesture  = Hammer.DIRECTION_RIGHT;
+
+        if (null !== self.resetScrolling) {
+            return;
+        }
 
         self.dragStartPosition = null;
 
@@ -443,10 +472,6 @@
 
         self.hammer = new Hammer(self.$wrapper.get(0), $.extend(true, {}, self.options.hammer));
 
-        if (!(/iPad|iPhone|iPod/.test(navigator.userAgent)) && !((/Firefox/.test(navigator.userAgent) && /Tablet|Phone/.test(navigator.userAgent)))) {
-            self.hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-        }
-
         self.hammer.get('swipe').set({ enable: false });
         self.hammer.get('tap').set({ enable: false });
 
@@ -494,6 +519,7 @@
 
         if ($.fn.scroller && self.options.useScroller) {
             self.$element.scroller($.extend({}, options, self.options.scroller));
+            self.$element.on('scrolling.st.scroller.st.sidebar', null, self, resetScrolling);
         }
     }
 
@@ -507,6 +533,7 @@
     function destroyScroller(self) {
         if ($.fn.scroller && self.options.useScroller) {
             self.$element.scroller('destroy');
+            self.$element.off('scrolling.st.scroller.st.sidebar', resetScrolling);
         }
     }
 
@@ -573,7 +600,7 @@
     var Sidebar = function (element, options) {
         this.guid = jQuery.guid;
         this.options = $.extend(true, {}, Sidebar.DEFAULTS, options);
-        this.eventType = mobileCheck() ? 'touchstart' : 'click';
+        this.eventType = 'click';
         this.nativeScrollWidth = getNativeScrollWidth();
         this.$element = $(element);
         this.$toggles = $([]);
@@ -586,6 +613,7 @@
         this.mouseDragEnd = null;
         this.dragDirection = null;
         this.closeDelay = null;
+        this.resetScrolling = null;
 
         this.$element.before(this.$wrapper);
         this.$wrapper.append(this.$element);
@@ -698,8 +726,10 @@
         draggable:          true,
         closeOnSelect:      true,
         closeOnSelectDelay: 0.5,
+        resetScrollDelay:   0.3,
         itemSelector:       '.sidebar-menu a',
         useScroller:        true,
+        scrollerScrollbar:  undefined,
         scroller:           {
             contentSelector: '.sidebar-menu',
             scrollerStickyHeader: true,
@@ -1112,6 +1142,7 @@
         delete this.mouseDragEnd;
         delete this.dragDirection;
         delete this.closeDelay;
+        delete this.resetScrolling;
     };
 
 
