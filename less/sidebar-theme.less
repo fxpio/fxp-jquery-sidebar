@@ -1,0 +1,112 @@
+//
+// Sidebar Theme
+// --------------------------------------------------
+
+.sidebar {
+    &.sidebar-default {
+        color: @sidebar-default-color;
+        background-color: @sidebar-default-bg;
+
+        .sidebar-group {
+            > span {
+                color: @sidebar-default-group-color;
+                border-bottom-color: @sidebar-default-border-color;
+            }
+
+            &.sticky-header > span {
+                background-color: @sidebar-default-bg;
+            }
+
+            + .sidebar-item {
+                border-top-color: @sidebar-default-border-color;
+            }
+        }
+
+        .sidebar-item {
+            > a {
+                color: @sidebar-default-link-color;
+                background-color: @sidebar-default-link-bg;
+
+                &:hover,
+                &:focus {
+                    color: @sidebar-default-link-hover-color;
+                    background-color: @sidebar-default-link-hover-bg;
+                }
+
+                &.active {
+                    color: @sidebar-default-link-active-color;
+                    background-color: @sidebar-default-link-active-bg;
+                }
+            }
+
+            &.sidebar-item-mini > a {
+                color: @sidebar-default-link-mini-color;
+            }
+        }
+
+        .hammer-scrollbar {
+            background-color: @sidebar-default-scrollbar-bg;
+        }
+    }
+
+    &.sidebar-inverse {
+        color: @sidebar-inverse-color;
+        background-color: @sidebar-inverse-bg;
+
+        .sidebar-group {
+            > span {
+                color: @sidebar-inverse-group-color;
+                border-bottom-color: @sidebar-inverse-border-color;
+            }
+
+            &.sticky-header > span {
+                background-color: @sidebar-inverse-bg;
+            }
+
+            + .sidebar-item {
+                border-top-color: @sidebar-inverse-border-color;
+            }
+        }
+
+        .sidebar-item {
+            > a {
+                color: @sidebar-inverse-link-color;
+                background-color: @sidebar-inverse-link-bg;
+
+                &:hover,
+                &:focus {
+                    color: @sidebar-inverse-link-hover-color;
+                    background-color: @sidebar-inverse-link-hover-bg;
+                }
+
+                &.active {
+                    color: @sidebar-inverse-link-active-color;
+                    background-color: @sidebar-inverse-link-active-bg;
+                }
+            }
+
+            &.sidebar-item-mini > a {
+                color: @sidebar-inverse-link-mini-color;
+            }
+        }
+
+        .hammer-scrollbar {
+            background-color: @sidebar-inverse-scrollbar-bg;
+        }
+    }
+}
+
+// Responsive
+// -------------------------
+
+@media (min-width: (@screen-sm-max + 1)) {
+    .sidebar.sidebar-locked {
+        &.sidebar-default {
+            border-color: @sidebar-default-border-color;
+        }
+
+        &.sidebar-inverse {
+            border-color: @sidebar-inverse-border-color;
+        }
+    }
+}
