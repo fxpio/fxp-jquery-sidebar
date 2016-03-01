@@ -427,6 +427,7 @@
 
         if (Math.abs(event.deltaX) <= (self.$element.innerWidth() / 4)) {
             self.dragDirection = null;
+            self.$toggles.focus();
 
             return;
         }
@@ -883,6 +884,8 @@
         if ($.fn.scroller && this.options.useScroller) {
             this.$element.scroller('resizeScrollbar');
         }
+
+        $('a:visible:first', this.$element).focus();
 
         triggerEvent('open', this);
     };
