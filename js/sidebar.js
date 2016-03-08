@@ -885,7 +885,7 @@
             this.$element.scroller('resizeScrollbar');
         }
 
-        $('a:visible:first', this.$element).focus();
+        $('a:visible:first', this.$toggles.get(0).parent()).focus();
 
         triggerEvent('open', this);
     };
