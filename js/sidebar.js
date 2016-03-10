@@ -907,6 +907,7 @@
         removeClassToggles(this, this.options.classForceOpen + '-toggle');
         this.$container.removeClass('container-force-open-' + this.options.position);
         this.$element.removeClass(this.options.classForceOpen);
+
         triggerEvent('force-close', this);
         this.close();
     };
@@ -921,6 +922,7 @@
             return;
         }
 
+        triggerEvent('open', this);
         cleanCloseDelay(this);
         $('[data-sidebar=true]').sidebar('forceClose');
 
@@ -933,8 +935,6 @@
         }
 
         $('a:visible:first', this.$toggles.get(0).parent()).focus();
-
-        triggerEvent('open', this);
     };
 
     /**
@@ -947,6 +947,7 @@
             return;
         }
 
+        triggerEvent('close', this);
         cleanCloseDelay(this);
         removeClassToggles(this, this.options.classOpen + '-toggle');
         this.$element.removeClass(this.options.classOpen);
@@ -955,8 +956,6 @@
         if ($.fn.scroller && this.options.useScroller) {
             this.$element.scroller('resizeScrollbar');
         }
-
-        triggerEvent('close', this);
     };
 
     /**
@@ -980,6 +979,8 @@
             event.preventDefault();
         }
 
+        triggerEvent('toggle', this);
+
         if (self.isOpen()) {
             if (self.isFullyOpened()) {
                 self.forceClose();
@@ -997,8 +998,6 @@
         } else {
             self.open();
         }
-
-        triggerEvent('toggle', this);
     };
 
     /**
@@ -1007,11 +1006,11 @@
      * @this Sidebar
      */
     Sidebar.prototype.refresh = function () {
+        triggerEvent('refresh', this);
+
         if ($.fn.scroller && this.options.useScroller) {
             this.$element.scroller('refresh');
         }
-
-        triggerEvent('refresh', this);
     };
 
     /**
@@ -1116,6 +1115,7 @@
             return;
         }
 
+        triggerEvent('disable', this);
         this.options.locked = false;
         this.forceClose();
         this.options.locked = prevIsLocked;
@@ -1127,8 +1127,6 @@
         }
 
         this.enabled = false;
-
-        triggerEvent('disable', this);
     };
 
     /**
@@ -1141,6 +1139,7 @@
             return;
         }
 
+        triggerEvent('enable', this);
         this.enabled = true;
         this.$element.removeClass('sidebar-disabled');
 
@@ -1153,8 +1152,6 @@
         if (this.isLocked()) {
             removeClassToggles(this, this.options.classLocked + '-toggle-disabled');
         }
-
-        triggerEvent('enable', this);
     };
 
     /**
