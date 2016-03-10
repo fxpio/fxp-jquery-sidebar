@@ -875,6 +875,17 @@
     };
 
     /**
+     * Checks if sidebar is closable.
+     *
+     * @return {boolean}
+     *
+     * @this Sidebar
+     */
+    Sidebar.prototype.isClosable = function () {
+        return this.enabled && this.isOpen() && !isOverMinWidth(this);
+    };
+
+    /**
      * Force open the sidebar.
      *
      * @this Sidebar
