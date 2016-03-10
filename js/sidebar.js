@@ -72,6 +72,35 @@
     }
 
     /**
+     * Add browser prefix on event name for jquery.
+     *
+     * @param {String} name        The event name
+     * @param {String} [namespace] The namespace of jquery event
+     *
+     * @returns {String}
+     *
+     * @private
+     */
+    function prefixedEvent(name, namespace) {
+        var pfx = ['webkit', 'moz', 'ms', 'o', ''],
+            names = '';
+
+        for (var p = 0; p < pfx.length; p++) {
+            if (!pfx[p]) {
+                name = name.toLowerCase();
+            }
+
+            names += ' ' + pfx[p] + name;
+
+            if (undefined !== namespace) {
+                names += '.' + namespace;
+            }
+        }
+
+        return names;
+    }
+
+    /**
      * Trigger the event.
      *
      * @param {String}  type   The event type
@@ -330,6 +359,22 @@
                 changeTransition(self.$element, '');
             }, 500);
         }
+    }
+
+    /**
+     * Trigger the opened or closed event when the transition is finished.
+     *
+     * @param {Event} event The event
+     *
+     * @typedef {Sidebar} Event.data The sidebar instance
+     *
+     * @private
+     */
+    function onEndTransition(event) {
+        var self = event.data,
+            action = event.data.isOpen() ? 'opened' : 'closed';
+
+        triggerEvent(action, self);
     }
 
     /**
@@ -696,6 +741,8 @@
         if (this.options.closeOnSelect) {
             this.$element.on(this.eventType + '.st.sidebar' + this.guid, this.options.itemSelector, this, closeOnSelect);
         }
+
+        this.$element.on(prefixedEvent('TransitionEnd', '.st.sidebar' + this.guid), null, this, onEndTransition);
 
         initScroller(this);
         initHammer(this);
@@ -1123,6 +1170,7 @@
         $(window).off('resize.st.sidebar' + this.guid, onResizeWindow);
         $(document).off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
         this.$element.off(this.eventType + '.st.sidebar' + this.guid, this.options.itemSelector, closeOnSelect);
+        this.$element.off(prefixedEvent('TransitionEnd', '.st.sidebar' + this.guid), onEndTransition);
 
         destroyHammer(this);
         destroyScroller(this);
