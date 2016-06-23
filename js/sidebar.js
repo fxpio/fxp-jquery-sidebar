@@ -253,27 +253,12 @@
      * @private
      */
     function closeExternal(event) {
-        var self = event.data,
-            $target = $(event.currentTarget.activeElement),
-            $directTarget = $(event.target),
-            isOver = isOverMinWidth(self);
-
-        if ((self.isLocked() && isOver) ||
-                $target.hasClass(self.options.classWrapper) ||
-                $directTarget.hasClass(self.options.classWrapper) ||
-                $target.hasClass('sidebar-swipe') ||
-                $directTarget.hasClass('sidebar-swipe') ||
-                $target.parents('.' + self.options.classWrapper).size() > 0 ||
-                $directTarget.parents('.' + self.options.classWrapper).size() > 0 ||
-                true === self.mouseDragEnd) {
-            self.mouseDragEnd = null;
-            return;
-        }
+        var self = event.data;
 
         event.stopPropagation();
         event.preventDefault();
 
-        if (isOver) {
+        if (isOverMinWidth(self)) {
             self.close();
 
         } else {
@@ -317,6 +302,46 @@
     }
 
     /**
+     * Lock the scroll of body.
+     *
+     * @param {Sidebar} self The sidebar instance
+     *
+     * @private
+     */
+    function lockBodyScroll(self) {
+        var $body = $('body');
+
+        if ($body.css('overflow-y') !== 'hidden') {
+            $body.css({
+                'padding-right': self.nativeScrollWidth + 'px',
+                'overflow-y': 'hidden'
+            });
+
+            triggerEvent('lock-body-scroll', self, self.nativeScrollWidth);
+        }
+    }
+
+    /**
+     * Unlock the scroll of body.
+     *
+     * @param {Sidebar} self The sidebar instance
+     *
+     * @private
+     */
+    function unlockBodyScroll(self) {
+        var $body = $('body');
+
+        if ($body.css('overflow-y') === 'hidden') {
+            $body.css({
+                'padding-right': '',
+                'overflow-y': ''
+            });
+
+            triggerEvent('unlock-body-scroll', self);
+        }
+    }
+
+    /**
      * Reset the scrolling locker.
      *
      * @param {Event} event The event
@@ -343,12 +368,14 @@
      * @private
      */
     function onResizeWindow(event) {
-        var self = event.data;
+        var self = event.data,
+            isOver = isOverMinWidth(self);
 
         changeTransition(self.$element, 'none');
 
-        if (isOverMinWidth(self) && self.isLocked()) {
+        if (isOver && self.isLocked()) {
             self.forceOpen();
+            unlockBodyScroll(self);
 
             return;
         }
@@ -357,6 +384,14 @@
             self.resizeDelay = window.setTimeout(function () {
                 delete self.resizeDelay;
                 changeTransition(self.$element, '');
+
+                if (self.isLocked()) {
+                    if (!isOver && self.isOpen()) {
+                        lockBodyScroll(self);
+                    } else {
+                        unlockBodyScroll(self);
+                    }
+                }
             }, 500);
         }
     }
@@ -376,7 +411,6 @@
 
         if (event.data.isOpen()) {
             addClassToggles(self, self.options.classOpen + '-toggle');
-            $(document).on(self.eventType + '.st.sidebar' + self.guid, null, self, closeExternal);
 
             if ($.fn.scroller && self.options.useScroller) {
                 self.$element.scroller('resizeScrollbar');
@@ -385,10 +419,17 @@
             $('a:visible:first', self.$toggles.get(0).parent()).focus();
         } else {
             removeClassToggles(self, self.options.classOpen + '-toggle');
-            $(document).off(self.eventType + '.st.sidebar' + self.guid, closeExternal);
 
             if ($.fn.scroller && self.options.useScroller) {
                 self.$element.scroller('resizeScrollbar');
+            }
+        }
+
+        if (self.isLocked()) {
+            if (!isOverMinWidth(self) && self.isOpen()) {
+                lockBodyScroll(self);
+            } else {
+                unlockBodyScroll(self);
             }
         }
 
@@ -428,7 +469,7 @@
     function onDrag(self, event) {
         var delta;
 
-        if (null !== self.resetScrolling) {
+        if (null !== self.resetScrolling || event.target === self.$obfuscator.get(0)) {
             return;
         }
 
@@ -471,7 +512,7 @@
         var closeGesture = Hammer.DIRECTION_LEFT,
             openGesture  = Hammer.DIRECTION_RIGHT;
 
-        if (null !== self.resetScrolling) {
+        if (null !== self.resetScrolling || event.target === self.$obfuscator.get(0)) {
             return;
         }
 
@@ -662,6 +703,8 @@
      * @this Sidebar
      */
     var Sidebar = function (element, options) {
+        var isOver = false;
+
         this.guid = jQuery.guid;
         this.options = $.extend(true, {}, Sidebar.DEFAULTS, options);
         this.eventType = 'click';
@@ -671,6 +714,7 @@
         this.$wrapper = $('<div class="' + this.options.classWrapper + '"></div>');
         this.$container = $('> .' + this.options.classContainer, this.$element.parent());
         this.$swipe = null;
+        this.$obfuscator = $('<div class="' + this.options.classObfuscator + '"></div>');
         this.enabled = !this.$element.hasClass('sidebar-disabled');
         this.hammer = null;
         this.dragStartPosition = null;
@@ -681,6 +725,7 @@
 
         this.$element.before(this.$wrapper);
         this.$wrapper.append(this.$element);
+        this.$wrapper.append(this.$obfuscator);
         this.$element.attr('data-sidebar', 'true');
 
         if (null !== this.options.toggleId) {
@@ -738,11 +783,13 @@
             }
         }
 
+        isOver = isOverMinWidth(this);
+
         $(window).on('keyup.st.sidebar' + this.guid, null, this, keyboardAction);
         $(window).on('resize.st.sidebar' + this.guid, null, this, onResizeWindow);
 
         if (this.$element.hasClass(this.options.classOpen + '-init')) {
-            if (isOverMinWidth(this)) {
+            if (isOver) {
                 this.$element.addClass(this.options.classOpen);
 
             } else {
@@ -752,8 +799,10 @@
             this.$element.removeClass(this.options.classOpen + '-init');
         }
 
-        if (this.$element.hasClass(this.options.classOpen)) {
-            $(document).on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
+        if (this.$element.hasClass(this.options.classOpen) && !isOver) {
+            lockBodyScroll(this);
+        } else {
+            unlockBodyScroll(this);
         }
 
         if (this.options.closeOnSelect) {
@@ -761,6 +810,7 @@
         }
 
         this.$element.on(prefixedEvent('TransitionEnd', '.st.sidebar' + this.guid), null, this, onEndTransition);
+        this.$obfuscator.on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
 
         initScroller(this);
         initHammer(this);
@@ -783,6 +833,7 @@
         classLocked:        'sidebar-locked',
         classForceOpen:     'sidebar-force-open',
         classOnDragging:    'sidebar-dragging',
+        classObfuscator:     'sidebar-obfuscator',
         forceToggle:        Sidebar.FORCE_TOGGLE_NO,
         locked:             false,
         position:           Sidebar.POSITION_LEFT,
@@ -1179,12 +1230,13 @@
         this.forceClose();
         $(window).off('keyup.st.sidebar' + this.guid, keyboardAction);
         $(window).off('resize.st.sidebar' + this.guid, onResizeWindow);
-        $(document).off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
         this.$element.off(this.eventType + '.st.sidebar' + this.guid, this.options.itemSelector, closeOnSelect);
         this.$element.off(prefixedEvent('TransitionEnd', '.st.sidebar' + this.guid), onEndTransition);
+        this.$obfuscator.off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
 
         destroyHammer(this);
         destroyScroller(this);
+        unlockBodyScroll(this);
 
         this.$wrapper.before(this.$element);
         this.$wrapper.remove();
@@ -1198,6 +1250,8 @@
         delete this.nativeScrollWidth;
         delete this.$element;
         delete this.$wrapper;
+        delete this.$obfuscator;
+        delete this.$swipe;
         delete this.$container;
         delete this.$toggles;
         delete this.dragStartPosition;
