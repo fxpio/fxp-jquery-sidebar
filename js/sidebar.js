@@ -374,6 +374,24 @@
         var self = event.data,
             action = event.data.isOpen() ? 'opened' : 'closed';
 
+        if (event.data.isOpen()) {
+            addClassToggles(self, self.options.classOpen + '-toggle');
+            $(document).on(self.eventType + '.st.sidebar' + self.guid, null, self, closeExternal);
+
+            if ($.fn.scroller && self.options.useScroller) {
+                self.$element.scroller('resizeScrollbar');
+            }
+
+            $('a:visible:first', self.$toggles.get(0).parent()).focus();
+        } else {
+            removeClassToggles(self, self.options.classOpen + '-toggle');
+            $(document).off(self.eventType + '.st.sidebar' + self.guid, closeExternal);
+
+            if ($.fn.scroller && self.options.useScroller) {
+                self.$element.scroller('resizeScrollbar');
+            }
+        }
+
         triggerEvent(action, self);
     }
 
@@ -936,16 +954,7 @@
         triggerEvent('open', this);
         cleanCloseDelay(this);
         $('[data-sidebar=true]').sidebar('forceClose');
-
-        addClassToggles(this, this.options.classOpen + '-toggle');
         this.$element.addClass(this.options.classOpen);
-        $(document).on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
-
-        if ($.fn.scroller && this.options.useScroller) {
-            this.$element.scroller('resizeScrollbar');
-        }
-
-        $('a:visible:first', this.$toggles.get(0).parent()).focus();
     };
 
     /**
@@ -960,13 +969,7 @@
 
         triggerEvent('close', this);
         cleanCloseDelay(this);
-        removeClassToggles(this, this.options.classOpen + '-toggle');
         this.$element.removeClass(this.options.classOpen);
-        $(document).off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
-
-        if ($.fn.scroller && this.options.useScroller) {
-            this.$element.scroller('resizeScrollbar');
-        }
     };
 
     /**
