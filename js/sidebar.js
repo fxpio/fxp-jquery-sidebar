@@ -309,11 +309,17 @@
      * @private
      */
     function lockBodyScroll(self) {
-        var $body = $('body');
+        var $body = $('body'),
+            bodyPad = parseInt(($body.css('padding-right') || 0), 10),
+            hasScrollbar = $body.get(0).scrollHeight > document.documentElement.clientHeight
+                    && 'hidden' !== $body.css('overflow-y');
 
-        if ($body.css('overflow-y') !== 'hidden') {
+        if (hasScrollbar) {
+            self.originalBodyPad = document.body.style.paddingRight || '';
+            self.originalBodyOverflowY = document.body.style.overflowY || '';
+
             $body.css({
-                'padding-right': self.nativeScrollWidth + 'px',
+                'padding-right': (bodyPad + self.nativeScrollWidth) + 'px',
                 'overflow-y': 'hidden'
             });
 
@@ -329,16 +335,21 @@
      * @private
      */
     function unlockBodyScroll(self) {
-        var $body = $('body');
+        var $body = $('body'),
+            hasScrollbar = $body.get(0).scrollHeight > document.documentElement.clientHeight
+                && 'hidden' !== self.originalBodyOverflowY;
 
-        if ($body.css('overflow-y') === 'hidden') {
+        if (hasScrollbar) {
             $body.css({
-                'padding-right': '',
-                'overflow-y': ''
+                'padding-right': self.originalBodyPad,
+                'overflow-y': self.originalBodyOverflowY
             });
 
             triggerEvent('unlock-body-scroll', self, self.nativeScrollWidth);
         }
+
+        self.originalBodyPad = null;
+        self.originalBodyOverflowY = null;
     }
 
     /**
@@ -703,7 +714,7 @@
      * @this Sidebar
      */
     var Sidebar = function (element, options) {
-        var isOver = false;
+        var isOver;
 
         this.guid = jQuery.guid;
         this.options = $.extend(true, {}, Sidebar.DEFAULTS, options);
@@ -722,6 +733,8 @@
         this.dragDirection = null;
         this.closeDelay = null;
         this.resetScrolling = null;
+        this.originalBodyPad = null;
+        this.originalBodyOverflowY = null;
 
         this.$element.before(this.$wrapper);
         this.$wrapper.append(this.$element);
@@ -1259,6 +1272,8 @@
         delete this.dragDirection;
         delete this.closeDelay;
         delete this.resetScrolling;
+        delete this.originalBodyPad;
+        delete this.originalBodyOverflowY;
     };
 
 
