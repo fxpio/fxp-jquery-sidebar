@@ -236,7 +236,7 @@
         var $window = $(window),
             windowWidth = $window.innerWidth();
 
-        if ($('body').height() > $window.innerHeight()) {
+        if (self.$body.height() > $window.innerHeight()) {
             windowWidth += self.nativeScrollWidth;
         }
 
@@ -309,16 +309,15 @@
      * @private
      */
     function lockBodyScroll(self) {
-        var $body = $('body'),
-            bodyPad = parseInt(($body.css('padding-right') || 0), 10),
-            hasScrollbar = $body.get(0).scrollHeight > document.documentElement.clientHeight
-                    && 'hidden' !== $body.css('overflow-y');
+        var bodyPad = parseInt((self.$body.css('padding-right') || 0), 10),
+            hasScrollbar = self.$body.get(0).scrollHeight > document.documentElement.clientHeight
+                    && 'hidden' !== self.$body.css('overflow-y');
 
         if (hasScrollbar) {
             self.originalBodyPad = document.body.style.paddingRight || '';
             self.originalBodyOverflowY = document.body.style.overflowY || '';
 
-            $body.css({
+            self.$body.css({
                 'padding-right': (bodyPad + self.nativeScrollWidth) + 'px',
                 'overflow-y': 'hidden'
             });
@@ -335,12 +334,11 @@
      * @private
      */
     function unlockBodyScroll(self) {
-        var $body = $('body'),
-            hasScrollbar = $body.get(0).scrollHeight > document.documentElement.clientHeight
+        var hasScrollbar = self.$body.get(0).scrollHeight > document.documentElement.clientHeight
                 && 'hidden' !== self.originalBodyOverflowY;
 
         if (hasScrollbar) {
-            $body.css({
+            self.$body.css({
                 'padding-right': self.originalBodyPad,
                 'overflow-y': self.originalBodyOverflowY
             });
@@ -726,6 +724,7 @@
         this.$container = $('> .' + this.options.classContainer, this.$element.parent());
         this.$swipe = null;
         this.$obfuscator = $('<div class="' + this.options.classObfuscator + '"></div>');
+        this.$body = $('body');
         this.enabled = !this.$element.hasClass('sidebar-disabled');
         this.hammer = null;
         this.dragStartPosition = null;
@@ -1267,6 +1266,7 @@
         delete this.$swipe;
         delete this.$container;
         delete this.$toggles;
+        delete this.$body;
         delete this.dragStartPosition;
         delete this.mouseDragEnd;
         delete this.dragDirection;
