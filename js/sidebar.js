@@ -337,7 +337,7 @@
                 'overflow-y': ''
             });
 
-            triggerEvent('unlock-body-scroll', self);
+            triggerEvent('unlock-body-scroll', self, self.nativeScrollWidth);
         }
     }
 
