@@ -113,7 +113,7 @@
         $.event.trigger({
             type: 'sidebar:' + type + '.st.sidebar',
             sidebar: self,
-            data: data,
+            eventData: data,
             time: new Date()
         });
     }
