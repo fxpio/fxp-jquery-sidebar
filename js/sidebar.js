@@ -374,6 +374,7 @@
      */
     function onResizeWindow(event) {
         var self = event.data,
+            isForceOpened = false,
             isOver = isOverMinWidth(self);
 
         changeTransition(self.$element, 'none');
@@ -381,8 +382,7 @@
         if (isOver && self.isLocked()) {
             self.forceOpen();
             unlockBodyScroll(self);
-
-            return;
+            isForceOpened = true;
         }
 
         if (undefined === self.resizeDelay) {
@@ -390,7 +390,7 @@
                 delete self.resizeDelay;
                 changeTransition(self.$element, '');
 
-                if (self.isLocked()) {
+                if (!isForceOpened && self.isLocked()) {
                     if (!isOver && self.isOpen()) {
                         lockBodyScroll(self);
                     } else {
