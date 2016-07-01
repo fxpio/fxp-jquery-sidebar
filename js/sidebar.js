@@ -334,20 +334,16 @@
      * @private
      */
     function unlockBodyScroll(self) {
-        var hasScrollbar = self.$body.get(0).scrollHeight > document.documentElement.clientHeight
-                && 'hidden' !== self.originalBodyOverflowY;
-
-        if (hasScrollbar) {
+        if (null !== self.originalBodyPad || null !== self.originalBodyOverflowY) {
             self.$body.css({
                 'padding-right': self.originalBodyPad,
                 'overflow-y': self.originalBodyOverflowY
             });
 
+            self.originalBodyPad = null;
+            self.originalBodyOverflowY = null;
             triggerEvent('unlock-body-scroll', self, self.nativeScrollWidth);
         }
-
-        self.originalBodyPad = null;
-        self.originalBodyOverflowY = null;
     }
 
     /**
