@@ -38,8 +38,6 @@
         text-align: left;
         font-size: @sidebar-default-font-size;
 
-        -webkit-overflow-scrolling: touch;
-
         ul {
             padding: 0;
             margin: 0;
@@ -47,6 +45,14 @@
 
         li {
             display: block;
+        }
+
+        &,
+        & ul,
+        & li,
+        & span,
+        & a {
+            touch-action: pan-y;
         }
     }
 

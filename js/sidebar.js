@@ -442,26 +442,6 @@
     }
 
     /**
-     * Action of "on drag start" hammer event.
-     *
-     * @param {Sidebar} self  The sidebar instance
-     * @param {object}  event The hammer event
-     *
-     * @typedef {Number} event.direction The hammer direction const
-     *
-     * @private
-     */
-    function onDragStart(self, event) {
-        if (null !== self.resetScrolling) {
-            return;
-        }
-
-        self.dragDirection = event.direction;
-        self.$element.css('user-select', 'none');
-        cleanCloseDelay(self);
-    }
-
-    /**
      * Action of "on drag" hammer event.
      *
      * @param {Sidebar} self  The sidebar instance
@@ -478,6 +458,19 @@
             return;
         }
 
+        // drag start
+        if (null === self.dragDirection) {
+            if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) {
+                return;
+            }
+
+            self.mouseDragEnd = null;
+            self.dragDirection = event.direction;
+            self.$element.css('user-select', 'none');
+            cleanCloseDelay(self);
+        }
+
+        // drag
         if (-1 === $.inArray(self.dragDirection, [Hammer.DIRECTION_LEFT, Hammer.DIRECTION_RIGHT]) ||
                 (self.options.locked && isOverMinWidth(self))) {
             return;
@@ -522,10 +515,9 @@
         }
 
         self.dragStartPosition = null;
-
         event.preventDefault();
 
-        if ('mouse' === event.pointerType) {
+        if (-1 !== $.inArray(event.srcEvent.type, ['pointerup', 'mouseup'])) {
             self.mouseDragEnd = true;
         }
 
@@ -566,6 +558,38 @@
     }
 
     /**
+     * Action on item mouse down.
+     *
+     * @param {Event} event The event
+     *
+     * @typedef {Sidebar} Event.data The sidebar instance
+     *
+     * @private
+     */
+    function onItemMouseDown(event) {
+        event.preventDefault();
+    }
+
+    /**
+     * Action on item click.
+     *
+     * @param {Event} event The event
+     *
+     * @typedef {Sidebar} Event.data The sidebar instance
+     *
+     * @private
+     */
+    function onItemClick(event) {
+        var self = event.data;
+
+        if (true === self.mouseDragEnd) {
+            event.preventDefault();
+            cleanCloseDelay(self);
+            self.mouseDragEnd = null;
+        }
+    }
+
+    /**
      * Init the hammer instance.
      *
      * @param {Sidebar} self The sidebar instance
@@ -586,7 +610,7 @@
         self.hammer.get('tap').set({ enable: false });
 
         self.hammer.on('panstart', function (event) {
-            onDragStart(self, event);
+            onDrag(self, event);
         });
         self.hammer.on('pan', function (event) {
             onDrag(self, event);
@@ -594,6 +618,9 @@
         self.hammer.on('panend', function (event) {
             onDragEnd(self, event);
         });
+
+        self.$wrapper.on('mousedown.st.sidebar', null, self, onItemMouseDown);
+        self.$wrapper.on('click.st.sidebar', null, self, onItemClick);
     }
 
     /**
@@ -608,6 +635,8 @@
             return;
         }
 
+        self.$wrapper.off('mousedown.st.sidebar', onItemMouseDown);
+        self.$wrapper.off('click.st.sidebar', onItemClick);
         self.$swipe.remove();
         self.hammer.destroy();
 
