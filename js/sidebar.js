@@ -542,6 +542,8 @@
             self.forceClose();
 
         } else if (openGesture === self.dragDirection) {
+            self.mouseDragEnd = null;
+
             if (self.isOpen() && isOverMinWidth(self) &&
                     $.inArray(self.options.forceToggle, [Sidebar.FORCE_TOGGLE, Sidebar.FORCE_TOGGLE_ALWAYS]) >= 0) {
                 self.forceOpen();
