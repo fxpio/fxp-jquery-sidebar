@@ -15,22 +15,8 @@ This library require:
 Installation
 ------------
 
-Installation is a quick:
-
-Add library in your `bower.json`:
-
-```json
-{
-    "dependencies": {
-        "sonatra-jquery-sidebar": "latest"
-    }
-}
 ```
-
-Launch bower:
-
-```bash
-$ bower install
+npm install @sonatra/jquery-sidebar --save
 ```
 
 Dev installation
@@ -40,12 +26,6 @@ Dev installation
 
 ```
 npm install
-```
-
-### Use Bower
-
-```
-bower install
 ```
 
 ### Use grunt

@@ -4,8 +4,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <title>Navbar Fixed Full Locked Fluid example - Sonatra Jquery Sidebar</title>
-    <link href="../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="../bower_components/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="../node_modules/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="../css/scroller.css" rel="stylesheet">
     <link href="../css/sidebar.css" rel="stylesheet">
     <link href="../css/sidebar-bootstrap.css" rel="stylesheet">
@@ -205,10 +205,10 @@
 <script>
     var require = {
         paths: {
-            'jquery': '../bower_components/jquery/dist/jquery',
-            'hammerjs': '../bower_components/hammerjs/hammer',
-            'sonatra-jquery-scroller': '../bower_components/sonatra-jquery-scroller/js/scroller',
-            'sonatra-sticky-header': '../bower_components/sonatra-jquery-scroller/js/sticky-header',
+            'jquery': '../node_modules/jquery/dist/jquery',
+            'hammerjs': '../node_modules/hammerjs/hammer',
+            'sonatra-jquery-scroller': '../node_modules/@sonatra/jquery-scroller/js/scroller',
+            'sonatra-sticky-header': '../node_modules/@sonatra/jquery-scroller/js/sticky-header',
             'sonatra-sidebar': '../js/sidebar'
         },
         deps: ['hammerjs', 'sonatra-jquery-scroller', 'sonatra-sticky-header', 'sonatra-sidebar'],
@@ -218,6 +218,6 @@
         }
     };
 </script>
-<script src="../bower_components/requirejs/require.js" async="async"></script>
+<script src="../node_modules/requirejs/require.js" async="async"></script>
 </body>
 </html>

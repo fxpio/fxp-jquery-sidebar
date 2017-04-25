@@ -46,7 +46,7 @@ module.exports = function (grunt) {
                     server: {
                         baseDir: ['examples'],
                         routes: {
-                            "/bower_components": "bower_components",
+                            "/node_modules": "node_modules",
                             "/js": "js",
                             "/css": "css"
                         }
@@ -65,7 +65,7 @@ module.exports = function (grunt) {
                     style: 'expanded'
                 },
                 files: {
-                    "css/scroller.css":          "bower_components/sonatra-jquery-scroller/less/scroller.less",
+                    "css/scroller.css":          "node_modules/@sonatra/jquery-scroller/less/scroller.less",
                     "css/sidebar.css":           "less/sidebar.less",
                     "css/sidebar-bootstrap.css": "less/sidebar-bootstrap.less"
                 }
