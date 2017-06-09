@@ -517,7 +517,7 @@
         self.dragStartPosition = null;
         event.preventDefault();
 
-        if (-1 !== $.inArray(event.srcEvent.type, ['pointerup', 'mouseup'])) {
+        if (self.fixDragClick && -1 !== $.inArray(event.srcEvent.type, ['pointerup', 'mouseup'])) {
             self.mouseDragEnd = true;
         }
 
@@ -739,7 +739,8 @@
      * @this Sidebar
      */
     var Sidebar = function (element, options) {
-        var isOver;
+        var isOver,
+            ua = navigator.userAgent.toLowerCase();
 
         this.guid = jQuery.guid;
         this.options = $.extend(true, {}, Sidebar.DEFAULTS, options);
@@ -761,6 +762,7 @@
         this.resetScrolling = null;
         this.originalBodyPad = null;
         this.originalBodyOverflowY = null;
+        this.fixDragClick = ua.indexOf('firefox') > -1 || ua.indexOf('edge') > -1 || ua.indexOf('msie') > -1;
 
         this.$element.before(this.$wrapper);
         this.$wrapper.append(this.$element);
@@ -1301,6 +1303,7 @@
         delete this.resetScrolling;
         delete this.originalBodyPad;
         delete this.originalBodyOverflowY;
+        delete this.fixDragClick;
     };
 
 
