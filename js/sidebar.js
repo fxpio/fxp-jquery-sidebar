@@ -834,7 +834,10 @@
                 this.$element.addClass(this.options.classOpen);
 
             } else {
-                this.$element.removeClass(this.options.classOpen);
+                this.$element
+                    .removeClass(this.options.classOpen)
+                    .removeClass(this.options.classForceOpen)
+                ;
             }
 
             this.$element.removeClass(this.options.classOpen + '-init');
