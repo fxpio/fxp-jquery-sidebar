@@ -727,6 +727,63 @@
         });
     }
 
+    /**
+     * Set the value in local storage.
+     *
+     * @param {Sidebar}        self  The sidebar instance
+     * @param {String}         key   The key
+     * @param {String|Boolean} value The value
+     *
+     * @private
+     */
+    function setLocalStorage(self, key, value) {
+        if (self.options.saveConfig && 'localStorage' in window) {
+            try {
+                window.localStorage.setItem(self.$element.prop('id') + '/' + key, value);
+            } catch (e) {}
+        }
+    }
+
+    /**
+     * Get the value in local storage.
+     *
+     * @param {Sidebar}        self           The sidebar instance
+     * @param {String}         key            The key
+     * @param {String|Boolean} [defaultValue] The default value
+     *
+     * @return {String|null}
+     */
+    function getLocalStorage(self, key, defaultValue) {
+        var value = undefined === defaultValue ? null : defaultValue,
+            itemValue = null;
+
+        if (self.options.saveConfig && 'localStorage' in window) {
+            itemValue = window.localStorage.getItem(self.$element.prop('id') + '/' + key);
+        }
+
+        return null !== itemValue ? itemValue : value;
+    }
+
+    /**
+     * Init the sidebar options with the locale storage.
+     *
+     * @param {Sidebar} self The sidebar instance
+     *
+     * @private
+     */
+    function initWithLocalStorage(self) {
+        var storageLocked = getLocalStorage(self, self.options.storageLockedKey);
+
+        if (null !== storageLocked && self.options.toggleOnClick) {
+            self.options.locked = storageLocked === 'true';
+
+            if (!self.options.locked) {
+                changeTransition(self.$element, 'none');
+                self.forceClose();
+            }
+        }
+    }
+
     // SIDEBAR CLASS DEFINITION
     // ========================
 
@@ -739,7 +796,8 @@
      * @this Sidebar
      */
     var Sidebar = function (element, options) {
-        var isOver,
+        var self = this,
+            isOver,
             ua = navigator.userAgent.toLowerCase();
 
         this.guid = jQuery.guid;
@@ -858,10 +916,13 @@
 
         initScroller(this);
         initHammer(this);
-        changeTransition(this.$element, '');
+        initWithLocalStorage(this);
 
-        this.$element.addClass('sidebar-ready');
-        triggerEvent('ready', this);
+        window.setTimeout(function () {
+            changeTransition(self.$element, '');
+            self.$element.addClass('sidebar-ready');
+            triggerEvent('ready', self);
+        }, 0);
     },
         old;
 
@@ -884,6 +945,9 @@
         minLockWidth:       992,
         toggleId:           null,
         toggleOpenOnHover:  false,
+        toggleOnClick:      false,
+        saveConfig:         false,
+        storageLockedKey:   'st/sidebar/locked',
         draggable:          true,
         closeOnSelect:      true,
         closeOnSelectDelay: 0.5,
@@ -1089,6 +1153,11 @@
         }
 
         triggerEvent('toggle', this);
+
+        if (self.options.toggleOnClick) {
+            self.options.locked = !self.options.locked;
+            setLocalStorage(self, self.options.storageLockedKey, self.options.locked);
+        }
 
         if (self.isOpen()) {
             if (self.isFullyOpened()) {
