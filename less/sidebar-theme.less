@@ -112,6 +112,14 @@
             background-color: @sidebar-inverse-scrollbar-bg;
         }
     }
+
+    &[data-clickable-swipe="true"] {
+        + .sidebar-swipe {
+            &.mouse-hover {
+                background-color: @sidebar-clickable-swipe-bg;
+            }
+        }
+    }
 }
 
 .sidebar-obfuscator {

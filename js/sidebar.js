@@ -592,6 +592,46 @@
     }
 
     /**
+     * Action on swipe is clicked.
+     *
+     * @param {Event} event The event
+     *
+     * @typedef {Sidebar} Event.data The sidebar instance
+     *
+     * @private
+     */
+    function swipeClick(event) {
+        swipeMouseLeave(event);
+        event.data.toggle(event);
+    }
+
+    /**
+     * Action when mouse enter on sur swipe.
+     *
+     * @param {Event} event The event
+     *
+     * @typedef {Sidebar} Event.data The sidebar instance
+     *
+     * @private
+     */
+    function swipeMouseEnter(event) {
+        event.data.$swipe.addClass('mouse-hover');
+    }
+
+    /**
+     * Action when mouse leave on sur swipe.
+     *
+     * @param {Event} event The event
+     *
+     * @typedef {Sidebar} Event.data The sidebar instance
+     *
+     * @private
+     */
+    function swipeMouseLeave(event) {
+        event.data.$swipe.removeClass('mouse-hover');
+    }
+
+    /**
      * Init the hammer instance.
      *
      * @param {Sidebar} self The sidebar instance
@@ -623,6 +663,14 @@
 
         self.$wrapper.on('mousedown.st.sidebar', null, self, onItemMouseDown);
         self.$wrapper.on('click.st.sidebar', null, self, onItemClick);
+
+        if (self.options.clickableSwipe) {
+            self.$swipe
+                .on('click.st.sidebar' + self.guid, null, self, swipeClick)
+                .on('mouseenter.st.sidebar' + self.guid, null, self, swipeMouseEnter)
+                .on('mouseleave.st.sidebar' + self.guid, null, self, swipeMouseLeave)
+            ;
+        }
     }
 
     /**
@@ -635,6 +683,14 @@
     function destroyHammer(self) {
         if (!self.options.draggable || typeof Hammer !== 'function') {
             return;
+        }
+
+        if (self.options.clickableSwipe) {
+            self.$swipe
+                .off('click.st.sidebar' + self.guid, swipeClick)
+                .off('mouseenter.st.sidebar' + self.guid, swipeMouseEnter)
+                .off('mouseleave.st.sidebar' + self.guid, swipeMouseLeave)
+            ;
         }
 
         self.$wrapper.off('mousedown.st.sidebar', onItemMouseDown);
@@ -948,6 +1004,7 @@
         toggleOnClick:      false,
         saveConfig:         false,
         storageLockedKey:   'st/sidebar/locked',
+        clickableSwipe:     false,
         draggable:          true,
         closeOnSelect:      true,
         closeOnSelectDelay: 0.5,

@@ -133,6 +133,15 @@
     .sidebar-item > a {
         cursor: pointer;
     }
+
+    &[data-clickable-swipe="true"] {
+        + .sidebar-swipe {
+            cursor: pointer;
+            -webkit-transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease;
+            border-radius: 10px;
+        }
+    }
 }
 
 .sidebar-swipe {
