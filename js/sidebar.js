@@ -414,6 +414,10 @@
         var self = event.data,
             action = event.data.isOpen() ? 'opened' : 'closed';
 
+        if (event.target !== self.$element.get(0)) {
+            return;
+        }
+
         if (event.data.isOpen()) {
             addClassToggles(self, self.options.classOpen + '-toggle');
 
