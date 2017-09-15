@@ -19,7 +19,7 @@
     "url": "https://github.com/sonatra/sonatra-jquery-sidebar.git"
   },
   "bugs": {
-    "url" : "https://github.com/sonatra/sonatra-jquery-sidebar/issues"
+    "url": "https://github.com/sonatra/sonatra-jquery-sidebar/issues"
   },
   "engines": {},
   "main": "js/sidebar.js",
