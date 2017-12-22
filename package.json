@@ -28,16 +28,16 @@
     "hammerjs": "^2.0.0"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "load-grunt-tasks": "^3.2.0",
-    "time-grunt": "^1.2.1",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-contrib-less": "^1.0.1",
-    "grunt-browser-sync": "^2.1.3",
-    "requirejs": "^2.0.0",
-    "bootstrap": "^3.3.0",
+    "@sonatra/jquery-scroller": "git://github.com/sonatra/sonatra-jquery-scroller.git#master",
+    "bootstrap": "^3.3.7",
     "font-awesome": "^4.7.0",
-    "@sonatra/jquery-scroller": "git://github.com/sonatra/sonatra-jquery-scroller.git#master"
+    "grunt": "^1.0.1",
+    "grunt-browser-sync": "^2.2.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "load-grunt-tasks": "^3.5.2",
+    "requirejs": "^2.3.5",
+    "time-grunt": "^1.4.0"
   }
 }
