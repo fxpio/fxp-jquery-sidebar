@@ -1,8 +1,8 @@
 {
-  "name": "@sonatra/jquery-sidebar",
+  "name": "@fxp/jquery-sidebar",
   "version": "1.0.0",
   "license": "MIT",
-  "author": "François Pluchino <francois.pluchino@sonatra.com>",
+  "author": "François Pluchino <francois.pluchino@gmail.com>",
   "contributors": [],
   "description": "A jquery responsive sidebar with hammerjs",
   "keywords": [
@@ -13,13 +13,13 @@
     "hammer scroll",
     "jquery"
   ],
-  "homepage": "https://github.com/sonatra/sonatra-jquery-sidebar",
+  "homepage": "https://github.com/fxpio/fxp-jquery-sidebar",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sonatra/sonatra-jquery-sidebar.git"
+    "url": "https://github.com/fxpio/fxp-jquery-sidebar.git"
   },
   "bugs": {
-    "url": "https://github.com/sonatra/sonatra-jquery-sidebar/issues"
+    "url": "https://github.com/fxpio/fxp-jquery-sidebar/issues"
   },
   "engines": {},
   "main": "js/sidebar.js",
@@ -28,7 +28,7 @@
     "hammerjs": "^2.0.0"
   },
   "devDependencies": {
-    "@sonatra/jquery-scroller": "git://github.com/sonatra/sonatra-jquery-scroller.git#master",
+    "@fxp/jquery-scroller": "git://github.com/fxpio/fxp-jquery-scroller.git#master",
     "bootstrap": "^3.3.7",
     "font-awesome": "^4.7.0",
     "grunt": "^1.0.1",

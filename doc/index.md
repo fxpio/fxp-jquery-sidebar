@@ -9,14 +9,14 @@ This library require:
 - jquery
 - hammerjs
 - font-awesome (optional, for toggle button)
-- sonatra-hammer-scroll (optional)
+- fxp-hammer-scroll (optional)
 - bootstrap (optional)
 
 Installation
 ------------
 
 ```
-npm install @sonatra/jquery-sidebar --save
+npm install @fxp/jquery-sidebar --save
 ```
 
 Dev installation

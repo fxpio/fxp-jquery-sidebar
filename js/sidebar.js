@@ -1,7 +1,7 @@
 /*
- * This file is part of the Sonatra package.
+ * This file is part of the Fxp package.
  *
- * (c) François Pluchino <francois.pluchino@sonatra.com>
+ * (c) François Pluchino <francois.pluchino@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -111,7 +111,7 @@
      */
     function triggerEvent(type, self, data) {
         $.event.trigger({
-            type: 'sidebar:' + type + '.st.sidebar',
+            type: 'sidebar:' + type + '.fxp.sidebar',
             sidebar: self,
             eventData: data,
             time: new Date()
@@ -665,14 +665,14 @@
             onDragEnd(self, event);
         });
 
-        self.$wrapper.on('mousedown.st.sidebar', null, self, onItemMouseDown);
-        self.$wrapper.on('click.st.sidebar', null, self, onItemClick);
+        self.$wrapper.on('mousedown.fxp.sidebar', null, self, onItemMouseDown);
+        self.$wrapper.on('click.fxp.sidebar', null, self, onItemClick);
 
         if (self.options.clickableSwipe) {
             self.$swipe
-                .on('click.st.sidebar' + self.guid, null, self, swipeClick)
-                .on('mouseenter.st.sidebar' + self.guid, null, self, swipeMouseEnter)
-                .on('mouseleave.st.sidebar' + self.guid, null, self, swipeMouseLeave)
+                .on('click.fxp.sidebar' + self.guid, null, self, swipeClick)
+                .on('mouseenter.fxp.sidebar' + self.guid, null, self, swipeMouseEnter)
+                .on('mouseleave.fxp.sidebar' + self.guid, null, self, swipeMouseLeave)
             ;
         }
     }
@@ -691,14 +691,14 @@
 
         if (self.options.clickableSwipe) {
             self.$swipe
-                .off('click.st.sidebar' + self.guid, swipeClick)
-                .off('mouseenter.st.sidebar' + self.guid, swipeMouseEnter)
-                .off('mouseleave.st.sidebar' + self.guid, swipeMouseLeave)
+                .off('click.fxp.sidebar' + self.guid, swipeClick)
+                .off('mouseenter.fxp.sidebar' + self.guid, swipeMouseEnter)
+                .off('mouseleave.fxp.sidebar' + self.guid, swipeMouseLeave)
             ;
         }
 
-        self.$wrapper.off('mousedown.st.sidebar', onItemMouseDown);
-        self.$wrapper.off('click.st.sidebar', onItemClick);
+        self.$wrapper.off('mousedown.fxp.sidebar', onItemMouseDown);
+        self.$wrapper.off('click.fxp.sidebar', onItemClick);
         self.$swipe.remove();
         self.hammer.destroy();
 
@@ -720,7 +720,7 @@
 
         if ($.fn.scroller && self.options.useScroller) {
             self.$element.scroller($.extend({}, options, self.options.scroller));
-            self.$element.on('scrolling.st.scroller.st.sidebar', null, self, resetScrolling);
+            self.$element.on('scrolling.fxp.scroller.fxp.sidebar', null, self, resetScrolling);
         }
     }
 
@@ -734,7 +734,7 @@
     function destroyScroller(self) {
         if ($.fn.scroller && self.options.useScroller) {
             self.$element.scroller('destroy');
-            self.$element.off('scrolling.st.scroller.st.sidebar', resetScrolling);
+            self.$element.off('scrolling.fxp.scroller.fxp.sidebar', resetScrolling);
         }
     }
 
@@ -748,8 +748,8 @@
      */
     function doDetachToggle(self, $toggle) {
         $toggle
-            .off('mouseover.st.sidebar' + self.guid, $.proxy(Sidebar.prototype.open, self))
-            .off(self.eventType + '.st.sidebar' + self.guid, Sidebar.prototype.toggle)
+            .off('mouseover.fxp.sidebar' + self.guid, $.proxy(Sidebar.prototype.open, self))
+            .off(self.eventType + '.fxp.sidebar' + self.guid, Sidebar.prototype.toggle)
             .removeClass(self.options.classLocked + '-toggle')
             .removeClass(self.options.classForceOpen + '-toggle')
             .removeClass(self.options.classOpen + '-toggle');
@@ -944,8 +944,8 @@
 
         isOver = isOverMinWidth(this);
 
-        $(window).on('keyup.st.sidebar' + this.guid, null, this, keyboardAction);
-        $(window).on('resize.st.sidebar' + this.guid, null, this, onResizeWindow);
+        $(window).on('keyup.fxp.sidebar' + this.guid, null, this, keyboardAction);
+        $(window).on('resize.fxp.sidebar' + this.guid, null, this, onResizeWindow);
 
         if (this.$element.hasClass(this.options.classOpen + '-init')) {
             if (isOver) {
@@ -968,11 +968,11 @@
         }
 
         if (this.options.closeOnSelect) {
-            this.$element.on(this.eventType + '.st.sidebar' + this.guid, this.options.itemSelector, this, closeOnSelect);
+            this.$element.on(this.eventType + '.fxp.sidebar' + this.guid, this.options.itemSelector, this, closeOnSelect);
         }
 
-        this.$element.on(prefixedEvent('TransitionEnd', '.st.sidebar' + this.guid), null, this, onEndTransition);
-        this.$obfuscator.on(this.eventType + '.st.sidebar' + this.guid, null, this, closeExternal);
+        this.$element.on(prefixedEvent('TransitionEnd', '.fxp.sidebar' + this.guid), null, this, onEndTransition);
+        this.$obfuscator.on(this.eventType + '.fxp.sidebar' + this.guid, null, this, closeExternal);
 
         initScroller(this);
         initHammer(this);
@@ -1284,10 +1284,10 @@
             $toggle.removeClass(this.options.classOpen + '-toggle');
         }
 
-        $toggle.on(this.eventType + '.st.sidebar' + this.guid, null, this, Sidebar.prototype.toggle);
+        $toggle.on(this.eventType + '.fxp.sidebar' + this.guid, null, this, Sidebar.prototype.toggle);
 
         if (!mobileCheck() && this.options.toggleOpenOnHover) {
-            $toggle.on('mouseover.st.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
+            $toggle.on('mouseover.fxp.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
         }
 
         this.$toggles.push($toggle);
@@ -1402,11 +1402,11 @@
         cleanCloseDelay(this);
         this.detachToggles();
         this.forceClose();
-        $(window).off('keyup.st.sidebar' + this.guid, keyboardAction);
-        $(window).off('resize.st.sidebar' + this.guid, onResizeWindow);
-        this.$element.off(this.eventType + '.st.sidebar' + this.guid, this.options.itemSelector, closeOnSelect);
-        this.$element.off(prefixedEvent('TransitionEnd', '.st.sidebar' + this.guid), onEndTransition);
-        this.$obfuscator.off(this.eventType + '.st.sidebar' + this.guid, closeExternal);
+        $(window).off('keyup.fxp.sidebar' + this.guid, keyboardAction);
+        $(window).off('resize.fxp.sidebar' + this.guid, onResizeWindow);
+        this.$element.off(this.eventType + '.fxp.sidebar' + this.guid, this.options.itemSelector, closeOnSelect);
+        this.$element.off(prefixedEvent('TransitionEnd', '.fxp.sidebar' + this.guid), onEndTransition);
+        this.$obfuscator.off(this.eventType + '.fxp.sidebar' + this.guid, closeExternal);
 
         destroyHammer(this);
         destroyScroller(this);
