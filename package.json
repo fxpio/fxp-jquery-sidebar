@@ -28,7 +28,7 @@
     "hammerjs": "^2.0.0"
   },
   "devDependencies": {
-    "@fxp/jquery-scroller": "git://github.com/fxpio/fxp-jquery-scroller.git#master",
+    "@fxp/jquery-scroller": "github:fxpio/fxp-jquery-scroller#master",
     "bootstrap": "^3.3.7",
     "font-awesome": "^4.7.0",
     "grunt": "^1.0.1",
