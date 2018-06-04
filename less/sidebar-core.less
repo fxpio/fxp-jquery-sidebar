@@ -37,6 +37,7 @@
         list-style: none;
         text-align: left;
         font-size: @sidebar-default-font-size;
+        direction: ltr;
 
         ul {
             padding: 0;
@@ -197,6 +198,10 @@
         &.sidebar-open {
             -webkit-transform: translate3d(0px, 0px, 0px);
             transform: translate3d(0px, 0px, 0px);
+        }
+
+        .sidebar-menu {
+            direction: rtl;
         }
 
         .sidebar-item {
