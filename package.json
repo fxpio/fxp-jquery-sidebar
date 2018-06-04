@@ -29,6 +29,7 @@
   "engines": {},
   "main": "js/sidebar.js",
   "dependencies": {
+    "@fxp/jquery-pluginify": "github:fxpio/fxp-jquery-pluginify#master",
     "hammerjs": "^2.0.0",
     "jquery": "^2.2.0||^3.2.0"
   },

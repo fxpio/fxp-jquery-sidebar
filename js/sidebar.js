@@ -7,861 +7,111 @@
  * file that was distributed with this source code.
  */
 
-/*global define*/
-/*global jQuery*/
-/*global window*/
-/*global navigator*/
-/*global document*/
-/*global CSSMatrix*/
-/*global WebKitCSSMatrix*/
-/*global MSCSSMatrix*/
-/*global Hammer*/
-/*global Sidebar*/
+import pluginify from '@fxp/jquery-pluginify';
+import {
+    getNativeScrollWidth,
+    mobileCheck,
+    initScroller,
+    destroyScroller,
+    lockBodyScroll,
+    unlockBodyScroll
+} from "./utils/scrollbar";
+import {changeTransition, isOverMinWidth} from "./utils/css";
+import {initWithLocalStorage, setLocalStorage} from "./utils/storage";
+import {onResizeWindow} from "./utils/window";
+import {prefixedEvent, triggerEvent} from "./utils/events";
+import {keyboardAction, closeExternal, closeOnSelect, cleanCloseDelay} from "./utils/actions";
+import {destroyHammer, initHammer, onEndTransition} from "./utils/touch";
+import {addClassToggles, removeClassToggles, doDetachToggle} from "./utils/toggle";
 
 /**
- * @param {jQuery} $
+ * Left position.
  */
-(function (factory) {
-    'use strict';
+export const POSITION_LEFT  = 'left';
 
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define(['jquery'], factory);
-    } else {
-        // Browser globals
-        factory(jQuery);
+/**
+ * Right position.
+ */
+export const POSITION_RIGHT = 'right';
+
+/**
+ * Not force toggle.
+ */
+export const FORCE_TOGGLE_NO = false;
+
+/**
+ * Force toggle.
+ */
+export const FORCE_TOGGLE = true;
+
+/**
+ * Always force toggle.
+ */
+export const FORCE_TOGGLE_ALWAYS = 'always';
+
+/**
+ * Defaults options.
+ */
+const DEFAULTS = {
+    classWrapper:       'sidebar-wrapper',
+    classContainer:     'container-main',
+    classOpen:          'sidebar-open',
+    classLocked:        'sidebar-locked',
+    classForceOpen:     'sidebar-force-open',
+    classOnDragging:    'sidebar-dragging',
+    classObfuscator:     'sidebar-obfuscator',
+    forceToggle:        FORCE_TOGGLE_NO,
+    locked:             false,
+    position:           POSITION_LEFT,
+    minLockWidth:       992,
+    toggleId:           null,
+    toggleOpenOnHover:  false,
+    toggleOnClick:      false,
+    saveConfig:         false,
+    storageLockedKey:   'fxp/sidebar/locked',
+    clickableSwipe:     false,
+    draggable:          true,
+    closeOnSelect:      true,
+    closeOnSelectDelay: 0.5,
+    resetScrollDelay:   0.3,
+    itemSelector:       '.sidebar-menu a',
+    useScroller:        true,
+    scrollerScrollbar:  undefined,
+    scroller:           {
+        contentSelector: '.sidebar-menu',
+        scrollerStickyHeader: true,
+        stickyOptions: {
+            selector: '> .sidebar-menu > .sidebar-group > span'
+        }
+    },
+    hammer:             {},
+    disabledKeyboard:   false,
+    keyboardEvent:      {
+        ctrlKey:  true,
+        shiftKey: false,
+        altKey:   true,
+        keyCode:  'S'.charCodeAt(0)
     }
-}(function ($) {
-    'use strict';
+};
 
-    var nativeScrollWidth = null;
-
+/**
+ * Sidebar class.
+ */
+export default class Sidebar
+{
     /**
-     * Get the width of native scrollbar.
+     * Constructor.
      *
-     * @returns {Number}
+     * @param {HTMLElement} element The DOM element
+     * @param {object}      options The options
      */
-    function getNativeScrollWidth() {
-        var sbDiv = document.createElement("div"),
-            size;
-        sbDiv.style.width = '100px';
-        sbDiv.style.height = '100px';
-        sbDiv.style.overflow = 'scroll';
-        sbDiv.style.position = 'absolute';
-        sbDiv.style.top = '-9999px';
-        document.body.appendChild(sbDiv);
-        size = sbDiv.offsetWidth - sbDiv.clientWidth;
-        document.body.removeChild(sbDiv);
-
-        return size;
-    }
-
-    /**
-     * Check if is a mobile device.
-     *
-     * @returns {boolean}
-     *
-     * @private
-     */
-    function mobileCheck() {
-        if (null === nativeScrollWidth) {
-            nativeScrollWidth = getNativeScrollWidth();
-        }
-
-        return 0 === nativeScrollWidth;
-    }
-
-    /**
-     * Add browser prefix on event name for jquery.
-     *
-     * @param {String} name        The event name
-     * @param {String} [namespace] The namespace of jquery event
-     *
-     * @returns {String}
-     *
-     * @private
-     */
-    function prefixedEvent(name, namespace) {
-        var pfx = ['webkit', 'moz', 'ms', 'o', ''],
-            names = '';
-
-        for (var p = 0; p < pfx.length; p++) {
-            if (!pfx[p]) {
-                name = name.toLowerCase();
-            }
-
-            names += ' ' + pfx[p] + name;
-
-            if (undefined !== namespace) {
-                names += '.' + namespace;
-            }
-        }
-
-        return names;
-    }
-
-    /**
-     * Trigger the event.
-     *
-     * @param {String}  type   The event type
-     * @param {Sidebar} self   The sidebar instance
-     * @param {*}       [data] The data
-     *
-     * @private
-     */
-    function triggerEvent(type, self, data) {
-        $.event.trigger({
-            type: 'sidebar:' + type + '.fxp.sidebar',
-            sidebar: self,
-            eventData: data,
-            time: new Date()
-        });
-    }
-
-    /**
-     * Changes the css transition configuration on target element.
-     *
-     * @param {jQuery} $target    The element to edited
-     * @param {string} transition The css transition configuration of target
-     *
-     * @private
-     */
-    function changeTransition($target, transition) {
-        $target.css('-webkit-transition', transition);
-        $target.css('transition', transition);
-    }
-
-    /**
-     * Changes the css transform configuration on target element.
-     *
-     * @param {jQuery} $target   The element to edited
-     * @param {string} transform The css transform configuration of target
-     *
-     * @private
-     */
-    function changeTransform($target, transform) {
-        $target.css('-webkit-transform', transform);
-        $target.css('transform', transform);
-    }
-
-    /**
-     * Translate the jquery element with Translate 3D CSS.
-     *
-     * @param {jQuery } $target The jquery element
-     * @param {Number}  delta   The delta of translate
-     */
-    function changeTranslate($target, delta) {
-        var trans = delta + 'px, 0px, 0px';
-
-        changeTransform($target, 'translate3d(' + trans + ')');
-    }
-
-    /**
-     * Get the horizontal position of target element.
-     *
-     * @param {jQuery} $target The jquery target
-     *
-     * @return {number}
-     *
-     * @private
-     */
-    function getTargetPosition($target) {
-        var transformCss = $target.css('transform'),
-            transform = {e: 0, f: 0},
-            reMatrix,
-            match;
-
-        if (transformCss) {
-            if ('function' === typeof CSSMatrix) {
-                transform = new CSSMatrix(transformCss);
-
-            } else if ('function' === typeof WebKitCSSMatrix) {
-                transform = new WebKitCSSMatrix(transformCss);
-
-            } else if ('function' === typeof MSCSSMatrix) {
-                transform = new MSCSSMatrix(transformCss);
-
-            } else {
-                reMatrix = /matrix\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)/;
-                match = transformCss.match(reMatrix);
-
-                if (match) {
-                    transform.e = parseInt(match[1], 10);
-                    transform.f = parseInt(match[2], 10);
-                }
-            }
-        }
-
-        return transform.e;
-    }
-
-    /**
-     * Binding actions of keyboard.
-     *
-     * @param {jQuery.Event|Event} event
-     *
-     * @private
-     */
-    function keyboardAction(event) {
-        if (!(event instanceof jQuery.Event)) {
-            return;
-        }
-
-        if (event.data.options.disabledKeyboard) {
-            return;
-        }
-
-        var self = event.data,
-            kbe = self.options.keyboardEvent;
-
-        if (event.shiftKey === kbe.shiftKey &&
-                event.ctrlKey  === kbe.ctrlKey &&
-                event.altKey   === kbe.altKey &&
-                event.keyCode  === kbe.keyCode) {
-            self.toggle(event);
-        }
-    }
-
-    /**
-     * Checks if the window width is wider than the minimum width defined in
-     * options.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @returns {boolean}
-     *
-     * @private
-     */
-    function isOverMinWidth(self) {
-        var $window = $(window),
-            windowWidth = $window.innerWidth();
-
-        if (self.$body.height() > $window.innerHeight()) {
-            windowWidth += self.nativeScrollWidth;
-        }
-
-        return windowWidth >= self.options.minLockWidth;
-    }
-
-    /**
-     * Close the sidebar since external action.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function closeExternal(event) {
-        var self = event.data;
-
-        event.stopPropagation();
-        event.preventDefault();
-
-        if (isOverMinWidth(self)) {
-            self.close();
-
-        } else {
-            self.forceClose();
-        }
-    }
-
-    /**
-     * Clean the close delay.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @private
-     */
-    function cleanCloseDelay(self) {
-        if (null !== self.closeDelay) {
-            window.clearTimeout(self.closeDelay);
-            self.closeDelay = null;
-        }
-    }
-
-    /**
-     * Close the sidebar when an item is selected.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function closeOnSelect(event) {
-        var self = event.data;
-
-        if (self.options.closeOnSelectDelay > 0) {
-            self.closeDelay = window.setTimeout(function () {
-                self.close();
-            }, self.options.closeOnSelectDelay * 1000);
-        } else {
-            self.close();
-        }
-    }
-
-    /**
-     * Lock the scroll of body.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @private
-     */
-    function lockBodyScroll(self) {
-        var bodyPad = parseInt((self.$body.css('padding-right') || 0), 10),
-            hasScrollbar = self.$body.get(0).scrollHeight > document.documentElement.clientHeight &&
-                'hidden' !== self.$body.css('overflow-y');
-
-        if (hasScrollbar) {
-            self.originalBodyPad = document.body.style.paddingRight || '';
-            self.originalBodyOverflowY = document.body.style.overflowY || '';
-
-            self.$body.css({
-                'padding-right': (bodyPad + self.nativeScrollWidth) + 'px',
-                'overflow-y': 'hidden'
-            });
-
-            triggerEvent('lock-body-scroll', self, self.nativeScrollWidth);
-        }
-    }
-
-    /**
-     * Unlock the scroll of body.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @private
-     */
-    function unlockBodyScroll(self) {
-        if (null !== self.originalBodyPad || null !== self.originalBodyOverflowY) {
-            self.$body.css({
-                'padding-right': self.originalBodyPad,
-                'overflow-y': self.originalBodyOverflowY
-            });
-
-            self.originalBodyPad = null;
-            self.originalBodyOverflowY = null;
-            triggerEvent('unlock-body-scroll', self, self.nativeScrollWidth);
-        }
-    }
-
-    /**
-     * Reset the scrolling locker.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function resetScrolling(event) {
-        var self = event.data;
-
-        self.resetScrolling = window.setTimeout(function () {
-            self.resetScrolling = null;
-        }, self.options.resetScrollDelay * 1000);
-    }
-
-    /**
-     * Close the sidebar or reopen the locked sidebar on window resize event.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function onResizeWindow(event) {
-        var self = event.data,
-            isForceOpened = false,
-            isOver = isOverMinWidth(self);
-
-        changeTransition(self.$element, 'none');
-
-        if (isOver && self.isLocked()) {
-            self.forceOpen();
-            unlockBodyScroll(self);
-            isForceOpened = true;
-        }
-
-        if (undefined === self.resizeDelay) {
-            self.resizeDelay = window.setTimeout(function () {
-                delete self.resizeDelay;
-                changeTransition(self.$element, '');
-
-                if (!isForceOpened && self.isLocked()) {
-                    if (!isOver && self.isOpen()) {
-                        lockBodyScroll(self);
-                    } else {
-                        unlockBodyScroll(self);
-                    }
-                }
-            }, 500);
-        }
-    }
-
-    /**
-     * Trigger the opened or closed event when the transition is finished.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function onEndTransition(event) {
-        var self = event.data,
-            action = event.data.isOpen() ? 'opened' : 'closed';
-
-        if (event.target !== self.$element.get(0)) {
-            return;
-        }
-
-        if (event.data.isOpen()) {
-            addClassToggles(self, self.options.classOpen + '-toggle');
-
-            if ($.fn.scroller && self.options.useScroller) {
-                self.$element.scroller('resizeScrollbar');
-            }
-
-            $('a:visible:first', self.$toggles.get(0).parent()).focus();
-        } else {
-            removeClassToggles(self, self.options.classOpen + '-toggle');
-
-            if ($.fn.scroller && self.options.useScroller) {
-                self.$element.scroller('resizeScrollbar');
-            }
-        }
-
-        if (self.isLocked()) {
-            if (!isOverMinWidth(self) && self.isOpen()) {
-                lockBodyScroll(self);
-            } else {
-                unlockBodyScroll(self);
-            }
-        }
-
-        triggerEvent(action, self);
-    }
-
-    /**
-     * Action of "on drag" hammer event.
-     *
-     * @param {Sidebar} self  The sidebar instance
-     * @param {object}  event The hammer event
-     *
-     * @typedef {Number} event.deltaX The hammer delta X
-     *
-     * @private
-     */
-    function onDrag(self, event) {
-        var delta;
-
-        if (null !== self.resetScrolling || event.target === self.$obfuscator.get(0)) {
-            return;
-        }
-
-        // drag start
-        if (null === self.dragDirection) {
-            if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) {
-                return;
-            }
-
-            self.mouseDragEnd = null;
-            self.dragDirection = event.direction;
-            self.$element.css('user-select', 'none');
-            cleanCloseDelay(self);
-        }
-
-        // drag
-        if (-1 === $.inArray(self.dragDirection, [Hammer.DIRECTION_LEFT, Hammer.DIRECTION_RIGHT]) ||
-                (self.options.locked && isOverMinWidth(self))) {
-            return;
-        }
-
-        event.preventDefault();
-
-        if (null === self.dragStartPosition) {
-            self.dragStartPosition = getTargetPosition(self.$element);
-        }
-
-        delta = Math.round(self.dragStartPosition + event.deltaX);
-
-        if ((Sidebar.POSITION_LEFT === self.getPosition() && delta > 0) ||
-                (Sidebar.POSITION_RIGHT === self.getPosition() && delta < 0)) {
-            delta = 0;
-        }
-
-        self.$element.addClass(self.options.classOnDragging);
-        changeTransition(self.$element, 'none');
-        changeTranslate(self.$element, delta);
-    }
-
-    /**
-     * Action of "on drag end" hammer event.
-     *
-     * @param {Sidebar} self  The sidebar instance
-     * @param {object}  event The hammer event
-     *
-     *
-     * @typedef {Number} event.deltaX    The hammer delta X
-     * @typedef {Number} event.direction The hammer direction const
-     *
-     * @private
-     */
-    function onDragEnd(self, event) {
-        var closeGesture = Hammer.DIRECTION_LEFT,
-            openGesture  = Hammer.DIRECTION_RIGHT;
-
-        if (null !== self.resetScrolling || event.target === self.$obfuscator.get(0)) {
-            return;
-        }
-
-        self.dragStartPosition = null;
-        event.preventDefault();
-
-        if (self.fixDragClick && -1 !== $.inArray(event.srcEvent.type, ['pointerup', 'mouseup'])) {
-            self.mouseDragEnd = true;
-        }
-
-        self.$element.removeClass(self.options.classOnDragging);
-        self.$element.css('user-select', '');
-        changeTransition(self.$element, '');
-        changeTransform(self.$element, '');
-
-        if (Math.abs(event.deltaX) <= (self.$element.innerWidth() / 4)) {
-            self.dragDirection = null;
-            self.$toggles.focus();
-
-            return;
-        }
-
-        if (Sidebar.POSITION_RIGHT === self.getPosition()) {
-            closeGesture = Hammer.DIRECTION_RIGHT;
-            openGesture = Hammer.DIRECTION_LEFT;
-        }
-
-        if (self.isOpen() && closeGesture === self.dragDirection) {
-            self.forceClose();
-
-        } else if (openGesture === self.dragDirection) {
-            self.mouseDragEnd = null;
-
-            if (self.isOpen() && isOverMinWidth(self) &&
-                    $.inArray(self.options.forceToggle, [Sidebar.FORCE_TOGGLE, Sidebar.FORCE_TOGGLE_ALWAYS]) >= 0) {
-                self.forceOpen();
-
-            } else if (isOverMinWidth(self) && Sidebar.FORCE_TOGGLE_ALWAYS === self.options.forceToggle) {
-                self.forceOpen();
-
-            } else {
-                self.open();
-            }
-        }
-
-        self.dragDirection = null;
-    }
-
-    /**
-     * Action on item mouse down.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function onItemMouseDown(event) {
-        event.preventDefault();
-    }
-
-    /**
-     * Action on item click.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function onItemClick(event) {
-        var self = event.data;
-
-        if (true === self.mouseDragEnd) {
-            event.preventDefault();
-            cleanCloseDelay(self);
-            self.mouseDragEnd = null;
-        }
-    }
-
-    /**
-     * Action on swipe is clicked.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function swipeClick(event) {
-        swipeMouseLeave(event);
-        event.data.toggle(event);
-    }
-
-    /**
-     * Action when mouse enter on sur swipe.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function swipeMouseEnter(event) {
-        event.data.$swipe.addClass('mouse-hover');
-    }
-
-    /**
-     * Action when mouse leave on sur swipe.
-     *
-     * @param {Event} event The event
-     *
-     * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @private
-     */
-    function swipeMouseLeave(event) {
-        event.data.$swipe.removeClass('mouse-hover');
-    }
-
-    /**
-     * Init the hammer instance.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @private
-     */
-    function initHammer(self) {
-        if (!self.options.draggable || typeof Hammer !== 'function') {
-            return;
-        }
-
-        self.$swipe = $('<div id="sidebar-swipe' + self.guid + '" class="sidebar-swipe"></div>');
-        self.$element.after(self.$swipe);
-
-        self.hammer = new Hammer(self.$wrapper.get(0), $.extend(true, {}, self.options.hammer));
-
-        self.hammer.get('swipe').set({ enable: false });
-        self.hammer.get('tap').set({ enable: false });
-
-        self.hammer.on('panstart', function (event) {
-            onDrag(self, event);
-        });
-        self.hammer.on('pan', function (event) {
-            onDrag(self, event);
-        });
-        self.hammer.on('panend', function (event) {
-            onDragEnd(self, event);
-        });
-
-        self.$wrapper.on('mousedown.fxp.sidebar', null, self, onItemMouseDown);
-        self.$wrapper.on('click.fxp.sidebar', null, self, onItemClick);
-
-        if (self.options.clickableSwipe) {
-            self.$swipe
-                .on('click.fxp.sidebar' + self.guid, null, self, swipeClick)
-                .on('mouseenter.fxp.sidebar' + self.guid, null, self, swipeMouseEnter)
-                .on('mouseleave.fxp.sidebar' + self.guid, null, self, swipeMouseLeave)
-            ;
-        }
-    }
-
-    /**
-     * Destroy the hammer configuration.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @private
-     */
-    function destroyHammer(self) {
-        if (!self.options.draggable || typeof Hammer !== 'function') {
-            return;
-        }
-
-        if (self.options.clickableSwipe) {
-            self.$swipe
-                .off('click.fxp.sidebar' + self.guid, swipeClick)
-                .off('mouseenter.fxp.sidebar' + self.guid, swipeMouseEnter)
-                .off('mouseleave.fxp.sidebar' + self.guid, swipeMouseLeave)
-            ;
-        }
-
-        self.$wrapper.off('mousedown.fxp.sidebar', onItemMouseDown);
-        self.$wrapper.off('click.fxp.sidebar', onItemClick);
-        self.$swipe.remove();
-        self.hammer.destroy();
-
-        delete self.$swipe;
-        delete self.hammer;
-    }
-
-    /**
-     * Init the scroller instance.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @private
-     */
-    function initScroller(self) {
-        var options = {
-            scrollbarInverse: Sidebar.POSITION_RIGHT === self.options.position
-        };
-
-        if ($.fn.scroller && self.options.useScroller) {
-            self.$element.scroller($.extend({}, options, self.options.scroller));
-            self.$element.on('scrolling.fxp.scroller.fxp.sidebar', null, self, resetScrolling);
-        }
-    }
-
-    /**
-     * Destroy the hammer scroll configuration.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @private
-     */
-    function destroyScroller(self) {
-        if ($.fn.scroller && self.options.useScroller) {
-            self.$element.scroller('destroy');
-            self.$element.off('scrolling.fxp.scroller.fxp.sidebar', resetScrolling);
-        }
-    }
-
-    /**
-     * Action to detach toggle button.
-     *
-     * @param {Sidebar} self    The sidebar instance
-     * @param {jQuery}  $toggle The toggle
-     *
-     * @this Sidebar
-     */
-    function doDetachToggle(self, $toggle) {
-        $toggle
-            .off('mouseover.fxp.sidebar' + self.guid, $.proxy(Sidebar.prototype.open, self))
-            .off(self.eventType + '.fxp.sidebar' + self.guid, Sidebar.prototype.toggle)
-            .removeClass(self.options.classLocked + '-toggle')
-            .removeClass(self.options.classForceOpen + '-toggle')
-            .removeClass(self.options.classOpen + '-toggle');
-
-        if (!self.enabled) {
-            $toggle.removeClass('disabled');
-        }
-    }
-
-    /**
-     * Add css classname in toggle buttons.
-     *
-     * @param {Sidebar} self      The sidebar instance
-     * @param {String}  classname The css classname
-     *
-     * @this Sidebar
-     */
-    function addClassToggles(self, classname) {
-        self.$toggles.each(function (index, $toggle) {
-            $toggle.addClass(classname);
-        });
-    }
-
-    /**
-     * Add css classname in toggle buttons.
-     *
-     * @param {Sidebar} self      The sidebar instance
-     * @param {String}  classname The css classname
-     *
-     * @this Sidebar
-     */
-    function removeClassToggles(self, classname) {
-        self.$toggles.each(function (index, $toggle) {
-            $toggle.removeClass(classname);
-        });
-    }
-
-    /**
-     * Set the value in local storage.
-     *
-     * @param {Sidebar}        self  The sidebar instance
-     * @param {String}         key   The key
-     * @param {String|Boolean} value The value
-     *
-     * @private
-     */
-    function setLocalStorage(self, key, value) {
-        if (self.options.saveConfig && 'localStorage' in window) {
-            try {
-                window.localStorage.setItem(self.$element.prop('id') + '/' + key, value);
-            } catch (e) {}
-        }
-    }
-
-    /**
-     * Get the value in local storage.
-     *
-     * @param {Sidebar}        self           The sidebar instance
-     * @param {String}         key            The key
-     * @param {String|Boolean} [defaultValue] The default value
-     *
-     * @return {String|null}
-     */
-    function getLocalStorage(self, key, defaultValue) {
-        var value = undefined === defaultValue ? null : defaultValue,
-            itemValue = null;
-
-        if (self.options.saveConfig && 'localStorage' in window) {
-            itemValue = window.localStorage.getItem(self.$element.prop('id') + '/' + key);
-        }
-
-        return null !== itemValue ? itemValue : value;
-    }
-
-    /**
-     * Init the sidebar options with the locale storage.
-     *
-     * @param {Sidebar} self The sidebar instance
-     *
-     * @private
-     */
-    function initWithLocalStorage(self) {
-        var storageLocked = getLocalStorage(self, self.options.storageLockedKey);
-
-        if (null !== storageLocked && self.options.toggleOnClick) {
-            self.options.locked = storageLocked === 'true';
-
-            if (!self.options.locked) {
-                changeTransition(self.$element, 'none');
-                self.forceClose();
-            }
-        }
-    }
-
-    // SIDEBAR CLASS DEFINITION
-    // ========================
-
-    /**
-     * @constructor
-     *
-     * @param {string|elements|object|jQuery} element
-     * @param {object}                        options
-     *
-     * @this Sidebar
-     */
-    var Sidebar = function (element, options) {
-        var self = this,
+    constructor(element, options = {}) {
+        let self = this,
             isOver,
             ua = navigator.userAgent.toLowerCase();
 
-        this.guid = jQuery.guid;
-        this.options = $.extend(true, {}, Sidebar.DEFAULTS, options);
+        this.guid = $.guid;
+        this.options  = $.extend(true, {}, DEFAULTS, options);
         this.eventType = 'click';
         this.nativeScrollWidth = getNativeScrollWidth();
         this.$element = $(element);
@@ -905,18 +155,18 @@
             this.options.locked = true;
         }
 
-        if (Sidebar.POSITION_RIGHT !== this.options.position) {
-            this.options.position = Sidebar.POSITION_LEFT;
+        if (POSITION_RIGHT !== this.options.position) {
+            this.options.position = POSITION_LEFT;
 
         } else {
             this.$element.addClass('sidebar-right');
         }
 
         if (this.$element.hasClass('sidebar-right')) {
-            this.options.position = Sidebar.POSITION_RIGHT;
+            this.options.position = POSITION_RIGHT;
         }
 
-        if (this.options.position === Sidebar.POSITION_RIGHT) {
+        if (this.options.position === POSITION_RIGHT) {
             this.options.keyboardEvent.shiftKey = true;
         }
 
@@ -929,7 +179,7 @@
         }
 
         if (this.options.locked) {
-            this.options.forceToggle = Sidebar.FORCE_TOGGLE_ALWAYS;
+            this.options.forceToggle = FORCE_TOGGLE_ALWAYS;
             changeTransition(this.$element, 'none');
 
             if (this.enabled) {
@@ -983,152 +233,57 @@
             self.$element.addClass('sidebar-ready');
             triggerEvent('ready', self);
         }, 0);
-    },
-        old;
-
-    /**
-     * Defaults options.
-     *
-     * @type {object}
-     */
-    Sidebar.DEFAULTS = {
-        classWrapper:       'sidebar-wrapper',
-        classContainer:     'container-main',
-        classOpen:          'sidebar-open',
-        classLocked:        'sidebar-locked',
-        classForceOpen:     'sidebar-force-open',
-        classOnDragging:    'sidebar-dragging',
-        classObfuscator:     'sidebar-obfuscator',
-        forceToggle:        Sidebar.FORCE_TOGGLE_NO,
-        locked:             false,
-        position:           Sidebar.POSITION_LEFT,
-        minLockWidth:       992,
-        toggleId:           null,
-        toggleOpenOnHover:  false,
-        toggleOnClick:      false,
-        saveConfig:         false,
-        storageLockedKey:   'st/sidebar/locked',
-        clickableSwipe:     false,
-        draggable:          true,
-        closeOnSelect:      true,
-        closeOnSelectDelay: 0.5,
-        resetScrollDelay:   0.3,
-        itemSelector:       '.sidebar-menu a',
-        useScroller:        true,
-        scrollerScrollbar:  undefined,
-        scroller:           {
-            contentSelector: '.sidebar-menu',
-            scrollerStickyHeader: true,
-            stickyOptions: {
-                selector: '> .sidebar-menu > .sidebar-group > span'
-            }
-        },
-        hammer:             {},
-        disabledKeyboard:   false,
-        keyboardEvent:      {
-            ctrlKey:  true,
-            shiftKey: false,
-            altKey:   true,
-            keyCode:  'S'.charCodeAt(0)
-        }
-    };
-
-    /**
-     * Left position.
-     *
-     * @type {string}
-     */
-    Sidebar.POSITION_LEFT  = 'left';
-
-    /**
-     * Right position.
-     *
-     * @type {string}
-     */
-    Sidebar.POSITION_RIGHT = 'right';
-
-    /**
-     * Not force toggle.
-     *
-     * @type {boolean}
-     */
-    Sidebar.FORCE_TOGGLE_NO = false;
-
-    /**
-     * Force toggle.
-     *
-     * @type {boolean}
-     */
-    Sidebar.FORCE_TOGGLE = true;
-
-    /**
-     * Always force toggle.
-     *
-     * @type {string}
-     */
-    Sidebar.FORCE_TOGGLE_ALWAYS = 'always';
+    }
 
     /**
      * Get sidebar position.
      *
      * @returns {string} The position (left or right)
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.getPosition = function () {
+    getPosition() {
         return this.options.position;
-    };
+    }
 
     /**
      * Checks if sidebar is locked (always open).
      *
      * @returns {boolean}
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.isLocked = function () {
+    isLocked() {
         return this.options.locked;
-    };
+    }
 
     /**
      * Checks if sidebar is locked (always open).
      *
      * @returns {boolean}
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.isOpen = function () {
+    isOpen() {
         return this.$element.hasClass(this.options.classOpen);
-    };
+    }
 
     /**
      * Checks if sidebar is fully opened.
      *
      * @return {boolean}
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.isFullyOpened = function () {
+    isFullyOpened() {
         return this.$element.hasClass(this.options.classForceOpen);
-    };
+    }
 
     /**
      * Checks if sidebar is closable.
      *
      * @return {boolean}
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.isClosable = function () {
+    isClosable() {
         return this.enabled && this.isOpen() && !isOverMinWidth(this);
-    };
+    }
 
     /**
      * Force open the sidebar.
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.forceOpen = function () {
+    forceOpen() {
         if (!this.enabled || (this.isOpen() && this.isFullyOpened())) {
             return;
         }
@@ -1140,14 +295,12 @@
 
         triggerEvent('force-open', this);
         this.open();
-    };
+    }
 
     /**
      * Force close the sidebar.
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.forceClose = function () {
+    forceClose() {
         if (!this.enabled || !this.isOpen() || (this.isLocked() && isOverMinWidth(this))) {
             return;
         }
@@ -1159,14 +312,12 @@
 
         triggerEvent('force-close', this);
         this.close();
-    };
+    }
 
     /**
      * Open the sidebar.
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.open = function () {
+    open() {
         if (!this.enabled || this.isOpen()) {
             return;
         }
@@ -1175,14 +326,14 @@
         cleanCloseDelay(this);
         $('[data-sidebar=true]').sidebar('forceClose');
         this.$element.addClass(this.options.classOpen);
-    };
+    }
 
     /**
      * Close open the sidebar.
      *
      * @this Sidebar
      */
-    Sidebar.prototype.close = function () {
+    close() {
         if (!this.enabled || !this.isOpen() || (this.isFullyOpened() && isOverMinWidth(this))) {
             return;
         }
@@ -1190,7 +341,7 @@
         triggerEvent('close', this);
         cleanCloseDelay(this);
         this.$element.removeClass(this.options.classOpen);
-    };
+    }
 
     /**
      * Toggle the sidebar ("close, "open", "force open").
@@ -1198,11 +349,9 @@
      * @param {jQuery.Event|Event} [event]
      *
      * @typedef {Sidebar} Event.data The sidebar instance
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.toggle = function (event) {
-        var self = (undefined !== event) ? event.data : this;
+    toggle(event) {
+        let self = (undefined !== event) ? event.data : this;
 
         if (!self.enabled) {
             return;
@@ -1224,42 +373,38 @@
             if (self.isFullyOpened()) {
                 self.forceClose();
 
-            } else if (isOverMinWidth(self) && $.inArray(self.options.forceToggle, [true, Sidebar.FORCE_TOGGLE_ALWAYS]) >= 0) {
+            } else if (isOverMinWidth(self) && $.inArray(self.options.forceToggle, [FORCE_TOGGLE, FORCE_TOGGLE_ALWAYS]) >= 0) {
                 self.forceOpen();
 
             } else {
                 self.close();
             }
 
-        } else if (isOverMinWidth(self) && Sidebar.FORCE_TOGGLE_ALWAYS === self.options.forceToggle) {
+        } else if (isOverMinWidth(self) && FORCE_TOGGLE_ALWAYS === self.options.forceToggle) {
             self.forceOpen();
 
         } else {
             self.open();
         }
-    };
+    }
 
     /**
      * Refresh the scroller.
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.refresh = function () {
+    refresh() {
         triggerEvent('refresh', this);
 
         if ($.fn.scroller && this.options.useScroller) {
             this.$element.scroller('refresh');
         }
-    };
+    }
 
     /**
      * Attach a toggle button.
      *
-     * @param {string|element|object|jQuery} $toggle
-     *
-     * @this Sidebar
+     * @param {string|HTMLElement|object|jQuery} $toggle
      */
-    Sidebar.prototype.attachToggle = function ($toggle) {
+    attachToggle($toggle) {
         $toggle = $($toggle);
 
         if (!this.enabled) {
@@ -1284,24 +429,22 @@
             $toggle.removeClass(this.options.classOpen + '-toggle');
         }
 
-        $toggle.on(this.eventType + '.fxp.sidebar' + this.guid, null, this, Sidebar.prototype.toggle);
+        $toggle.on(this.eventType + '.fxp.sidebar' + this.guid, null, this, this.toggle);
 
         if (!mobileCheck() && this.options.toggleOpenOnHover) {
-            $toggle.on('mouseover.fxp.sidebar' + this.guid, $.proxy(Sidebar.prototype.open, this));
+            $toggle.on('mouseover.fxp.sidebar' + this.guid, $.proxy(this.open, this));
         }
 
         this.$toggles.push($toggle);
-    };
+    }
 
     /**
      * Detach a toggle button.
      *
-     * @param {string|element|object|jQuery} $toggle
-     *
-     * @this Sidebar
+     * @param {string|HTMLElement|object|jQuery} $toggle
      */
-    Sidebar.prototype.detachToggle = function ($toggle) {
-        var size = this.$toggles.length,
+    detachToggle($toggle) {
+        let size = this.$toggles.length,
             i;
 
         $toggle = $($toggle);
@@ -1313,15 +456,13 @@
                 break;
             }
         }
-    };
+    }
 
     /**
      * Detach a toggle button.
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.detachToggles = function () {
-        var size = this.$toggles.length,
+    detachToggles() {
+        let size = this.$toggles.length,
             i;
 
         for (i = 0; i < size; ++i) {
@@ -1329,26 +470,22 @@
         }
 
         this.$toggles.splice(0, size);
-    };
+    }
 
     /**
      * Checks if sidebar is enabled.
      *
      * @returns {boolean}
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.isEnabled = function () {
+    isEnabled() {
         return this.enabled;
-    };
+    }
 
     /**
      * Disable the sidebar.
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.disable = function () {
-        var prevIsLocked = this.isLocked();
+    disable() {
+        let prevIsLocked = this.isLocked();
 
         if (!this.enabled) {
             return;
@@ -1366,14 +503,12 @@
         }
 
         this.enabled = false;
-    };
+    }
 
     /**
      * Enable the sidebar.
-     *
-     * @this Sidebar
      */
-    Sidebar.prototype.enable = function () {
+    enable() {
         if (this.enabled) {
             return;
         }
@@ -1382,7 +517,7 @@
         this.enabled = true;
         this.$element.removeClass('sidebar-disabled');
 
-        if (isOverMinWidth(this) && Sidebar.FORCE_TOGGLE_ALWAYS === this.options.forceToggle) {
+        if (isOverMinWidth(this) && FORCE_TOGGLE_ALWAYS === this.options.forceToggle) {
             this.forceOpen();
         }
 
@@ -1391,14 +526,12 @@
         if (this.isLocked()) {
             removeClassToggles(this, this.options.classLocked + '-toggle-disabled');
         }
-    };
+    }
 
     /**
-     * Destroy instance.
-     *
-     * @this Sidebar
+     * Destroy the instance.
      */
-    Sidebar.prototype.destroy = function () {
+    destroy() {
         cleanCloseDelay(this);
         this.detachToggles();
         this.forceClose();
@@ -1416,7 +549,7 @@
         this.$wrapper.remove();
 
         this.$element.removeClass('sidebar-ready');
-        this.$element.removeData('st.sidebar');
+        this.$element.removeData('fxp.sidebar');
 
         delete this.guid;
         delete this.options;
@@ -1437,62 +570,7 @@
         delete this.originalBodyPad;
         delete this.originalBodyOverflowY;
         delete this.fixDragClick;
-    };
-
-
-    // SIDEBAR PLUGIN DEFINITION
-    // =========================
-
-    function Plugin(option) {
-        var args = Array.prototype.slice.call(arguments, 1),
-            ret;
-
-        this.each(function () {
-            var $this   = $(this),
-                data    = $this.data('st.sidebar'),
-                options = typeof option === 'object' && option;
-
-            if (!data && option === 'destroy') {
-                return;
-            }
-
-            if (!data) {
-                data = new Sidebar(this, options);
-                $this.data('st.sidebar', data);
-            }
-
-            if (typeof option === 'string') {
-                ret = data[option].apply(data, args);
-            }
-        });
-
-        return undefined === ret ? this : ret;
     }
+}
 
-    old = $.fn.sidebar;
-
-    $.fn.sidebar             = Plugin;
-    $.fn.sidebar.Constructor = Sidebar;
-
-
-    // SIDEBAR NO CONFLICT
-    // ===================
-
-    $.fn.sidebar.noConflict = function () {
-        $.fn.sidebar = old;
-
-        return this;
-    };
-
-
-    // SIDEBAR DATA-API
-    // ================
-
-    $(window).on('load', function () {
-        $('[data-sidebar="true"]').each(function () {
-            var $this = $(this);
-            Plugin.call($this, $this.data());
-        });
-    });
-
-}));
+pluginify('sidebar', 'fxp.sidebar', Sidebar, true, '[data-sidebar="true"]');
