@@ -4,12 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <title>Navbar Static Fluid example - Fxp Jquery Sidebar</title>
-    <link href="../node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="../node_modules/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="../css/scroller.css" rel="stylesheet">
-    <link href="../css/sidebar.css" rel="stylesheet">
-    <link href="../css/sidebar-bootstrap.css" rel="stylesheet">
-    <link href="examples.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
 </head>
 
 <body>
@@ -203,22 +198,6 @@
         </div>
     </div>
 </div>
-<script>
-    var require = {
-        paths: {
-            'jquery': '../node_modules/jquery/dist/jquery',
-            'hammerjs': '../node_modules/hammerjs/hammer',
-            'fxp-jquery-scroller': '../node_modules/@fxp/jquery-scroller/js/scroller',
-            'fxp-sticky-header': '../node_modules/@fxp/jquery-scroller/js/sticky-header',
-            'fxp-sidebar': '../js/sidebar'
-        },
-        deps: ['hammerjs', 'fxp-jquery-scroller', 'fxp-sticky-header', 'fxp-sidebar'],
-        callback: function (Hammer) {
-            window.Hammer = Hammer;
-            $(window).trigger('load');
-        }
-    };
-</script>
-<script src="../node_modules/requirejs/require.js" async="async"></script>
+<script src="main.js" async="async"></script>
 </body>
 </html>
