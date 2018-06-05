@@ -8,9 +8,11 @@
  */
 
 const Encore = require('@symfony/webpack-encore');
+const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-Encore
+const config = Encore
     .setOutputPath('build/')
     .setPublicPath('/build')
     .autoProvidejQuery()
@@ -21,6 +23,15 @@ Encore
     .addPlugin(new CopyWebpackPlugin([
         { from: './examples', to: '.', test: /.html$/ }
     ]))
+    .getWebpackConfig()
 ;
 
-module.exports = Encore.getWebpackConfig();
+// Replace Webpack Uglify Plugin
+if (Encore.isProduction()) {
+    config.plugins = config.plugins.filter(
+        plugin => !(plugin instanceof webpack.optimize.UglifyJsPlugin)
+    );
+    config.plugins.push(new UglifyJsPlugin());
+}
+
+module.exports = config;
