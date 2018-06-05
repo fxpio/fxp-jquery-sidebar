@@ -8,6 +8,7 @@
  */
 
 import pluginify from '@fxp/jquery-pluginify';
+import BasePlugin from '@fxp/jquery-pluginify/js/plugin';
 import {
     getNativeScrollWidth,
     mobileCheck,
@@ -97,7 +98,7 @@ const DEFAULTS = {
 /**
  * Sidebar class.
  */
-export default class Sidebar
+export default class Sidebar extends BasePlugin
 {
     /**
      * Constructor.
@@ -106,15 +107,14 @@ export default class Sidebar
      * @param {object}      options The options
      */
     constructor(element, options = {}) {
+        super(element, $.extend(true, {}, DEFAULTS, options));
+
         let self = this,
             isOver,
             ua = navigator.userAgent.toLowerCase();
 
-        this.guid = $.guid;
-        this.options  = $.extend(true, {}, DEFAULTS, options);
         this.eventType = 'click';
         this.nativeScrollWidth = getNativeScrollWidth();
-        this.$element = $(element);
         this.$toggles = $([]);
         this.$wrapper = $('<div class="' + this.options.classWrapper + '"></div>');
         this.$container = $('> .' + this.options.classContainer, this.$element.parent());
@@ -550,25 +550,7 @@ export default class Sidebar
 
         this.$element.removeClass('sidebar-ready');
 
-        delete this.guid;
-        delete this.options;
-        delete this.eventType;
-        delete this.nativeScrollWidth;
-        delete this.$element;
-        delete this.$wrapper;
-        delete this.$obfuscator;
-        delete this.$swipe;
-        delete this.$container;
-        delete this.$toggles;
-        delete this.$body;
-        delete this.dragStartPosition;
-        delete this.mouseDragEnd;
-        delete this.dragDirection;
-        delete this.closeDelay;
-        delete this.resetScrolling;
-        delete this.originalBodyPad;
-        delete this.originalBodyOverflowY;
-        delete this.fixDragClick;
+        super.destroy();
     }
 }
 
