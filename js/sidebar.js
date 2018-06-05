@@ -549,7 +549,6 @@ export default class Sidebar
         this.$wrapper.remove();
 
         this.$element.removeClass('sidebar-ready');
-        this.$element.removeData('fxp.sidebar');
 
         delete this.guid;
         delete this.options;
