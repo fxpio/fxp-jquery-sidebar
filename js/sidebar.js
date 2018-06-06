@@ -51,51 +51,6 @@ export const FORCE_TOGGLE = true;
 export const FORCE_TOGGLE_ALWAYS = 'always';
 
 /**
- * Defaults options.
- */
-const DEFAULTS = {
-    classWrapper:       'sidebar-wrapper',
-    classContainer:     'container-main',
-    classOpen:          'sidebar-open',
-    classLocked:        'sidebar-locked',
-    classForceOpen:     'sidebar-force-open',
-    classOnDragging:    'sidebar-dragging',
-    classObfuscator:     'sidebar-obfuscator',
-    forceToggle:        FORCE_TOGGLE_NO,
-    locked:             false,
-    position:           POSITION_LEFT,
-    minLockWidth:       992,
-    toggleId:           null,
-    toggleOpenOnHover:  false,
-    toggleOnClick:      false,
-    saveConfig:         false,
-    storageLockedKey:   'fxp/sidebar/locked',
-    clickableSwipe:     false,
-    draggable:          true,
-    closeOnSelect:      true,
-    closeOnSelectDelay: 0.5,
-    resetScrollDelay:   0.3,
-    itemSelector:       '.sidebar-menu a',
-    useScroller:        true,
-    scrollerScrollbar:  undefined,
-    scroller:           {
-        contentSelector: '.sidebar-menu',
-        scrollerStickyHeader: true,
-        stickyOptions: {
-            selector: '> .sidebar-menu > .sidebar-group > span'
-        }
-    },
-    hammer:             {},
-    disabledKeyboard:   false,
-    keyboardEvent:      {
-        ctrlKey:  true,
-        shiftKey: false,
-        altKey:   true,
-        keyCode:  'S'.charCodeAt(0)
-    }
-};
-
-/**
  * Sidebar class.
  */
 export default class Sidebar extends BasePlugin
@@ -107,7 +62,7 @@ export default class Sidebar extends BasePlugin
      * @param {object}      options The options
      */
     constructor(element, options = {}) {
-        super(element, $.extend(true, {}, DEFAULTS, options));
+        super(element, $.extend(true, {}, Sidebar.defaultOptions, options));
 
         let self = this,
             isOver,
@@ -553,5 +508,52 @@ export default class Sidebar extends BasePlugin
         super.destroy();
     }
 }
+
+
+
+/**
+ * Defaults options.
+ */
+Sidebar.defaultOptions = {
+    classWrapper:       'sidebar-wrapper',
+    classContainer:     'container-main',
+    classOpen:          'sidebar-open',
+    classLocked:        'sidebar-locked',
+    classForceOpen:     'sidebar-force-open',
+    classOnDragging:    'sidebar-dragging',
+    classObfuscator:     'sidebar-obfuscator',
+    forceToggle:        FORCE_TOGGLE_NO,
+    locked:             false,
+    position:           POSITION_LEFT,
+    minLockWidth:       992,
+    toggleId:           null,
+    toggleOpenOnHover:  false,
+    toggleOnClick:      false,
+    saveConfig:         false,
+    storageLockedKey:   'fxp/sidebar/locked',
+    clickableSwipe:     false,
+    draggable:          true,
+    closeOnSelect:      true,
+    closeOnSelectDelay: 0.5,
+    resetScrollDelay:   0.3,
+    itemSelector:       '.sidebar-menu a',
+    useScroller:        true,
+    scrollerScrollbar:  undefined,
+    scroller:           {
+        contentSelector: '.sidebar-menu',
+        scrollerStickyHeader: true,
+        stickyOptions: {
+            selector: '> .sidebar-menu > .sidebar-group > span'
+        }
+    },
+    hammer:             {},
+    disabledKeyboard:   false,
+    keyboardEvent:      {
+        ctrlKey:  true,
+        shiftKey: false,
+        altKey:   true,
+        keyCode:  'S'.charCodeAt(0)
+    }
+};
 
 pluginify('sidebar', 'fxp.sidebar', Sidebar, true, '[data-sidebar="true"]');
