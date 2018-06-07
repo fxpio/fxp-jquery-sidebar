@@ -62,7 +62,7 @@ export default class Sidebar extends BasePlugin
      * @param {object}      options The options
      */
     constructor(element, options = {}) {
-        super(element, $.extend(true, {}, Sidebar.defaultOptions, options));
+        super(element, options);
 
         let self = this,
             isOver,
