@@ -9,6 +9,14 @@
 
 import pluginify from '@fxp/jquery-pluginify';
 import BasePlugin from '@fxp/jquery-pluginify/js/plugin';
+import $ from 'jquery';
+import {changeTransition, isOverMinWidth} from "./utils/css";
+import {initWithLocalStorage, setLocalStorage} from "./utils/storage";
+import {onResizeWindow} from "./utils/window";
+import {prefixedEvent, triggerEvent} from "./utils/events";
+import {keyboardAction, closeExternal, closeOnSelect, cleanCloseDelay} from "./utils/actions";
+import {destroyHammer, initHammer, onEndTransition} from "./utils/touch";
+import {addClassToggles, removeClassToggles, doDetachToggle} from "./utils/toggle";
 import {
     getNativeScrollWidth,
     mobileCheck,
@@ -17,13 +25,6 @@ import {
     lockBodyScroll,
     unlockBodyScroll
 } from "./utils/scrollbar";
-import {changeTransition, isOverMinWidth} from "./utils/css";
-import {initWithLocalStorage, setLocalStorage} from "./utils/storage";
-import {onResizeWindow} from "./utils/window";
-import {prefixedEvent, triggerEvent} from "./utils/events";
-import {keyboardAction, closeExternal, closeOnSelect, cleanCloseDelay} from "./utils/actions";
-import {destroyHammer, initHammer, onEndTransition} from "./utils/touch";
-import {addClassToggles, removeClassToggles, doDetachToggle} from "./utils/toggle";
 
 /**
  * Left position.
