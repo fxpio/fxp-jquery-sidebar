@@ -75,7 +75,7 @@ export default class Sidebar extends BasePlugin
         this.$wrapper = $('<div class="' + this.options.classWrapper + '"></div>');
         this.$container = $('> .' + this.options.classContainer, this.$element.parent());
         this.$swipe = null;
-        this.$obfuscator = $('<div class="' + this.options.classObfuscator + '"></div>');
+        this.$obfuscator = $('<div class="' + this.options.classObfuscator + (this.options.showObfuscator ? ' show' : '') + '"></div>');
         this.$body = $('body');
         this.enabled = !this.$element.hasClass('sidebar-disabled');
         this.mini = this.$element.hasClass('sidebar-mini');
@@ -551,6 +551,7 @@ Sidebar.defaultOptions = {
     closeOnSelectDelay: 0.5,
     resetScrollDelay:   0.3,
     itemSelector:       '.sidebar-menu a',
+    showObfuscator:     true,
     useScroller:        true,
     scrollerScrollbar:  undefined,
     scroller:           {
