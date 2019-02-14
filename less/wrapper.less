@@ -120,6 +120,24 @@
         }
     }
 
+    &.container-full-locked {
+        &.container-force-open-left {
+            > .navbar > .container-fluid {
+                @media (min-width: @screen-md-min) {
+                    padding-left: @sidebar-width;
+                }
+            }
+        }
+
+        &.container-force-open-right {
+            > .navbar > .container-fluid {
+                @media (min-width: @screen-md-min) {
+                    padding-right: @sidebar-width ;
+                }
+            }
+        }
+    }
+
     &.container-force-open-left.container-force-open-right {
         > .container,
         > .navbar > .container {
