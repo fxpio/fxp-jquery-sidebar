@@ -17,3 +17,19 @@ import 'hammerjs';
 import '@fxp/jquery-scroller';
 import '@fxp/jquery-scroller/js/sticky-header';
 import '../js/sidebar';
+
+var $miniSidebars = $('.sidebar-mini');
+
+if ($miniSidebars.length > 0) {
+    $miniSidebars.each(function (index) {
+        var $miniSidebar = $miniSidebars.eq(index);
+
+        $miniSidebar.on('mouseenter', null, null, function () {
+            $miniSidebar.sidebar('open');
+        });
+
+        $miniSidebar.on('mouseleave', null, null, function () {
+            $miniSidebar.sidebar('close');
+        });
+    });
+}

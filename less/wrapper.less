@@ -155,4 +155,44 @@
             }
         }
     }
+
+    &.container-mini-left {
+        @media (min-width: @screen-md-min) {
+            padding-left: @sidebar-mini-width;
+        }
+
+        > .navbar > .container-fluid {
+            @media (min-width: @screen-md-min) {
+                padding-left: @sidebar-mini-width;
+            }
+        }
+    }
+
+    &.container-mini-right {
+        @media (min-width: @screen-md-min) {
+            padding-right: @sidebar-mini-width;
+        }
+
+        > .navbar > .container-fluid {
+            @media (min-width: @screen-md-min) {
+                padding-right: @sidebar-mini-width;
+            }
+        }
+    }
+
+    &.container-mini-left,
+     &.container-mini-right {
+         > .container,
+         > .navbar > .container {
+             @media (min-width: @screen-md-min) {
+                 width: @container-md - @sidebar-mini-width;
+             }
+             @media (min-width: @screen-lg-min) {
+                 width: @container-lg - @sidebar-mini-width;
+             }
+             @media (min-width: (@screen-lg-min + @sidebar-mini-width)) {
+                 width: @container-lg;
+             }
+         }
+     }
 }

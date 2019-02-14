@@ -86,7 +86,7 @@ export function onDrag(self, event) {
 
     // drag
     if (-1 === $.inArray(self.dragDirection, [Hammer.DIRECTION_LEFT, Hammer.DIRECTION_RIGHT]) ||
-        (self.options.locked && isOverMinWidth(self))) {
+        (self.options.locked && isOverMinWidth(self) && self.isOpen())) {
         return;
     }
 

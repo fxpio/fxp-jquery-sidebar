@@ -30,6 +30,10 @@ body,
     margin-bottom: 5px;
 }
 
+.sidebar .sidebar-menu.text-right {
+    text-align: right;
+}
+
 @media (min-width: 768px) {
     .navbar-header {
         width: 100%;
@@ -40,8 +44,8 @@ body,
         display: inline-block;
     }
 
-    .navbar-toggle.btn-sidebar-toggle-left.sidebar-locked-toggle,
-    .navbar-toggle.btn-sidebar-toggle-right.sidebar-locked-toggle {
+    .navbar-toggle.btn-sidebar-toggle-left.sidebar-locked-toggle:not(.keep-visible),
+    .navbar-toggle.btn-sidebar-toggle-right.sidebar-locked-toggle:not(.keep-visible) {
         display: none;
     }
 }
