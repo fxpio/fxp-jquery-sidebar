@@ -78,6 +78,7 @@ export default class Sidebar extends BasePlugin
         this.$obfuscator = $('<div class="' + this.options.classObfuscator + '"></div>');
         this.$body = $('body');
         this.enabled = !this.$element.hasClass('sidebar-disabled');
+        this.fullLocked = this.$element.hasClass(this.options.classFullLocked);
         this.hammer = null;
         this.dragStartPosition = null;
         this.mouseDragEnd = null;
@@ -146,6 +147,10 @@ export default class Sidebar extends BasePlugin
 
                 this.$container.addClass('container-force-open-' + this.options.position);
             }
+        }
+
+        if (this.fullLocked) {
+            this.$container.addClass('container-full-locked');
         }
 
         isOver = isOverMinWidth(this);
@@ -491,6 +496,7 @@ export default class Sidebar extends BasePlugin
         cleanCloseDelay(this);
         this.detachToggles();
         this.forceClose();
+        this.$container.removeClass('container-full-locked');
         $(window).off('keyup.fxp.sidebar' + this.guid, keyboardAction);
         $(window).off('resize.fxp.sidebar' + this.guid, onResizeWindow);
         this.$element.off(this.eventType + '.fxp.sidebar' + this.guid, this.options.itemSelector, closeOnSelect);
@@ -520,6 +526,7 @@ Sidebar.defaultOptions = {
     classContainer:     'container-main',
     classOpen:          'sidebar-open',
     classLocked:        'sidebar-locked',
+    classFullLocked:    'sidebar-full-locked',
     classForceOpen:     'sidebar-force-open',
     classOnDragging:    'sidebar-dragging',
     classObfuscator:     'sidebar-obfuscator',
