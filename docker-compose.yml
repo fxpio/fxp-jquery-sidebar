@@ -1,0 +1,8 @@
+version: "2"
+services:
+  node:
+    build: './'
+    volumes:
+      - ./:/app
+    ports:
+      - "9000:9000"

@@ -18,18 +18,23 @@ import '@fxp/jquery-scroller';
 import '@fxp/jquery-scroller/js/sticky-header';
 import '../js/sidebar';
 
-var $miniSidebars = $('.sidebar-mini');
+$(document).ready(function() {
 
-if ($miniSidebars.length > 0) {
-    $miniSidebars.each(function (index) {
-        var $miniSidebar = $miniSidebars.eq(index);
+  var $miniSidebars = $('.sidebar-mini');
 
-        $miniSidebar.on('mouseenter', null, null, function () {
-            $miniSidebar.sidebar('open');
-        });
+  if ($miniSidebars.length > 0) {
+      $miniSidebars.each(function (index) {
+          var $miniSidebar = $miniSidebars.eq(index);
 
-        $miniSidebar.on('mouseleave', null, null, function () {
-            $miniSidebar.sidebar('close');
-        });
-    });
-}
+          $miniSidebar.on('mouseenter', null, null, function () {
+            console.log()
+              $miniSidebar.sidebar('open');
+          });
+
+          $miniSidebar.on('mouseleave', null, null, function () {
+              $miniSidebar.sidebar('close');
+          });
+      });
+  }
+
+})
