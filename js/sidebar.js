@@ -53,8 +53,8 @@ export default class Sidebar extends BasePlugin
         this.$swipe = null;
         this.$obfuscator = $('<div class="' + this.options.classObfuscator + (this.options.showObfuscator ? ' show' : '') + '"></div>');
         this.$body = $('body');
-        this.enabled = !this.$element.hasClass('sidebar-disabled');
-        this.mini = this.$element.hasClass('sidebar-mini');
+        this.enabled = !this.$element.hasClass('fxp-sidebar-disabled');
+        this.mini = this.$element.hasClass('fxp-sidebar-mini');
         this.fullLocked = this.$element.hasClass(this.options.classFullLocked);
         this.hammer = null;
         this.dragStartPosition = null;
@@ -93,10 +93,10 @@ export default class Sidebar extends BasePlugin
             this.options.position = POSITION_LEFT;
 
         } else {
-            this.$element.addClass('sidebar-right');
+            this.$element.addClass('fxp-sidebar-right');
         }
 
-        if (this.$element.hasClass('sidebar-right')) {
+        if (this.$element.hasClass('fxp-sidebar-right')) {
             this.options.position = POSITION_RIGHT;
         }
 
@@ -172,7 +172,7 @@ export default class Sidebar extends BasePlugin
 
         window.setTimeout(function () {
             changeTransition(self.$element, '');
-            self.$element.addClass('sidebar-ready');
+            self.$element.addClass('fxp-sidebar-ready');
             triggerEvent('ready', self);
         }, 0);
     }
@@ -437,7 +437,7 @@ export default class Sidebar extends BasePlugin
         this.options.locked = false;
         this.forceClose();
         this.options.locked = prevIsLocked;
-        this.$element.addClass('sidebar-disabled');
+        this.$element.addClass('fxp-sidebar-disabled');
         addClassToggles(this, 'disabled');
 
         if (this.isLocked()) {
@@ -457,7 +457,7 @@ export default class Sidebar extends BasePlugin
 
         triggerEvent('enable', this);
         this.enabled = true;
-        this.$element.removeClass('sidebar-disabled');
+        this.$element.removeClass('fxp-sidebar-disabled');
 
         if (isOverMinWidth(this) && FORCE_TOGGLE_ALWAYS === this.options.forceToggle) {
             this.forceOpen();
@@ -492,7 +492,7 @@ export default class Sidebar extends BasePlugin
         this.$wrapper.before(this.$element);
         this.$wrapper.remove();
 
-        this.$element.removeClass('sidebar-ready');
+        this.$element.removeClass('fxp-sidebar-ready');
 
         super.destroy();
     }
@@ -504,14 +504,14 @@ export default class Sidebar extends BasePlugin
  * Defaults options.
  */
 Sidebar.defaultOptions = {
-    classWrapper:       'sidebar-wrapper',
+    classWrapper:       'fxp-sidebar-wrapper',
     classContainer:     'container-main',
-    classOpen:          'sidebar-open',
-    classLocked:        'sidebar-locked',
-    classFullLocked:    'sidebar-full-locked',
-    classForceOpen:     'sidebar-force-open',
-    classOnDragging:    'sidebar-dragging',
-    classObfuscator:     'sidebar-obfuscator',
+    classOpen:          'fxp-sidebar-open',
+    classLocked:        'fxp-sidebar-locked',
+    classFullLocked:    'fxp-sidebar-full-locked',
+    classForceOpen:     'fxp-sidebar-force-open',
+    classOnDragging:    'fxp-sidebar-dragging',
+    classObfuscator:    'fxp-sidebar-obfuscator',
     forceToggle:        FORCE_TOGGLE_NO,
     locked:             false,
     position:           POSITION_LEFT,
@@ -526,15 +526,15 @@ Sidebar.defaultOptions = {
     closeOnSelect:      true,
     closeOnSelectDelay: 0.5,
     resetScrollDelay:   0.3,
-    itemSelector:       '.sidebar-menu a',
+    itemSelector:       '.fxp-sidebar-menu a',
     showObfuscator:     true,
     useScroller:        true,
     scrollerScrollbar:  undefined,
     scroller:           {
-        contentSelector: '.sidebar-menu',
+        contentSelector: '.fxp-sidebar-menu',
         scrollerStickyHeader: true,
         stickyOptions: {
-            selector: '> .sidebar-menu > .sidebar-group > span'
+            selector: '> .fxp-sidebar-menu > .fxp-sidebar-group > span'
         }
     },
     hammer:             {},

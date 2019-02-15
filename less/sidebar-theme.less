@@ -2,12 +2,12 @@
 // Sidebar Theme
 // --------------------------------------------------
 
-.sidebar {
-    &.sidebar-default {
+.fxp-sidebar {
+    &.fxp-sidebar-default {
         color: @sidebar-default-color;
         background-color: @sidebar-default-bg;
 
-        .sidebar-group {
+        .fxp-sidebar-group {
             > span {
                 color: @sidebar-default-group-color;
                 border-top-color: @sidebar-default-border-color;
@@ -17,16 +17,16 @@
                 background-color: @sidebar-default-bg;
             }
 
-            + .sidebar-item {
+            + .fxp-sidebar-item {
                 border-top-color: @sidebar-default-border-color;
             }
         }
 
-        .sidebar-divider-item {
+        .fxp-sidebar-divider-item {
             border-top-color: @sidebar-default-border-color;
         }
 
-        .sidebar-item {
+        .fxp-sidebar-item {
             > a {
                 color: @sidebar-default-link-color;
                 background-color: @sidebar-default-link-bg;
@@ -43,7 +43,7 @@
                 }
             }
 
-            &.sidebar-item-mini > a {
+            &.fxp-sidebar-item-mini > a {
                 color: @sidebar-default-link-mini-color;
 
                 &.active {
@@ -58,11 +58,11 @@
         }
     }
 
-    &.sidebar-inverse {
+    &.fxp-sidebar-inverse {
         color: @sidebar-inverse-color;
         background-color: @sidebar-inverse-bg;
 
-        .sidebar-group {
+        .fxp-sidebar-group {
             > span {
                 color: @sidebar-inverse-group-color;
                 border-top-color: @sidebar-inverse-border-color;
@@ -72,16 +72,16 @@
                 background-color: @sidebar-inverse-bg;
             }
 
-            + .sidebar-item {
+            + .fxp-sidebar-item {
                 border-top-color: @sidebar-inverse-border-color;
             }
         }
 
-        .sidebar-divider-item {
+        .fxp-sidebar-divider-item {
             border-top-color: @sidebar-inverse-border-color;
         }
 
-        .sidebar-item {
+        .fxp-sidebar-item {
             > a {
                 color: @sidebar-inverse-link-color;
                 background-color: @sidebar-inverse-link-bg;
@@ -98,7 +98,7 @@
                 }
             }
 
-            &.sidebar-item-mini > a {
+            &.fxp-sidebar-item-mini > a {
                 color: @sidebar-inverse-link-mini-color;
 
                 &.active {
@@ -114,7 +114,7 @@
     }
 
     &[data-clickable-swipe="true"] {
-        + .sidebar-swipe {
+        + .fxp-sidebar-swipe {
             &.mouse-hover {
                 background-color: @sidebar-clickable-swipe-bg;
             }
@@ -122,7 +122,7 @@
     }
 }
 
-.sidebar-obfuscator.show {
+.fxp-sidebar-obfuscator.show {
     background-color: @sidebar-obfuscator-bg;
 }
 
@@ -130,12 +130,12 @@
 // -------------------------
 
 @media (min-width: (@screen-sm-max + 1)) {
-    .sidebar.sidebar-locked {
-        &.sidebar-default {
+    .fxp-sidebar.fxp-sidebar-locked {
+        &.fxp-sidebar-default {
             border-color: @sidebar-default-border-color;
         }
 
-        &.sidebar-inverse {
+        &.fxp-sidebar-inverse {
             border-color: @sidebar-inverse-border-color;
         }
     }

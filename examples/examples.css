@@ -19,18 +19,18 @@ body,
     padding-bottom: 70px;
 }
 
-.navbar-toggle.btn-sidebar-toggle-left {
+.navbar-toggle.fxp-sidebar-btn-toggle-left {
     float: left;
     margin-left: 15px;
 }
 
-.navbar-toggle.btn-sidebar-toggle-left,
-.navbar-toggle.btn-sidebar-toggle-right {
+.navbar-toggle.fxp-sidebar-btn-toggle-left,
+.navbar-toggle.fxp-sidebar-btn-toggle-right {
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-.sidebar .sidebar-menu.text-right {
+.fxp-sidebar .fxp-sidebar-menu.text-right {
     text-align: right;
 }
 
@@ -39,13 +39,13 @@ body,
         width: 100%;
     }
 
-    .navbar-toggle.btn-sidebar-toggle-left,
-    .navbar-toggle.btn-sidebar-toggle-right {
+    .navbar-toggle.fxp-sidebar-btn-toggle-left,
+    .navbar-toggle.fxp-sidebar-btn-toggle-right {
         display: inline-block;
     }
 
-    .navbar-toggle.btn-sidebar-toggle-left.sidebar-locked-toggle:not(.keep-visible),
-    .navbar-toggle.btn-sidebar-toggle-right.sidebar-locked-toggle:not(.keep-visible) {
+    .navbar-toggle.fxp-sidebar-btn-toggle-left.sidebar-locked-toggle:not(.keep-visible),
+    .navbar-toggle.fxp-sidebar-btn-toggle-right.sidebar-locked-toggle:not(.keep-visible) {
         display: none;
     }
 }

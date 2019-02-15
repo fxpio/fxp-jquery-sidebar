@@ -181,7 +181,7 @@ export function initHammer(self) {
         return;
     }
 
-    self.$swipe = $('<div id="sidebar-swipe' + self.guid + '" class="sidebar-swipe"></div>');
+    self.$swipe = $('<div id="sidebar-swipe' + self.guid + '" class="fxp-sidebar-swipe"></div>');
     self.$element.after(self.$swipe);
 
     self.hammer = new Hammer(self.$wrapper.get(0), $.extend(true, {}, self.options.hammer));

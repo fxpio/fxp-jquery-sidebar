@@ -2,32 +2,32 @@
 // Wrapper Bootstrap
 // --------------------------------------------------
 
-.sidebar:not(.sidebar-full-locked) {
-    &.sidebar-fixed-top,
-    &.sidebar-fixed-bottom {
+.fxp-sidebar:not(.fxp-sidebar-full-locked) {
+    &.fxp-sidebar-fixed-top,
+    &.fxp-sidebar-fixed-bottom {
         z-index: @zindex-sidebar-fixed;
 
-        + .sidebar-swipe {
+        + .fxp-sidebar-swipe {
             z-index: @zindex-sidebar-swipe-fixed;
         }
 
-        &.sidebar-open ~ .sidebar-obfuscator {
+        &.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
             z-index: @zindex-sidebar-obfuscator-fixed;
         }
     }
 }
 
 @media (max-width: @screen-sm-max) {
-    .sidebar:not(.sidebar-full-locked) {
-        &.sidebar-fixed-top,
-        &.sidebar-fixed-bottom {
+    .fxp-sidebar:not(.fxp-sidebar-full-locked) {
+        &.fxp-sidebar-fixed-top,
+        &.fxp-sidebar-fixed-bottom {
             z-index: @zindex-sidebar;
 
-            + .sidebar-swipe {
+            + .fxp-sidebar-swipe {
                 z-index: @zindex-sidebar-swipe;
             }
 
-            &.sidebar-open ~ .sidebar-obfuscator {
+            &.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
                 z-index: @zindex-sidebar-obfuscator;
             }
         }
@@ -35,53 +35,53 @@
 }
 
 @media (min-width: @screen-md-min) {
-    .sidebar.sidebar-locked:not(.sidebar-full-locked) {
-        &.sidebar-static-top,
-        &.sidebar-static-bottom {
+    .fxp-sidebar.fxp-sidebar-locked:not(.fxp-sidebar-full-locked) {
+        &.fxp-sidebar-static-top,
+        &.fxp-sidebar-static-bottom {
             z-index: @zindex-sidebar-static;
 
-            + .sidebar-swipe {
+            + .fxp-sidebar-swipe {
                 z-index: @zindex-sidebar-swipe-static;
             }
 
-            &.sidebar-open ~ .sidebar-obfuscator {
+            &.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
                 z-index: @zindex-sidebar-obfuscator-static;
             }
         }
 
-        &.sidebar-static-top {
+        &.fxp-sidebar-static-top {
             > .sticky-header {
                 padding-top: @navbar-height + 1 !important;
             }
 
-            .sidebar-menu {
-                > .sidebar-group:first-child,
-                > .sidebar-item:first-child {
+            .fxp-sidebar-menu {
+                > .fxp-sidebar-group:first-child,
+                > .fxp-sidebar-item:first-child {
                     padding-top: @navbar-height + 1;
                 }
             }
         }
 
-        &.sidebar-static-bottom {
-            .sidebar-menu {
-                > .sidebar-group:last-child,
-                > .sidebar-item:last-child {
+        &.fxp-sidebar-static-bottom {
+            .fxp-sidebar-menu {
+                > .fxp-sidebar-group:last-child,
+                > .fxp-sidebar-item:last-child {
                     padding-bottom: @navbar-height;
                 }
             }
         }
 
-        &.sidebar-fixed-top {
+        &.fxp-sidebar-fixed-top {
             top: @navbar-height;
         }
 
-        &.sidebar-fixed-bottom {
+        &.fxp-sidebar-fixed-bottom {
             bottom: @navbar-height;
         }
     }
 
-    .sidebar.sidebar-locked {
-        ~ .sidebar-obfuscator {
+    .fxp-sidebar.fxp-sidebar-locked {
+        ~ .fxp-sidebar-obfuscator {
             display: none;
         }
     }
