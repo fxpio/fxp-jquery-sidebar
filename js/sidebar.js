@@ -10,6 +10,7 @@
 import pluginify from '@fxp/jquery-pluginify';
 import BasePlugin from '@fxp/jquery-pluginify/js/plugin';
 import $ from 'jquery';
+import {FORCE_TOGGLE, FORCE_TOGGLE_ALWAYS, FORCE_TOGGLE_NO, POSITION_LEFT, POSITION_RIGHT} from "./utils/const";
 import {changeTransition, isOverMinWidth} from "./utils/css";
 import {initWithLocalStorage, setLocalStorage} from "./utils/storage";
 import {onResizeWindow} from "./utils/window";
@@ -25,31 +26,6 @@ import {
     lockBodyScroll,
     unlockBodyScroll
 } from "./utils/scrollbar";
-
-/**
- * Left position.
- */
-export const POSITION_LEFT  = 'left';
-
-/**
- * Right position.
- */
-export const POSITION_RIGHT = 'right';
-
-/**
- * Not force toggle.
- */
-export const FORCE_TOGGLE_NO = false;
-
-/**
- * Force toggle.
- */
-export const FORCE_TOGGLE = true;
-
-/**
- * Always force toggle.
- */
-export const FORCE_TOGGLE_ALWAYS = 'always';
 
 /**
  * Sidebar class.

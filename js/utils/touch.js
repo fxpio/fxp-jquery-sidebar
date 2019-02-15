@@ -11,7 +11,7 @@ import {isOverMinWidth, getTargetPosition, changeTransition, changeTranslate, ch
 import {triggerEvent} from "./events";
 import {lockBodyScroll, unlockBodyScroll} from "./scrollbar";
 import {cleanCloseDelay} from "./actions";
-import {FORCE_TOGGLE, FORCE_TOGGLE_ALWAYS, POSITION_LEFT, POSITION_RIGHT} from "../sidebar";
+import {FORCE_TOGGLE, FORCE_TOGGLE_ALWAYS, POSITION_LEFT, POSITION_RIGHT} from "./const";
 import {addClassToggles, removeClassToggles} from "./toggle";
 
 /**
