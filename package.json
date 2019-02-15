@@ -24,7 +24,10 @@
   "scripts": {
     "dev": "encore dev",
     "serve": "encore dev-server --port 9000",
-    "build": "encore production"
+    "build:style": "lessc less/sidebar.less dist/sidebar.css",
+    "build:style:bootstrap": "lessc less/sidebar-bootstrap.less dist/sidebar-bootstrap.css",
+    "build:module": "rollup -c",
+    "build": "yarn run build:module && yarn run build:style && yarn run build:style:bootstrap"
   },
   "engines": {},
   "main": "js/sidebar.js",
@@ -39,6 +42,11 @@
     "bootstrap": "^3.4.1",
     "font-awesome": "^4.7.0",
     "less": "^3.9.0",
-    "less-loader": "^4.1.0"
+    "less-loader": "^4.1.0",
+    "rollup": "^1.1.2",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-uglify": "^6.0.2"
   }
 }
