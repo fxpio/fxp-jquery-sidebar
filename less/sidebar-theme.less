@@ -2,7 +2,7 @@
 // Sidebar Theme
 // --------------------------------------------------
 
-.sidebar {
+.sidebar:not(.icon) {
     &.sidebar-default {
         color: @sidebar-default-color;
         background-color: @sidebar-default-bg;
@@ -122,6 +122,10 @@
     }
 }
 
+.sidebar-obfuscator:not(.show) {
+    display: none;
+}
+
 .sidebar-obfuscator.show {
     background-color: @sidebar-obfuscator-bg;
 }
@@ -130,7 +134,7 @@
 // -------------------------
 
 @media (min-width: (@screen-sm-max + 1)) {
-    .sidebar.sidebar-locked {
+    .sidebar:not(.icon).sidebar-locked {
         &.sidebar-default {
             border-color: @sidebar-default-border-color;
         }

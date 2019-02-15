@@ -35,7 +35,7 @@
 }
 
 @media (min-width: @screen-md-min) {
-    .sidebar.sidebar-locked:not(.sidebar-full-locked) {
+    .sidebar:not(.icon).sidebar-locked:not(.sidebar-full-locked) {
         &.sidebar-static-top,
         &.sidebar-static-bottom {
             z-index: @zindex-sidebar-static;
@@ -80,7 +80,7 @@
         }
     }
 
-    .sidebar.sidebar-locked {
+    .sidebar:not(.icon).sidebar-locked {
         ~ .sidebar-obfuscator {
             display: none;
         }

@@ -2,7 +2,7 @@
 // Sidebar Core
 // --------------------------------------------------
 
-.sidebar {
+.sidebar:not(.icon) {
     position: fixed !important;
     top: 0;
     overflow: hidden;
@@ -190,7 +190,7 @@
 // -------------------------
 
 .sidebar-right {
-    &.sidebar {
+    &.sidebar:not(.icon) {
         right: 0;
         border-right: none;
         border-left: 1px solid transparent;
@@ -233,7 +233,7 @@
     }
 }
 
-.sidebar {
+.sidebar:not(.icon) {
     &.sidebar-default {
         &.sidebar-open,
         &.sidebar-dragging {
@@ -253,7 +253,7 @@
 // -------------------------
 
 .sidebar-right {
-    &.sidebar {
+    &.sidebar:not(.icon) {
         &.sidebar-default {
             &.sidebar-open,
             &.sidebar-dragging {
@@ -274,7 +274,7 @@
 // -------------------------
 
 @media (max-width: @screen-xs-max) {
-    .sidebar {
+    .sidebar:not(.icon) {
         width: 80%;
         -webkit-transform: translate3d(-100%, 0px, 0px);
         transform: translate3d(-100%, 0px, 0px);
@@ -292,7 +292,7 @@
     }
 
     .sidebar-right {
-        &.sidebar {
+        &.sidebar:not(.icon) {
             -webkit-transform: translate3d(100%, 0px, 0px);
             transform: translate3d(100%, 0px, 0px);
         }
@@ -320,7 +320,7 @@
 }
 
 @media (min-width: (@screen-sm-max + 1)) {
-    .sidebar {
+    .sidebar:not(.icon) {
         &.sidebar-open-init {
             -webkit-transform: translate3d(0px, 0px, 0px);
             transform: translate3d(0px, 0px, 0px);
@@ -338,14 +338,14 @@
     }
 
     .sidebar-force-open {
-        &.sidebar.sidebar-default {
+        &.sidebar:not(.icon).sidebar-default {
             &.sidebar-open,
             &.sidebar-dragging {
                 .box-shadow(@sidebar-default-shadow-open-left);
             }
         }
 
-        &.sidebar.sidebar-inverse {
+        &.sidebar:not(.icon).sidebar-inverse {
             &.sidebar-open,
             &.sidebar-dragging {
                 .box-shadow(@sidebar-inverse-shadow-open-left);
@@ -354,14 +354,14 @@
     }
 
     .sidebar-force-open.sidebar-right {
-        &.sidebar.sidebar-default {
+        &.sidebar:not(.icon).sidebar-default {
             &.sidebar-open,
             &.sidebar-dragging {
                 .box-shadow(@sidebar-default-shadow-open-right);
             }
         }
 
-        &.sidebar.sidebar-inverse {
+        &.sidebar:not(.icon).sidebar-inverse {
             &.sidebar-open,
             &.sidebar-dragging {
                 .box-shadow(@sidebar-inverse-shadow-open-right);
@@ -371,7 +371,7 @@
 }
 
 @media (max-width: @screen-sm-max) {
-    .sidebar,
+    .sidebar:not(.icon),
     .sidebar-swipe {
         top: 0 !important;
         bottom: 0 !important;
