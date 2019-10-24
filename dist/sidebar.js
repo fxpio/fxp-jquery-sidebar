@@ -1121,7 +1121,7 @@ var FxpSidebar = (function (exports, $$1) {
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(Sidebar).call(this, element, options));
 
-      var self = _assertThisInitialized(_assertThisInitialized(_this)),
+      var self = _assertThisInitialized(_this),
           isOver,
           ua = navigator.userAgent.toLowerCase();
 
@@ -1209,9 +1209,9 @@ var FxpSidebar = (function (exports, $$1) {
         _this.$container.addClass('container-full-locked');
       }
 
-      isOver = isOverMinWidth(_assertThisInitialized(_assertThisInitialized(_this)));
-      $$1(window).on('keyup.fxp.sidebar' + _this.guid, null, _assertThisInitialized(_assertThisInitialized(_this)), keyboardAction);
-      $$1(window).on('resize.fxp.sidebar' + _this.guid, null, _assertThisInitialized(_assertThisInitialized(_this)), onResizeWindow);
+      isOver = isOverMinWidth(_assertThisInitialized(_this));
+      $$1(window).on('keyup.fxp.sidebar' + _this.guid, null, _assertThisInitialized(_this), keyboardAction);
+      $$1(window).on('resize.fxp.sidebar' + _this.guid, null, _assertThisInitialized(_this), onResizeWindow);
 
       if (_this.$element.hasClass(_this.options.classOpen + '-init')) {
         if (isOver) {
@@ -1224,22 +1224,22 @@ var FxpSidebar = (function (exports, $$1) {
       }
 
       if (_this.$element.hasClass(_this.options.classOpen) && !isOver) {
-        lockBodyScroll(_assertThisInitialized(_assertThisInitialized(_this)));
+        lockBodyScroll(_assertThisInitialized(_this));
       } else {
-        unlockBodyScroll(_assertThisInitialized(_assertThisInitialized(_this)));
+        unlockBodyScroll(_assertThisInitialized(_this));
       }
 
       if (_this.options.closeOnSelect) {
-        _this.$element.on(_this.eventType + '.fxp.sidebar' + _this.guid, _this.options.itemSelector, _assertThisInitialized(_assertThisInitialized(_this)), closeOnSelect);
+        _this.$element.on(_this.eventType + '.fxp.sidebar' + _this.guid, _this.options.itemSelector, _assertThisInitialized(_this), closeOnSelect);
       }
 
-      _this.$element.on(prefixedEvent('TransitionEnd', '.fxp.sidebar' + _this.guid), null, _assertThisInitialized(_assertThisInitialized(_this)), onEndTransition);
+      _this.$element.on(prefixedEvent('TransitionEnd', '.fxp.sidebar' + _this.guid), null, _assertThisInitialized(_this), onEndTransition);
 
-      _this.$obfuscator.on(_this.eventType + '.fxp.sidebar' + _this.guid, null, _assertThisInitialized(_assertThisInitialized(_this)), closeExternal);
+      _this.$obfuscator.on(_this.eventType + '.fxp.sidebar' + _this.guid, null, _assertThisInitialized(_this), closeExternal);
 
-      initScroller(_assertThisInitialized(_assertThisInitialized(_this)));
-      initHammer(_assertThisInitialized(_assertThisInitialized(_this)));
-      initWithLocalStorage(_assertThisInitialized(_assertThisInitialized(_this)));
+      initScroller(_assertThisInitialized(_this));
+      initHammer(_assertThisInitialized(_this));
+      initWithLocalStorage(_assertThisInitialized(_this));
       window.setTimeout(function () {
         changeTransition(self.$element, '');
         self.$element.addClass('fxp-sidebar-ready');
