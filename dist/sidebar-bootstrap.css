@@ -6,9 +6,11 @@
 .fxp-sidebar:not(.fxp-sidebar-full-locked).fxp-sidebar-fixed-bottom + .fxp-sidebar-swipe {
   z-index: 1030;
 }
-.fxp-sidebar:not(.fxp-sidebar-full-locked).fxp-sidebar-fixed-top.fxp-sidebar-open ~ .fxp-sidebar-obfuscator,
-.fxp-sidebar:not(.fxp-sidebar-full-locked).fxp-sidebar-fixed-bottom.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
-  z-index: 1030;
+@media (max-width: 991px) {
+  .fxp-sidebar:not(.fxp-sidebar-full-locked).fxp-sidebar-fixed-top.fxp-sidebar-open ~ .fxp-sidebar-obfuscator,
+  .fxp-sidebar:not(.fxp-sidebar-full-locked).fxp-sidebar-fixed-bottom.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
+    z-index: 1030;
+  }
 }
 @media (max-width: 991px) {
   .fxp-sidebar:not(.fxp-sidebar-full-locked).fxp-sidebar-fixed-top,
@@ -33,10 +35,6 @@
   .fxp-sidebar.fxp-sidebar-locked:not(.fxp-sidebar-full-locked).fxp-sidebar-static-bottom + .fxp-sidebar-swipe {
     z-index: 1000;
   }
-  .fxp-sidebar.fxp-sidebar-locked:not(.fxp-sidebar-full-locked).fxp-sidebar-static-top.fxp-sidebar-open ~ .fxp-sidebar-obfuscator,
-  .fxp-sidebar.fxp-sidebar-locked:not(.fxp-sidebar-full-locked).fxp-sidebar-static-bottom.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
-    z-index: 1000;
-  }
   .fxp-sidebar.fxp-sidebar-locked:not(.fxp-sidebar-full-locked).fxp-sidebar-static-top > .sticky-header {
     padding-top: 51px !important;
   }
@@ -56,6 +54,12 @@
   }
   .fxp-sidebar.fxp-sidebar-locked ~ .fxp-sidebar-obfuscator {
     display: none;
+  }
+}
+@media (min-width: 992px) and (max-width: 991px) {
+  .fxp-sidebar.fxp-sidebar-locked:not(.fxp-sidebar-full-locked).fxp-sidebar-static-top.fxp-sidebar-open ~ .fxp-sidebar-obfuscator,
+  .fxp-sidebar.fxp-sidebar-locked:not(.fxp-sidebar-full-locked).fxp-sidebar-static-bottom.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
+    z-index: 1000;
   }
 }
 @media (min-width: 992px) {

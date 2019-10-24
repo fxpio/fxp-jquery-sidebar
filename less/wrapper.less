@@ -12,7 +12,9 @@
         }
 
         &.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
-            z-index: @zindex-sidebar-obfuscator-fixed;
+            @media (max-width: @screen-sm-max) {
+                z-index: @zindex-sidebar-obfuscator-fixed;
+            }
         }
     }
 }
@@ -45,7 +47,9 @@
             }
 
             &.fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
-                z-index: @zindex-sidebar-obfuscator-static;
+                @media (max-width: @screen-sm-max) {
+                    z-index: @zindex-sidebar-obfuscator-static;
+                }
             }
         }
 

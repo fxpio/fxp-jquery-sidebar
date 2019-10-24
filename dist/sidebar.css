@@ -148,6 +148,12 @@
   z-index: 1031;
   opacity: 1;
 }
+@media (min-width: 992px) {
+  .fxp-sidebar-force-open ~ .fxp-sidebar-obfuscator {
+    z-index: -1;
+    opacity: 0;
+  }
+}
 .fxp-sidebar-right.fxp-sidebar {
   right: 0;
   border-right: none;

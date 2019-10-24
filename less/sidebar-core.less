@@ -184,6 +184,13 @@
         z-index: @zindex-sidebar-obfuscator;
         opacity: 1;
     }
+
+    .fxp-sidebar-force-open ~ & {
+        @media (min-width: @screen-md-min) {
+            z-index: -1;
+            opacity: 0;
+        }
+    }
 }
 
 // Sidebar Right
