@@ -38,15 +38,15 @@
   },
   "devDependencies": {
     "@fxp/jquery-scroller": "github:fxpio/fxp-jquery-scroller#semver:^1.0.0",
-    "@symfony/webpack-encore": "^0.23.0",
+    "@symfony/webpack-encore": "^0.28.0",
     "bootstrap": "^3.4.1",
     "font-awesome": "^4.7.0",
-    "less": "^3.9.0",
-    "less-loader": "^4.1.0",
-    "rollup": "^1.1.2",
-    "rollup-plugin-babel": "^4.3.2",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-uglify": "^6.0.2"
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0",
+    "rollup": "^1.25.2",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-uglify": "^6.0.3"
   }
 }
