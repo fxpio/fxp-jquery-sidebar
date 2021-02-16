@@ -6,7 +6,7 @@
   z-index: 1032;
   width: 210px;
   cursor: default;
-  -moz-user-select: -moz-none;
+  -moz-user-select: none;
   user-select: none;
   border-left: none;
   border-right: 1px solid transparent;
@@ -39,11 +39,7 @@
 .fxp-sidebar .fxp-sidebar-menu li {
   display: block;
 }
-.fxp-sidebar .fxp-sidebar-menu,
-.fxp-sidebar .fxp-sidebar-menu ul,
-.fxp-sidebar .fxp-sidebar-menu li,
-.fxp-sidebar .fxp-sidebar-menu span,
-.fxp-sidebar .fxp-sidebar-menu a {
+.fxp-sidebar .fxp-sidebar-menu, .fxp-sidebar .fxp-sidebar-menu ul, .fxp-sidebar .fxp-sidebar-menu li, .fxp-sidebar .fxp-sidebar-menu span, .fxp-sidebar .fxp-sidebar-menu a {
   touch-action: pan-y;
 }
 .fxp-sidebar.fxp-sidebar-ready .fxp-sidebar-menu {
@@ -103,12 +99,13 @@
 .fxp-sidebar .fxp-sidebar-item > a {
   cursor: pointer;
 }
-.fxp-sidebar[data-clickable-swipe="true"] + .fxp-sidebar-swipe {
+.fxp-sidebar[data-clickable-swipe=true] + .fxp-sidebar-swipe {
   cursor: pointer;
   -webkit-transition: background-color 0.3s ease;
   transition: background-color 0.3s ease;
   border-radius: 10px;
 }
+
 .fxp-sidebar-swipe {
   position: fixed;
   z-index: 1031;
@@ -118,16 +115,18 @@
   bottom: 0;
   background-color: #fff;
   opacity: 0.01;
-  -moz-user-select: -moz-none;
+  -moz-user-select: none;
   user-select: none;
 }
 .fxp-sidebar-disabled + .fxp-sidebar-swipe {
   display: none;
 }
+
 .fxp-sidebar-open + .fxp-sidebar-swipe,
 .fxp-sidebar-force-open + .fxp-sidebar-swipe {
   left: 210px;
 }
+
 .fxp-sidebar-obfuscator {
   position: fixed;
   display: block;
@@ -137,14 +136,14 @@
   left: 0;
   right: 0;
   opacity: 0;
-  -webkit-transition: opacity 0.3s ease, z-index 0s linear 0.3s;
-  -o-transition: opacity 0.3s ease, z-index 0s linear 0.3s;
-  transition: opacity 0.3s ease, z-index 0s linear 0.3s;
+  -webkit-transition: "opacity 0.3s ease, z-index 0s linear 0.3s";
+  -o-transition: "opacity 0.3s ease, z-index 0s linear 0.3s";
+  transition: "opacity 0.3s ease, z-index 0s linear 0.3s";
 }
 .fxp-sidebar-open ~ .fxp-sidebar-obfuscator {
-  -webkit-transition: opacity 0.3s ease;
-  -o-transition: opacity 0.3s ease;
-  transition: opacity 0.3s ease;
+  -webkit-transition: "opacity 0.3s ease";
+  -o-transition: "opacity 0.3s ease";
+  transition: "opacity 0.3s ease";
   z-index: 1031;
   opacity: 1;
 }
@@ -154,6 +153,7 @@
     opacity: 0;
   }
 }
+
 .fxp-sidebar-right.fxp-sidebar {
   right: 0;
   border-right: none;
@@ -181,43 +181,44 @@
   left: auto;
   right: 0;
 }
-.fxp-sidebar-right.fxp-sidebar-open + .fxp-sidebar-swipe,
-.fxp-sidebar-right.fxp-sidebar-force-open + .fxp-sidebar-swipe {
+.fxp-sidebar-right.fxp-sidebar-open + .fxp-sidebar-swipe, .fxp-sidebar-right.fxp-sidebar-force-open + .fxp-sidebar-swipe {
   right: 210px;
 }
-.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-open,
-.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-dragging {
+
+.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-open, .fxp-sidebar.fxp-sidebar-default.fxp-sidebar-dragging {
   -webkit-box-shadow: 3px 0 4px rgba(0, 0, 0, 0.18);
   box-shadow: 3px 0 4px rgba(0, 0, 0, 0.18);
 }
-.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-open,
-.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-dragging {
+.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-open, .fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-dragging {
   -webkit-box-shadow: 3px 0 4px rgba(0, 0, 0, 0.32);
   box-shadow: 3px 0 4px rgba(0, 0, 0, 0.32);
 }
-.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-open,
-.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-dragging {
+
+.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-open, .fxp-sidebar-right.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-dragging {
   -webkit-box-shadow: -3px 0 4px rgba(0, 0, 0, 0.18);
   box-shadow: -3px 0 4px rgba(0, 0, 0, 0.18);
 }
-.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-open,
-.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-dragging {
+.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-open, .fxp-sidebar-right.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-dragging {
   -webkit-box-shadow: -3px 0 4px rgba(0, 0, 0, 0.32);
   box-shadow: -3px 0 4px rgba(0, 0, 0, 0.32);
 }
+
 @media (max-width: 767px) {
   .fxp-sidebar {
     width: 80%;
     -webkit-transform: translate3d(-100%, 0px, 0px);
     transform: translate3d(-100%, 0px, 0px);
   }
+
   .fxp-sidebar-open + .fxp-sidebar-swipe,
-  .fxp-sidebar-force-open.fxp-sidebar-open + .fxp-sidebar-swipe {
+.fxp-sidebar-force-open.fxp-sidebar-open + .fxp-sidebar-swipe {
     left: 80%;
   }
+
   .fxp-sidebar-force-open + .fxp-sidebar-swipe {
     left: 0;
   }
+
   .fxp-sidebar-right.fxp-sidebar {
     -webkit-transform: translate3d(100%, 0px, 0px);
     transform: translate3d(100%, 0px, 0px);
@@ -249,30 +250,28 @@
     -webkit-transform: translate3d(140px, 0px, 0px);
     transform: translate3d(140px, 0px, 0px);
   }
-  .fxp-sidebar-force-open.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-open,
-  .fxp-sidebar-force-open.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-dragging {
+
+  .fxp-sidebar-force-open.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-open, .fxp-sidebar-force-open.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-dragging {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
-  .fxp-sidebar-force-open.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-open,
-  .fxp-sidebar-force-open.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-dragging {
+  .fxp-sidebar-force-open.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-open, .fxp-sidebar-force-open.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-dragging {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
-  .fxp-sidebar-force-open.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-open,
-  .fxp-sidebar-force-open.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-dragging {
+
+  .fxp-sidebar-force-open.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-open, .fxp-sidebar-force-open.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-default.fxp-sidebar-dragging {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
-  .fxp-sidebar-force-open.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-open,
-  .fxp-sidebar-force-open.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-dragging {
+  .fxp-sidebar-force-open.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-open, .fxp-sidebar-force-open.fxp-sidebar-right.fxp-sidebar.fxp-sidebar-inverse.fxp-sidebar-dragging {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
 }
 @media (max-width: 991px) {
   .fxp-sidebar,
-  .fxp-sidebar-swipe {
+.fxp-sidebar-swipe {
     top: 0 !important;
     bottom: 0 !important;
   }
@@ -280,16 +279,15 @@
 .fxp-sidebar {
   -ms-touch-action: none;
 }
+
 .fxp-sidebar-swipe {
   -ms-touch-action: none;
 }
-.fxp-sidebar-menu,
-.fxp-sidebar-menu ul,
-.fxp-sidebar-menu li,
-.fxp-sidebar-menu span,
-.fxp-sidebar-menu a {
+
+.fxp-sidebar-menu, .fxp-sidebar-menu ul, .fxp-sidebar-menu li, .fxp-sidebar-menu span, .fxp-sidebar-menu a {
   -ms-touch-action: pan-y;
 }
+
 .fxp-sidebar.fxp-sidebar-default {
   color: #222222;
   background-color: #fff;
@@ -311,8 +309,7 @@
   color: #222222;
   background-color: transprent;
 }
-.fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item > a:hover,
-.fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item > a:focus {
+.fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item > a:hover, .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item > a:focus {
   color: #333;
   background-color: #eeeeee;
 }
@@ -351,8 +348,7 @@
   color: #9d9d9d;
   background-color: #2a3542;
 }
-.fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item > a:hover,
-.fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item > a:focus {
+.fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item > a:hover, .fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item > a:focus {
   color: #fff;
   background-color: #344252;
 }
@@ -368,14 +364,16 @@
   background-color: #2a3542;
 }
 .fxp-sidebar.fxp-sidebar-inverse .hammer-scrollbar {
-  background-color: #e4e8ed;
+  background-color: #e4e8ee;
 }
-.fxp-sidebar[data-clickable-swipe="true"] + .fxp-sidebar-swipe.mouse-hover {
-  background-color: rgba(51, 122, 183, 0.23);
+.fxp-sidebar[data-clickable-swipe=true] + .fxp-sidebar-swipe.mouse-hover {
+  background-color: fade(#337ab7, 23%);
 }
+
 .fxp-sidebar-obfuscator.show {
   background-color: rgba(0, 0, 0, 0.5);
 }
+
 @media (min-width: 992px) {
   .fxp-sidebar.fxp-sidebar-locked.fxp-sidebar-default {
     border-color: #eeeeee;

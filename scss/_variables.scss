@@ -1,0 +1,67 @@
+//
+// Variables
+// --------------------------------------------------
+
+
+// COMPONENT VARIABLES
+// --------------------------------------------------
+
+// Z-index master list
+// -------------------------
+
+$zindex-sidebar:        $zindex-navbar-fixed + 2;
+$zindex-sidebar-fixed:  $zindex-navbar-fixed + 1;
+$zindex-sidebar-static: $zindex-navbar + 1;
+
+$zindex-sidebar-swipe:        $zindex-sidebar - 1;
+$zindex-sidebar-swipe-fixed:  $zindex-sidebar-fixed - 1;
+$zindex-sidebar-swipe-static: $zindex-sidebar-static - 1;
+
+$zindex-sidebar-obfuscator:        $zindex-sidebar - 1;
+$zindex-sidebar-obfuscator-fixed:  $zindex-sidebar-fixed - 1;
+$zindex-sidebar-obfuscator-static: $zindex-sidebar-static - 1;
+
+// Custom Sidebar
+// -------------------------
+
+$sidebar-prefix:                     'fxp-';
+$sidebar-width:                      $navbar-brand-width;
+$sidebar-mini-width:                 round($navbar-brand-width / 3);
+$sidebar-clickable-swipe-bg:         fade($brand-primary, 23%);
+$sidebar-obfuscator-bg:              rgba(0, 0, 0, 0.5);
+$sidebar-obfuscator-duration:        '0.3s';
+$sidebar-default-font-size:          $font-size-base;
+$sidebar-default-color:              $gray-dark;
+$sidebar-default-bg:                 #fff;
+$sidebar-default-border-color:       $gray-lighter;
+$sidebar-default-group-color:        darken($sidebar-default-bg, 14%);
+$sidebar-default-group-size:         $font-size-h3;
+$sidebar-default-link-color:         $gray-dark;
+$sidebar-default-link-mini-color:    lighten($sidebar-default-link-color, 14%);
+$sidebar-default-link-bg:            transprent;
+$sidebar-default-link-hover-color:   $navbar-default-link-hover-color;
+$sidebar-default-link-hover-bg:      $gray-lighter;
+$sidebar-default-link-active-color:  $brand-primary;
+$sidebar-default-link-active-bg:     $sidebar-default-link-bg;
+$sidebar-default-icon-color:         $sidebar-default-link-color;
+$sidebar-default-icon-bg:            $brand-primary;
+$sidebar-default-scrollbar-bg:       #555;
+$sidebar-default-shadow-open-left:   none;
+$sidebar-default-shadow-open-right:  $sidebar-default-shadow-open-left;
+
+$sidebar-inverse-color:              $navbar-inverse-color;
+$sidebar-inverse-bg:                 #2a3542;
+$sidebar-inverse-border-color:       lighten($sidebar-inverse-bg, 5%);
+$sidebar-inverse-group-color:        lighten($sidebar-inverse-bg, 14%);
+$sidebar-inverse-link-color:         $sidebar-inverse-color;
+$sidebar-inverse-link-mini-color:    lighten($sidebar-inverse-link-color, 14%);
+$sidebar-inverse-link-bg:            $sidebar-inverse-bg;
+$sidebar-inverse-link-hover-color:   $navbar-inverse-link-hover-color;
+$sidebar-inverse-link-hover-bg:      lighten($sidebar-inverse-link-bg, 5%);
+$sidebar-inverse-link-active-color:  lighten($brand-primary, 46%);
+$sidebar-inverse-link-active-bg:     $sidebar-inverse-link-bg;
+$sidebar-inverse-icon-color:         $sidebar-inverse-link-active-color;
+$sidebar-inverse-icon-bg:            lighten($brand-primary, 46%);
+$sidebar-inverse-scrollbar-bg:       lighten($sidebar-inverse-bg, 70%);
+$sidebar-inverse-shadow-open-left:   $sidebar-default-shadow-open-left;
+$sidebar-inverse-shadow-open-right:  $sidebar-inverse-shadow-open-left;

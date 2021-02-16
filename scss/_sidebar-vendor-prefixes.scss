@@ -1,0 +1,21 @@
+//
+// Sidebar Vendor Prefixes
+// --------------------------------------------------
+
+.fxp-sidebar {
+    -ms-touch-action: none;
+}
+
+.fxp-sidebar-swipe {
+    -ms-touch-action: none;
+}
+
+.fxp-sidebar-menu {
+    &,
+    & ul,
+    & li,
+    & span,
+    & a {
+        -ms-touch-action: pan-y;
+    }
+}

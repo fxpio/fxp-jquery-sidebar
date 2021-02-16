@@ -1,0 +1,142 @@
+//
+// Sidebar Theme
+// --------------------------------------------------
+
+.fxp-sidebar {
+    &.fxp-sidebar-default {
+        color: $sidebar-default-color;
+        background-color: $sidebar-default-bg;
+
+        .fxp-sidebar-group {
+            > span {
+                color: $sidebar-default-group-color;
+                border-top-color: $sidebar-default-border-color;
+            }
+
+            &.sticky-header > span {
+                background-color: $sidebar-default-bg;
+            }
+
+            + .fxp-sidebar-item {
+                border-top-color: $sidebar-default-border-color;
+            }
+        }
+
+        .fxp-sidebar-divider-item {
+            border-top-color: $sidebar-default-border-color;
+        }
+
+        .fxp-sidebar-item {
+            > a {
+                color: $sidebar-default-link-color;
+                background-color: $sidebar-default-link-bg;
+
+                &:hover,
+                &:focus {
+                    color: $sidebar-default-link-hover-color;
+                    background-color: $sidebar-default-link-hover-bg;
+                }
+
+                &.active {
+                    color: $sidebar-default-link-active-color;
+                    background-color: $sidebar-default-link-active-bg;
+                }
+            }
+
+            &.fxp-sidebar-item-mini > a {
+                color: $sidebar-default-link-mini-color;
+
+                &.active {
+                    color: $sidebar-default-link-active-color;
+                    background-color: $sidebar-default-link-active-bg;
+                }
+            }
+        }
+
+        .hammer-scrollbar {
+            background-color: $sidebar-default-scrollbar-bg;
+        }
+    }
+
+    &.fxp-sidebar-inverse {
+        color: $sidebar-inverse-color;
+        background-color: $sidebar-inverse-bg;
+
+        .fxp-sidebar-group {
+            > span {
+                color: $sidebar-inverse-group-color;
+                border-top-color: $sidebar-inverse-border-color;
+            }
+
+            &.sticky-header > span {
+                background-color: $sidebar-inverse-bg;
+            }
+
+            + .fxp-sidebar-item {
+                border-top-color: $sidebar-inverse-border-color;
+            }
+        }
+
+        .fxp-sidebar-divider-item {
+            border-top-color: $sidebar-inverse-border-color;
+        }
+
+        .fxp-sidebar-item {
+            > a {
+                color: $sidebar-inverse-link-color;
+                background-color: $sidebar-inverse-link-bg;
+
+                &:hover,
+                &:focus {
+                    color: $sidebar-inverse-link-hover-color;
+                    background-color: $sidebar-inverse-link-hover-bg;
+                }
+
+                &.active {
+                    color: $sidebar-inverse-link-active-color;
+                    background-color: $sidebar-inverse-link-active-bg;
+                }
+            }
+
+            &.fxp-sidebar-item-mini > a {
+                color: $sidebar-inverse-link-mini-color;
+
+                &.active {
+                    color: $sidebar-inverse-link-active-color;
+                    background-color: $sidebar-inverse-link-active-bg;
+                }
+            }
+        }
+
+        .hammer-scrollbar {
+            background-color: $sidebar-inverse-scrollbar-bg;
+        }
+    }
+
+    &[data-clickable-swipe="true"] {
+        + .fxp-sidebar-swipe {
+            &.mouse-hover {
+                background-color: $sidebar-clickable-swipe-bg;
+            }
+        }
+    }
+}
+
+.fxp-sidebar-obfuscator.show {
+    background-color: $sidebar-obfuscator-bg;
+}
+
+// Responsive
+// -------------------------
+
+@media (min-width: ($screen-sm-max + 1)) {
+    .fxp-sidebar.fxp-sidebar-locked {
+        &.fxp-sidebar-default {
+            border-color: $sidebar-default-border-color;
+        }
+
+        &.fxp-sidebar-inverse {
+            border-color: $sidebar-inverse-border-color;
+        }
+    }
+}

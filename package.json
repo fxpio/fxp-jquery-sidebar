@@ -24,8 +24,8 @@
   "scripts": {
     "dev": "encore dev",
     "serve": "encore dev-server --port 9000",
-    "build:style": "lessc less/sidebar.less dist/sidebar.css",
-    "build:style:bootstrap": "lessc less/sidebar-bootstrap.less dist/sidebar-bootstrap.css",
+    "build:style": "sass --no-source-map scss/sidebar.scss dist/sidebar.css",
+    "build:style:bootstrap": "sass --no-source-map scss/sidebar-bootstrap.scss dist/sidebar-bootstrap.css",
     "build:module": "rollup -c",
     "build": "yarn run build:module && yarn run build:style && yarn run build:style:bootstrap"
   },
@@ -38,8 +38,9 @@
   },
   "devDependencies": {
     "@fxp/jquery-scroller": "github:fxpio/fxp-jquery-scroller#semver:^1.0.0",
-    "@symfony/webpack-encore": "^0.28.0",
+    "@symfony/webpack-encore": "^1.1.0",
     "bootstrap": "^3.4.1",
+    "file-loader": "^6.0.0",
     "font-awesome": "^4.7.0",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
@@ -47,6 +48,8 @@
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-uglify": "^6.0.3"
+    "rollup-plugin-uglify": "^6.0.3",
+    "sass": "^1.32.7",
+    "sass-loader": "^11.0.1"
   }
 }

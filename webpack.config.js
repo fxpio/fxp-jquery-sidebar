@@ -16,16 +16,7 @@ const config = Encore
     .autoProvidejQuery()
     .enableSourceMaps(!Encore.isProduction())
     .cleanupOutputBeforeBuild()
-    .enableLessLoader()
-    .addLoader(
-        {
-            test: /\.js$/,
-            loader: 'babel-loader',
-            query: {
-                presets: ['@babel/preset-env'],
-            },
-        }
-    )
+    .enableSassLoader()
     .addEntry('main', './examples/main.js')
     .copyFiles({
         from: './examples',

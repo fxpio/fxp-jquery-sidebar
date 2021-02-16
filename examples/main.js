@@ -7,11 +7,11 @@
  * file that was distributed with this source code.
  */
 
-import 'bootstrap/less/bootstrap.less';
-import 'font-awesome/less/font-awesome.less';
-import '@fxp/jquery-scroller/less/scroller.less';
-import '../less/sidebar.less';
-import '../less/sidebar-bootstrap.less';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'font-awesome/scss/font-awesome.scss';
+import '@fxp/jquery-scroller/scss/scroller.scss';
+import '../scss/sidebar.scss';
+import '../scss/sidebar-bootstrap.scss';
 import './examples.css';
 import 'hammerjs';
 import '@fxp/jquery-scroller';
