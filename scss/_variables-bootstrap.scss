@@ -5,50 +5,44 @@
 // TWITTER BOOTSTRAP VARIABLES
 // --------------------------------------------------
 
-$gray-base:    #000;
-$gray-dark:    lighten($gray-base, 13.5%); // #222
-$gray-light:   lighten($gray-base, 46.7%); // #777
-$gray-lighter: lighten($gray-base, 93.5%); // #eee
+$white: #fff !default;
 
-$brand-primary: darken(#428bca, 6.5%);
+$gray-200: #e9ecef !default;
+$gray-900: #212529 !default;
 
-$font-size-base:  14px;
-$font-size-large: ceil(($font-size-base * 1.25)); // ~18px
-$font-size-h3:    ceil(($font-size-base * 1.7)); // ~24px
+$blue: #0d6efd !default;
 
-$line-height-base:     1.428571429; // 20/14
-$line-height-computed: floor(($font-size-base * $line-height-base)); // ~20px
+$primary: $blue !default;
 
-$headings-font-family: inherit;
+$font-size-base: 1rem !default; // Assumes the browser default, typically `16px`
 
-$zindex-navbar:            1000;
-$zindex-navbar-fixed:      1030;
+$h3-font-size: $font-size-base * 1.75 !default;
 
-$navbar-height:        50px;
-$navbar-margin-bottom: $line-height-computed;
+$headings-font-family: null !default;
 
-$navbar-default-toggle-icon-bar-bg: #888;
-$navbar-default-link-hover-color:   #333;
+$zindex-fixed: 1030 !default;
 
-$navbar-inverse-color:              lighten($gray-light, 15%);
-$navbar-inverse-toggle-icon-bar-bg: #fff;
-$navbar-inverse-link-hover-color:   #fff;
+$navbar-height: 56px !default;
 
-$screen-xs-max: (768px - 1);
-$screen-sm-max: (992px - 1);
-$screen-md-min: 992px;
-$screen-lg-min: 1200px;
+$navbar-dark-color: rgba($white, .55) !default;
 
-$grid-gutter-width: 30px;
+$grid-gutter-width: 1.5rem !default;
 
-$container-md: (940px + $grid-gutter-width);
-$container-lg: (1140px + $grid-gutter-width);
+$container-padding-x: $grid-gutter-width / 2 !default;
 
+$grid-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1400px
+) !default;
 
-// CUSTOM VARIABLES
-// --------------------------------------------------
-
-$navbar-brand-width: 210px;
-
-$navbar-default-toggle-fa-icon:   "\f0c9";
-$navbar-default-toggle-font-size: $font-size-large;
+$container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1140px,
+    xxl: 1320px
+) !default;

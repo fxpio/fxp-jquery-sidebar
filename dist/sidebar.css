@@ -29,7 +29,7 @@
   height: 100%;
   list-style: none;
   text-align: left;
-  font-size: 14px;
+  font-size: 1rem;
   direction: ltr;
 }
 .fxp-sidebar .fxp-sidebar-menu ul {
@@ -73,8 +73,7 @@
   padding-bottom: 12px;
 }
 .fxp-sidebar .fxp-sidebar-group > span {
-  font-family: inherit;
-  font-size: 24px;
+  font-size: 1.75rem;
   border-top: 1px solid transparent;
 }
 .fxp-sidebar .fxp-sidebar-group > span.no-bar {
@@ -289,46 +288,45 @@
 }
 
 .fxp-sidebar.fxp-sidebar-default {
-  color: #222222;
+  color: #212529;
   background-color: #fff;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-group > span {
   color: #dbdbdb;
-  border-top-color: #eeeeee;
+  border-top-color: #e9ecef;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-group.sticky-header > span {
   background-color: #fff;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-group + .fxp-sidebar-item {
-  border-top-color: #eeeeee;
+  border-top-color: #e9ecef;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-divider-item {
-  border-top-color: #eeeeee;
+  border-top-color: #e9ecef;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item > a {
-  color: #222222;
+  color: #212529;
   background-color: transprent;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item > a:hover, .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item > a:focus {
-  color: #333;
-  background-color: #eeeeee;
+  background-color: #e9ecef;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item > a.active {
-  color: #337ab7;
+  color: #0d6efd;
   background-color: transprent;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item.fxp-sidebar-item-mini > a {
-  color: #464646;
+  color: #414951;
 }
 .fxp-sidebar.fxp-sidebar-default .fxp-sidebar-item.fxp-sidebar-item-mini > a.active {
-  color: #337ab7;
+  color: #0d6efd;
   background-color: transprent;
 }
 .fxp-sidebar.fxp-sidebar-default .hammer-scrollbar {
   background-color: #555;
 }
 .fxp-sidebar.fxp-sidebar-inverse {
-  color: #9d9d9d;
+  color: rgba(255, 255, 255, 0.55);
   background-color: #2a3542;
 }
 .fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-group > span {
@@ -345,29 +343,28 @@
   border-top-color: #344252;
 }
 .fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item > a {
-  color: #9d9d9d;
+  color: rgba(255, 255, 255, 0.55);
   background-color: #2a3542;
 }
 .fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item > a:hover, .fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item > a:focus {
-  color: #fff;
   background-color: #344252;
 }
 .fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item > a.active {
-  color: #dfecf6;
+  color: #f6f9ff;
   background-color: #2a3542;
 }
 .fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item.fxp-sidebar-item-mini > a {
-  color: #c1c1c1;
+  color: rgba(255, 255, 255, 0.55);
 }
 .fxp-sidebar.fxp-sidebar-inverse .fxp-sidebar-item.fxp-sidebar-item-mini > a.active {
-  color: #dfecf6;
+  color: #f6f9ff;
   background-color: #2a3542;
 }
 .fxp-sidebar.fxp-sidebar-inverse .hammer-scrollbar {
   background-color: #e4e8ee;
 }
 .fxp-sidebar[data-clickable-swipe=true] + .fxp-sidebar-swipe.mouse-hover {
-  background-color: fade(#337ab7, 23%);
+  background-color: fade(#0d6efd, 23%);
 }
 
 .fxp-sidebar-obfuscator.show {
@@ -376,7 +373,7 @@
 
 @media (min-width: 992px) {
   .fxp-sidebar.fxp-sidebar-locked.fxp-sidebar-default {
-    border-color: #eeeeee;
+    border-color: #e9ecef;
   }
   .fxp-sidebar.fxp-sidebar-locked.fxp-sidebar-inverse {
     border-color: #344252;

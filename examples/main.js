@@ -8,7 +8,7 @@
  */
 
 import 'bootstrap/dist/css/bootstrap.css';
-import 'font-awesome/scss/font-awesome.scss';
+import '@fortawesome/fontawesome-free/css/all.css';
 import '@fxp/jquery-scroller/scss/scroller.scss';
 import '../scss/sidebar.scss';
 import '../scss/sidebar-bootstrap.scss';

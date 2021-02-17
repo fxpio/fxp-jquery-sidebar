@@ -186,7 +186,7 @@
     }
 
     .fxp-sidebar-force-open ~ & {
-        @media (min-width: $screen-md-min) {
+        @media (min-width: map-get($grid-breakpoints, 'lg')) {
             z-index: -1;
             opacity: 0;
         }
@@ -280,7 +280,7 @@
 // Responsive
 // -------------------------
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: (map-get($grid-breakpoints, 'md') - 1)) {
     .fxp-sidebar {
         width: 80%;
         -webkit-transform: translate3d(-100%, 0px, 0px);
@@ -318,7 +318,7 @@
     }
 }
 
-@media (max-width: $screen-sm-max) {
+@media (max-width: (map-get($grid-breakpoints, 'lg') - 1)) {
     .fxp-sidebar-force-open {
         &.fxp-sidebar:not(.fxp-sidebar-open) + .fxp-sidebar-swipe {
             left: 0;
@@ -326,7 +326,7 @@
     }
 }
 
-@media (min-width: ($screen-sm-max + 1)) {
+@media (min-width: ((map-get($grid-breakpoints, 'lg') - 1) + 1)) {
     .fxp-sidebar {
         &.fxp-sidebar-open-init {
             -webkit-transform: translate3d(0px, 0px, 0px);
@@ -377,7 +377,7 @@
     }
 }
 
-@media (max-width: $screen-sm-max) {
+@media (max-width: (map-get($grid-breakpoints, 'lg') - 1)) {
     .fxp-sidebar,
     .fxp-sidebar-swipe {
         top: 0 !important;
