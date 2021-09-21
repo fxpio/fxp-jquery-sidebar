@@ -129,7 +129,7 @@
 // Responsive
 // -------------------------
 
-@media (min-width: map-get($sidebar-grid-breakpoints, 'lg')) {
+@media (min-width: map-get($sidebar-grid-breakpoints, $sidebar-force-open-breakpoint)) {
     .fxp-sidebar.fxp-sidebar-locked {
         &.fxp-sidebar-default {
             border-color: $sidebar-default-border-color;
