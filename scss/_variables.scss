@@ -48,6 +48,8 @@ $sidebar-width:                      210px !default;
 $sidebar-mini-width:                 round($sidebar-width / 3) !default;
 $sidebar-right-width:                $sidebar-width !default;
 $sidebar-right-mini-width:           round($sidebar-right-width / 3) !default;
+$sidebar-mobile-width:               80%;
+$sidebar-right-mobile-width:         $sidebar-mobile-width;
 $sidebar-clickable-swipe-bg:         fade($primary, 23%) !default;
 $sidebar-obfuscator-bg:              rgba(0, 0, 0, 0.5) !default;
 $sidebar-obfuscator-duration:        '0.3s' !default;
