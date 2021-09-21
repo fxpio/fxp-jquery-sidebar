@@ -108,16 +108,15 @@
 
     &.container-force-open-right {
         @media (min-width: map-get($sidebar-grid-breakpoints, $sidebar-force-open-breakpoint)) {
-            padding-right: $sidebar-width;
+            padding-right: $sidebar-right-width;
 
             > .navbar:not(.fixed-top):not(.fixed-bottom):not(.sticky-top) {
-                margin-right: -$sidebar-width;
+                margin-right: -$sidebar-right-width;
             }
         }
     }
 
-    &.container-force-open-left,
-    &.container-force-open-right {
+    &.container-force-open-left {
         > .container,
         > .navbar > .container {
             @media (min-width: map-get($sidebar-grid-breakpoints, 'xs')) {
@@ -147,6 +146,36 @@
         }
     }
 
+    &.container-force-open-right {
+        > .container,
+        > .navbar > .container {
+            @media (min-width: map-get($sidebar-grid-breakpoints, 'xs')) {
+                width: map-get($sidebar-container-max-widths, 'xs') - $sidebar-right-width;
+            }
+            @media (min-width: map-get($sidebar-grid-breakpoints, 'sm')) {
+                width: map-get($sidebar-container-max-widths, 'sm') - $sidebar-right-width;
+            }
+            @media (min-width: map-get($sidebar-grid-breakpoints, 'md')) {
+                width: map-get($sidebar-container-max-widths, 'md') - $sidebar-right-width;
+            }
+            @media (min-width: map-get($sidebar-grid-breakpoints, 'lg')) {
+                width: map-get($sidebar-container-max-widths, 'lg') - $sidebar-right-width;
+            }
+            @media (min-width: map-get($sidebar-grid-breakpoints, 'xl')) {
+                width: map-get($sidebar-container-max-widths, 'lg') - $sidebar-right-width;
+            }
+            @media (min-width: (map-get($sidebar-grid-breakpoints, 'xl') + $sidebar-right-width)) {
+                width: map-get($sidebar-container-max-widths, 'lg');
+            }
+            @media (min-width: map-get($sidebar-grid-breakpoints, 'xxl')) {
+                width: map-get($sidebar-container-max-widths, 'xl') - $sidebar-right-width;
+            }
+            @media (min-width: (map-get($sidebar-grid-breakpoints, 'xxl') + $sidebar-right-width)) {
+                width: map-get($sidebar-container-max-widths, 'xl');
+            }
+        }
+    }
+
     &.container-full-locked {
         &.container-force-open-left {
             > .navbar > .container-fluid {
@@ -159,7 +188,7 @@
         &.container-force-open-right {
             > .navbar > .container-fluid {
                 @media (min-width: map-get($sidebar-grid-breakpoints, $sidebar-force-open-breakpoint)) {
-                    padding-right: unquote('calc(#{$sidebar-width} + #{$sidebar-container-padding-x})');
+                    padding-right: unquote('calc(#{$sidebar-right-width} + #{$sidebar-container-padding-x})');
                 }
             }
         }
@@ -169,33 +198,33 @@
         > .container,
         > .navbar > .container {
             @media (min-width: map-get($sidebar-grid-breakpoints, 'xs')) {
-                width: map-get($sidebar-container-max-widths, 'xs') - ($sidebar-width * 2);
+                width: map-get($sidebar-container-max-widths, 'xs') - ($sidebar-width + $sidebar-right-width);
             }
             @media (min-width: map-get($sidebar-grid-breakpoints, 'sm')) {
-                width: map-get($sidebar-container-max-widths, 'sm') - ($sidebar-width * 2);
+                width: map-get($sidebar-container-max-widths, 'sm') - ($sidebar-width + $sidebar-right-width);
             }
             @media (min-width: map-get($sidebar-grid-breakpoints, 'md')) {
-                width: map-get($sidebar-container-max-widths, 'md') - ($sidebar-width * 2);
+                width: map-get($sidebar-container-max-widths, 'md') - ($sidebar-width + $sidebar-right-width);
             }
             @media (min-width: map-get($sidebar-grid-breakpoints, 'lg')) {
-                width: map-get($sidebar-container-max-widths, 'lg') - ($sidebar-width * 2);
+                width: map-get($sidebar-container-max-widths, 'lg') - ($sidebar-width + $sidebar-right-width);
             }
             @media (min-width: map-get($sidebar-grid-breakpoints, 'xl')) {
-                width: map-get($sidebar-container-max-widths, 'lg') - ($sidebar-width * 2);
+                width: map-get($sidebar-container-max-widths, 'lg') - ($sidebar-width + $sidebar-right-width);
             }
             @media (min-width: (map-get($sidebar-grid-breakpoints, 'xl') + $sidebar-width)) {
                 width: map-get($sidebar-container-max-widths, 'lg') - $sidebar-width;
             }
-            @media (min-width: (map-get($sidebar-grid-breakpoints, 'xl') + ($sidebar-width * 2))) {
+            @media (min-width: (map-get($sidebar-grid-breakpoints, 'xl') + ($sidebar-width + $sidebar-right-width))) {
                 width: map-get($sidebar-container-max-widths, 'lg');
             }
             @media (min-width: map-get($sidebar-grid-breakpoints, 'xxl')) {
-                width: map-get($sidebar-container-max-widths, 'xl') - ($sidebar-width * 2);
+                width: map-get($sidebar-container-max-widths, 'xl') - ($sidebar-width + $sidebar-right-width);
             }
             @media (min-width: (map-get($sidebar-grid-breakpoints, 'xxl') + $sidebar-width)) {
                 width: map-get($sidebar-container-max-widths, 'xl') - $sidebar-width;
             }
-            @media (min-width: (map-get($sidebar-grid-breakpoints, 'xxl') + ($sidebar-width * 2))) {
+            @media (min-width: (map-get($sidebar-grid-breakpoints, 'xxl') + ($sidebar-width + $sidebar-right-width))) {
                 width: map-get($sidebar-container-max-widths, 'xl');
             }
         }
