@@ -6,6 +6,11 @@
 // COMPONENT VARIABLES
 // --------------------------------------------------
 
+// Text
+// -------------------------
+
+$sidebar-headings-font-family: $headings-font-family !default;
+
 // Z-index master list
 // -------------------------
 
@@ -21,6 +26,17 @@ $zindex-sidebar-obfuscator:        $zindex-sidebar - 1 !default;
 $zindex-sidebar-obfuscator-fixed:  $zindex-sidebar-fixed - 1 !default;
 $zindex-sidebar-obfuscator-static: $zindex-sidebar-static - 1 !default;
 
+// Grid
+// -------------------------
+
+$sidebar-grid-gutter-width: $grid-gutter-width !default;
+
+$sidebar-container-padding-x: $sidebar-grid-gutter-width / 2 !default;
+
+$sidebar-grid-breakpoints: $grid-breakpoints !default;
+
+$sidebar-container-max-widths: $container-max-widths !default;
+
 // Custom Sidebar
 // -------------------------
 
@@ -30,6 +46,8 @@ $sidebar-mini-width:                 round($sidebar-width / 3) !default;
 $sidebar-clickable-swipe-bg:         fade($primary, 23%) !default;
 $sidebar-obfuscator-bg:              rgba(0, 0, 0, 0.5) !default;
 $sidebar-obfuscator-duration:        '0.3s' !default;
+$sidebar-navbar-height:              $navbar-height !default;
+
 $sidebar-default-font-size:          $font-size-base !default;
 $sidebar-default-color:              $gray-900 !default;
 $sidebar-default-bg:                 #fff !default;
